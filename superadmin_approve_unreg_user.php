@@ -36,7 +36,7 @@ session_start();
             <p>This is where most of operations will be done.</p>
             <!-- Add more content as needed -->
 			
-				<?php   include_once('useraccounts_approve_unreg.php');
+				<?php   include_once('superadmin_approve_unreg_user_functions.php');
 
 						$view = new viewAccountController();
 						$qres = $view->viewAccount();
@@ -45,7 +45,7 @@ session_start();
 							$accountsTable = "<table border = 1 class='center'>";
 							$accountsTable .= "	<tr>
 													<th>Email</th>
-													<th>FirstName Type</th>
+													<th>FirstName</th>
 													<th>LastName</th>
 													<th>PlanID</th>
 													<th>CompanyName</th>
