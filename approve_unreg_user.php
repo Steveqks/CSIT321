@@ -36,7 +36,7 @@ session_start();
             <p>This is where most of operations will be done.</p>
             <!-- Add more content as needed -->
 			
-				<?php   include_once('useraccounts.php');
+				<?php   include_once('useraccounts_approve_unreg.php');
 
 						$view = new viewAccountController();
 						$qres = $view->viewAccount();
@@ -65,6 +65,7 @@ session_start();
 								<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 								<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
 								<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
+								<input type='hidden' name='password' value='" . $Row['Password'] . "'/>
 								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
 								<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
 								<input type='submit' name='approveAccount' value='Approve'>
@@ -77,11 +78,21 @@ session_start();
 						if(isset($_POST['approveAccount']))
 						{
 							$aprrove = new approveAccountController();
-							if($aprrove->approveAccount()){
-								echo " success";
+							
+							switch ($aprrove->approveAccount()){
+								//company exists
+								case 1 : echo "company already exists in system"; break;
+								
+								//company admin exists
+								case 2 : echo "company admin already exists in system"; break;
+								
+								//create both
+								case 3 : echo "company and company admin created."; break;
+								default : echo "nothing"; break;
 							}
-							else echo " unsucessful";
-      
+							
+							//if($aprrove->approveAccount()){
+							//	echo " success";
 						}
 				?>
         </div>
