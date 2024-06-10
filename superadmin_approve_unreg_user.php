@@ -32,8 +32,7 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-            <h2>Activity Page</h2>
-            <p>This is where most of operations will be done.</p>
+
             <!-- Add more content as needed -->
 			
 				<?php   include_once('superadmin_approve_unreg_user_functions.php');
@@ -90,9 +89,7 @@ session_start();
 								case 3 : echo "company and company admin created."; break;
 								default : echo "nothing"; break;
 							}
-							
-							//if($aprrove->approveAccount()){
-							//	echo " success";
+
 						}
 				?>
         </div>

@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+if (isset($_POST['editSpecialisation'])) {
+	$_SESSION['specialisationName'] = $_POST['specialisationName'];
+	$_SESSION['specialisationID'] = $_POST['specialisationID'];
+	$_SESSION['message'] = '';
+	header('Location: companyadmin_edit_specialisation.php');
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,8 +39,6 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-            <h2>Activity Page</h2>
-            <p>This is where most of operations will be done.</p>
             <!-- Add more content as needed -->
 			
 				<?php   include_once('companyadmin_viewdelete_specialisation_functions.php');
@@ -53,25 +58,31 @@ session_start();
 							$accountsTable.= "<tr>\n";
 							$accountsTable .= "<td>" . $Row['SpecialisationID'] . "</td>";
 							$accountsTable .= "<td>" . $Row['SpecialisationName'] . "</td>";
-
-						
+							
+							$accountsTable .= "<td><form action'' method='POST'>
+								<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
+								<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
+								<input type='submit' name='editSpecialisation' value='Edit'>
+								</form></td>";
 							$accountsTable .= "<td><form action'' method='POST'>
 								<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
 								<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
 								<input type='submit' name='deleteSpecialisation' value='Delete'>
 								</form></td>";
+								
+
 							$accountsTable.= "</tr>";
 						}
 						$accountsTable.= "</table>";
 						echo  $accountsTable;
 						
+
 						if(isset($_POST['deleteSpecialisation']))
 						{
 							$delete = new userAccount();
 							
-							$delete->deleteSpecialisationController($_POST['specialisationID']);
-							
-
+							$delete->deleteSpecialisation($_POST['specialisationID']);
+							header('Location: companyadmin_viewdelete_specialisation.php');
 						}
 				?>
         </div>

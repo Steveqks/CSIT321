@@ -32,8 +32,7 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-            <h2>Activity Page</h2>
-            <p>This is where most of operations will be done.</p>
+
             <!-- Add more content as needed -->
 			
 			<form action = "", method = "post">
@@ -42,14 +41,14 @@ session_start();
 				<button id = "submitBtn" name = "submit">Create</button>
 			</form>
 			
-				<?php   include_once('companyadmin_viewdelete_specialisation_functions.php');
-
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
+				<?php   
+				include_once('companyadmin_viewdelete_specialisation_functions.php');
 					$view = new viewSpecialisationController();
 					$qres = $view->viewSpecialisation();
 							
 					if(isset($_POST['submit'])){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
 						$specialisation = $_POST['specialisation'];
 
 						$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName) VALUES (NULL, '$specialisation')") or die("Select Error");
