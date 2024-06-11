@@ -17,10 +17,34 @@ if(isset($_POST['deleteSpecialisation']))
 	$companyID = $_POST['companyID'];
 
 	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
+	
+	$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
 	header('Location: superadmin_manageCompany_view.php');
 	exit;
 
 }
+
+if(isset($_POST['activateSuspend']))
+{
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	
+	$companyID = $_POST['companyID'];
+	$status = $_POST['Status'];
+	
+	if($status == 1){
+		$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
+		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
+	}
+	else if($status == 0){
+		$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
+		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
+	}
+	
+	
+	header('Location: superadmin_manageCompany_view.php');
+	exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,7 +112,7 @@ if(isset($_POST['deleteSpecialisation']))
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
 							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
 							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
-							<input type='submit' name='editSpecialisation' value='Activate/Suspend'>
+							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
@@ -104,6 +128,8 @@ if(isset($_POST['deleteSpecialisation']))
 					$accountsTable.= "</table>";
 					echo  $accountsTable;
 					
+					if($_SESSION['message'])
+						echo $_SESSION['message'];
 
 
 			?>

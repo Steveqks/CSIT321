@@ -35,7 +35,7 @@ session_start();
 
             <!-- Add more content as needed -->
 			
-			&lt;&lt;homepage&gt;&gt;
+			<h2>Homepage</h2>
 			<br>
 			1. <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
 			<br>
@@ -43,7 +43,7 @@ session_start();
 			2. <a href="superadmin_manageCompany_create.php">Create Company </a>
 			<br>
 			
-			3. <a href="superadmin_manageCompany_view.php">View Company </a>
+			3. <a href="superadmin_manageCompany_view.php">Edit/Delete/View Company </a>
 			<br>
 			
 			4...
