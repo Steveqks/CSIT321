@@ -10,26 +10,23 @@ if (isset($_POST['submitSpecialisation'])) {
 	header('Location: companyadmin_edit_specialisation.php');
 }
 
-if(isset($_POST['deleteSpecialisation']))
+if(isset($_POST['deleteCompany']))
 {
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	
 	$companyID = $_POST['companyID'];
-
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
 	
 	$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
 	header('Location: superadmin_manageCompany_view.php');
 	exit;
-
 }
 
 if(isset($_POST['activateSuspend']))
 {
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	
 	$companyID = $_POST['companyID'];
 	$status = $_POST['Status'];
+	
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 	
 	if($status == 1){
 		$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
@@ -39,10 +36,16 @@ if(isset($_POST['activateSuspend']))
 		$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
 		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
 	}
-	
-	
 	header('Location: superadmin_manageCompany_view.php');
 	exit;
+}
+
+if (isset($_POST['editCompany'])) {
+	$_SESSION['companyID'] = $_POST['companyID'];
+	$_SESSION['companyName'] = $_POST['companyName'];
+	$_SESSION['planID'] = $_POST['planID'];
+	$_SESSION['message'] = '';
+	header('Location: superadmin_manageCompany_view-edit.php');
 }
 
 ?>
@@ -103,23 +106,18 @@ if(isset($_POST['activateSuspend']))
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
-							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
-							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
-							<input type='submit' name='editSpecialisation' value='Edit'>
+							<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
+							<input type='submit' name='editCompany' value='Edit'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
-							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
+							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
 							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
-							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
-							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
-							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
-							<input type='submit' name='deleteSpecialisation' value='Delete'>
+							<input type='submit' name='deleteCompany' value='Delete'>
 							</form></td>";
 							
 
