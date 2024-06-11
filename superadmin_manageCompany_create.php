@@ -40,46 +40,49 @@ if (isset($_POST['submitSpecialisation'])) {
 		
             <form action = "", method = "post">
 				<h2>Create Company</h2>
-				<input id = "companyName" type = "text" placeholder = "Company Name" required>
+				<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" required>
+				<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" required>
 				<button id = "submitBtn" name = "submit">Create</button>
 			</form>
 			
 			<?php   
-
 
 				//create company
 				if(isset($_POST['submit'])){
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 					$companyName = $_POST['companyName'];
+					$planType = $_POST['planType'];
 					
 					//check if company exists
-					if(isCompanyExists($companyName)){
-						$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$plantype', '1')") or die("Select Error");
+					if(isCompanyExists($companyName, $db)){
+						echo "<p style='color: red;'>Company \"".$companyName."\" already exists in database</p>";
 					}
+					//doesn't exist, add to db
 					else
-						echo "already exists";
-	
+					{
+						$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$planType', '1')") or die("Select Error");
+						echo "<p style='color: green;'>Company \"".$companyName."\" added to database.</p>";
+					}
 					
 				}
 					
 					
-				public function isCompanyExists(string $cname):bool{
+				function isCompanyExists(string $cname, mysqli $db):bool{
+					$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
+					$qres = mysqli_query($db, $sql); 
 
-				$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
-				$qres = mysqli_query($this->conn, $sql); 
+					$num_rows=mysqli_num_rows($qres);
 
-				$num_rows=mysqli_num_rows($qres);
-
-				// dont exists
-				if($num_rows == 0){
-					return true; 
+					// dont exists
+					if($num_rows > 0){
+						return true; 
+					}
+					// exists
+					else{
+						return false; 
+					}
 				}
-				// exists
-				else{
-					return false; 
-				}
-}
 			?>
         </div>
     </div>

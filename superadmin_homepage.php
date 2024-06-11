@@ -37,10 +37,10 @@ session_start();
 			
 			&lt;&lt;homepage&gt;&gt;
 			<br>
-			1.  <a href="superadmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
+			1. <a href="superadmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
 			<br>
 			
-			2...
+			2. <a href="superadmin_manageCompany_create.php">Create Company </a>
 			<br>
 			
 			3...
