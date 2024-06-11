@@ -35,7 +35,7 @@ session_start();
 
             <!-- Add more content as needed -->
 			
-				<?php   include_once('superadmin_approve_unreg_user_functions.php');
+				<?php   include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 
 						$view = new viewAccountController();
 						$qres = $view->viewAccount();
