@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (isset($_POST['submitSpecialisation'])) {
+	$_SESSION['specialisationName'] = $_POST['specialisationName'];
+	$_SESSION['specialisationID'] = $_POST['specialisationID'];
+	header('Location: companyadmin_specialisation_edit.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,22 +37,12 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-
+		
             <!-- Add more content as needed -->
-			&lt;&lt;homepage&gt;&gt;
-			<br>
-			1.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
-			<br>
-			
-			2.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete Specialisation</a>
-			<br>
-			
-			3...
-			<br>
-			
-			4...
-			
-			
+			<?php   
+				echo $_SESSION['message'];
+				
+			?>
         </div>
     </div>
 

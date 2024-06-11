@@ -1,10 +1,25 @@
 <?php
 session_start();
 
+include_once('superadmin_manageCompany_view_functions.php');
+
+
 if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
 	header('Location: companyadmin_edit_specialisation.php');
+}
+
+if(isset($_POST['deleteSpecialisation']))
+{
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	
+	$companyID = $_POST['companyID'];
+
+	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
+	header('Location: superadmin_manageCompany_view.php');
+	exit;
+
 }
 ?>
 <!DOCTYPE html>
@@ -40,7 +55,6 @@ if (isset($_POST['submitSpecialisation'])) {
 		
   
 			<?php     
-				include_once('superadmin_manageCompany_view_functions.php');
 
 				$view = new userAccount();
 						$qres = $view->viewCompany();
@@ -56,11 +70,11 @@ if (isset($_POST['submitSpecialisation'])) {
 						$accountsTable .= "<br/>";
 						}
 					while ($Row = $qres->fetch_assoc()) {
-						$accountsTable.= "<tr>\n";
-						$accountsTable .= "<td>" . $Row['CompanyID'] . "</td>";
-						$accountsTable .= "<td>" . $Row['CompanyName'] . "</td>";
-						$accountsTable .= "<td>" . $Row['PlanID'] . "</td>";
-						$accountsTable .= "<td>" . $Row['Status'] . "</td>";
+						$accountsTable.= "<tr>\n"
+						."<td>" . $Row['CompanyID'] . "</td>" 
+						."<td>" . $Row['CompanyName'] . "</td>" 
+						."<td>" . $Row['PlanID'] . "</td>" 
+						."<td>" . $Row['Status'] . "</td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
@@ -68,6 +82,13 @@ if (isset($_POST['submitSpecialisation'])) {
 							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
 							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
 							<input type='submit' name='editSpecialisation' value='Edit'>
+							</form></td>";
+						$accountsTable .= "<td><form action'' method='POST'>
+							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
+							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
+							<input type='hidden' name='plantID' value='" . $Row['PlanID'] . "'/>
+							<input type='hidden' name='Status' value='" . $Row['Status'] . "'/>
+							<input type='submit' name='editSpecialisation' value='Activate/Suspend'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
@@ -84,13 +105,7 @@ if (isset($_POST['submitSpecialisation'])) {
 					echo  $accountsTable;
 					
 
-					if(isset($_POST['deleteSpecialisation']))
-					{
-						$delete = new userAccount();
-						
-						$delete->deleteSpecialisation($_POST['specialisationID']);
-						header('Location: companyadmin_viewdelete_specialisation.php');
-					}
+
 			?>
         </div>
     </div>

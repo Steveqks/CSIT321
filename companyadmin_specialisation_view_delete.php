@@ -1,13 +1,24 @@
 <?php
 session_start();
 
+include_once('companyadmin_specialisation_viewdelete_functions.php');
+
+if(isset($_POST['deleteSpecialisation']))
+{
+	$delete = new userAccount();
+	$delete->deleteSpecialisation($_POST['specialisationID']);
+	
+	$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";
+	header('Location: companyadmin_specialisation_view_delete.php');
+	exit();
+}
+
 if (isset($_POST['editSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
 	$_SESSION['message'] = '';
-	header('Location: companyadmin_edit_specialisation.php');
+	header('Location: companyadmin_specialisation_edit.php');
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,51 +51,47 @@ if (isset($_POST['editSpecialisation'])) {
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
             <!-- Add more content as needed -->
-			
-				<?php   include_once('companyadmin_viewdelete_specialisation_functions.php');
+				<?php   
 
-						$view = new viewSpecialisationController();
-						$qres = $view->viewSpecialisation();
-						
-						if($qres){
-							$accountsTable = "<table border = 1 class='center'>";
-							$accountsTable .= "	<tr>
-													<th>SpecialisationID</th>
-													<th>Specialisation Name</th>
-													</tr>\n";
-							$accountsTable .= "<br/>";
-							}
-						while ($Row = $qres->fetch_assoc()) {
-							$accountsTable.= "<tr>\n";
-							$accountsTable .= "<td>" . $Row['SpecialisationID'] . "</td>";
-							$accountsTable .= "<td>" . $Row['SpecialisationName'] . "</td>";
-							
-							$accountsTable .= "<td><form action'' method='POST'>
-								<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
-								<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
-								<input type='submit' name='editSpecialisation' value='Edit'>
-								</form></td>";
-							$accountsTable .= "<td><form action'' method='POST'>
-								<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
-								<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
-								<input type='submit' name='deleteSpecialisation' value='Delete'>
-								</form></td>";
-								
-
-							$accountsTable.= "</tr>";
+					$view = new viewSpecialisationController();
+					$qres = $view->viewSpecialisation();
+					
+					if($qres){
+						$accountsTable = "<table border = 1 class='center'>";
+						$accountsTable .= "	<tr>
+												<th>SpecialisationID</th>
+												<th>Specialisation Name</th>
+												</tr>\n";
+						$accountsTable .= "<br/>";
 						}
-						$accountsTable.= "</table>";
-						echo  $accountsTable;
+					while ($Row = $qres->fetch_assoc()) {
+						$accountsTable.= "<tr>\n";
+						$accountsTable .= "<td>" . $Row['SpecialisationID'] . "</td>";
+						$accountsTable .= "<td>" . $Row['SpecialisationName'] . "</td>";
 						
-
-						if(isset($_POST['deleteSpecialisation']))
-						{
-							$delete = new userAccount();
+						$accountsTable .= "<td><form action'' method='POST'>
+							<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
+							<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
+							<input type='submit' name='editSpecialisation' value='Edit'>
+							</form></td>";
+						$accountsTable .= "<td><form action'' method='POST'>
+							<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
+							<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
+							<input type='submit' name='deleteSpecialisation' value='Delete'>
+							</form></td>";
 							
-							$delete->deleteSpecialisation($_POST['specialisationID']);
-							header('Location: companyadmin_viewdelete_specialisation.php');
-						}
+
+						$accountsTable.= "</tr>";
+					}
+					$accountsTable.= "</table>";
+					echo  $accountsTable;
+
+					if($_SESSION['message']) echo $_SESSION['message'];
+
 				?>
+	
+
+
         </div>
     </div>
 

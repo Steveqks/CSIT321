@@ -40,9 +40,7 @@ session_start();
 			</form>
 			
 				<?php   
-				include_once('companyadmin_viewdelete_specialisation_functions.php');
-					$view = new viewSpecialisationController();
-					$qres = $view->viewSpecialisation();
+		
 							
 					if(isset($_POST['submit'])){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -50,6 +48,8 @@ session_start();
 						$specialisation = $_POST['specialisation'];
 
 						$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName) VALUES (NULL, '$specialisation')") or die("Select Error");
+						
+						echo $specialisation . " created";
 					}
 				?>
         </div>
