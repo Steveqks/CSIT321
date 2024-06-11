@@ -2,21 +2,26 @@
 session_start();
 
 if (isset($_POST['submitChange'])) {
-	if ($_SESSION['code'] == "changenameNplan"){
-		$_SESSION['companyID'] = $_POST['companyID'];
-		$_SESSION['companyName'] = $_POST['companyName'];
-		$_SESSION['planID'] = $_POST['planID'];
+	
+	if ($_SESSION['code1'] == "changename"){
+
 		header('Location: superadmin_manageCompany_view-edit.php');
 	}
-	if ($_SESSION['code'] == "changeplan"){
-		$_SESSION['companyID'] = $_POST['companyID'];
-		$_SESSION['companyName'] = $_POST['companyName'];
-		$_SESSION['planID'] = $_POST['planID'];
+	else if ($_SESSION['code1'] == "namenochange"){
+		
 		header('Location: superadmin_manageCompany_view-edit.php');
 	}
-	else if ($_SESSION['code'] == "nochange"){
+	
+	if ($_SESSION['code2'] == "changeplan"){
+
 		header('Location: superadmin_manageCompany_view-edit.php');
 	}
+	else if ($_SESSION['code2'] == "nochange"){
+		
+		header('Location: superadmin_manageCompany_view-edit.php');
+	}
+	//header('Location: superadmin_manageCompany_view-edit.php');
+
 }
 ?>
 <!DOCTYPE html>
@@ -68,57 +73,65 @@ if (isset($_POST['submitChange'])) {
 						</form>";
 				echo $form;
 				
-				if ($_SESSION['message']){
-				echo $_SESSION['message'];
+				if (@$_SESSION['message1']){
+				echo @$_SESSION['message1'];
+				}
+				if (@$_SESSION['message2']){
+				echo @$_SESSION['message2'];
 				}
 				
 				if(isset($_POST['submitChange'])){
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 					$companyName = $_POST['companyName'];			
 					$companyID = $_POST['companyID'];
 					$planID = $_POST['planID'];
 					
-					//check if companyName exists.
-					$result = mysqli_query($db,	"SELECT CompanyName FROM company WHERE company.CompanyName = '$companyName'") or die("Select Error");
-		
-					$num_rows=mysqli_num_rows($result);
-					// dont exists
-					if($num_rows == 0){
-						//check if planID exists already.
-						$result2 = mysqli_query($db,	"SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
+					if ($_POST['oldCompanyName'] != $_POST['companyName']){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+						//check if companyName exists.
+						$result = mysqli_query($db,	"SELECT CompanyName FROM company WHERE company.CompanyName = '$companyName'") or die("Select Error");
 			
-						$num_rows=mysqli_num_rows($result2);
+						$num_rows=mysqli_num_rows($result);
+						// dont exists
+						if($num_rows == 0){
+							$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName' WHERE company.CompanyID = '$companyID'") or die("update Error");
+							$_SESSION['message1'] = "<p style='color: green;'>Company new name ->\"". $companyName. "\"</p>";
+							$_SESSION['code1'] = "changename";			
+							
+							$_SESSION['companyName'] = $companyName;
+						}
+						else{
+							$_SESSION['message1'] = "Company name already exists";
+							$_SESSION['code1'] = "namenochange";			
+
+							$_POST['companyName'] = $_POST['oldCompanyName'];
+						}
+					}else $_SESSION['message1'] = "";
+					
+					
+					if($_POST['oldPlanID'] != $planID){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+						//check if planID exists already.
+						$result3 = mysqli_query($db, "SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
+			
+						$num_rows=mysqli_num_rows($result3);
 						// dont exists
 						if($num_rows > 0){
-							$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName', PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message'] = "<p style='color: green;'>Company \"". $companyName. "\"updated.</p>". "uhhh name n plan changed";
-							$_SESSION['code'] = "changenameNplan";
+							$result2 = mysqli_query($db,"UPDATE company SET PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
+							$_SESSION['message2'] = "<p style='color: green;'>Company subscription plan updated.</p>";
+							$_SESSION['code2'] = "changeplan";
+							$_SESSION['planID'] = $planID;
+							
 						}
-						if($num_rows == 0){
-							$_SESSION['code'] = "nochange";
-							$_POST['planID'] = $_POST['oldPlanID'];
-							$_SESSION['message'] = "plan does not exists";
+						else{
+							$_SESSION['message2'] = "Subscription plan does not exists";
+							$_SESSION['code2'] = "nochange";
+
 						}
-					}
-					// companyname exists
-					else if (($_POST['oldCompanyName'] == $companyName) && ($planID != $_POST['oldPlanID'] )){
-						//check if planID exists already.
-						$result2 = mysqli_query($db,	"SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result2);
-						// dont exists
-						
-						if($num_rows == 0){
-							$_SESSION['code'] = "nochange";
-							$_POST['planID'] = $_POST['oldPlanID'];
-							$_SESSION['message'] = "plan does not exists";
-						}
-						if($num_rows > 0){
-							$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName', PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message'] = "<p style='color: green;'>Company \"". $companyName. "\"updated.</p>". "plan only changed";
-							$_SESSION['code'] = "changeplan";
-						}
-					}
+					}else $_SESSION['message2'] = "";
+					
+					
 				}
 				
 			?>
