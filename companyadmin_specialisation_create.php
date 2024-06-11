@@ -32,8 +32,6 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-
-            <!-- Add more content as needed -->
 			
 			<form action = "", method = "post">
 				<h2>Create Specialisation</h2>
