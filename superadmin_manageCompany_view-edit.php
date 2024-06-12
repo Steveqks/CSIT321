@@ -3,24 +3,7 @@ session_start();
 
 if (isset($_POST['submitChange'])) {
 	
-	if ($_SESSION['code1'] == "changename"){
-
-		header('Location: superadmin_manageCompany_view-edit.php');
-	}
-	else if ($_SESSION['code1'] == "namenochange"){
-		
-		header('Location: superadmin_manageCompany_view-edit.php');
-	}
-	
-	if ($_SESSION['code2'] == "changeplan"){
-
-		header('Location: superadmin_manageCompany_view-edit.php');
-	}
-	else if ($_SESSION['code2'] == "nochange"){
-		
-		header('Location: superadmin_manageCompany_view-edit.php');
-	}
-	//header('Location: superadmin_manageCompany_view-edit.php');
+header('Location: superadmin_manageCompany_view-edit.php');
 
 }
 ?>
@@ -60,17 +43,28 @@ if (isset($_POST['submitChange'])) {
 				echo "Edit Company:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
+						<table>
+						<tr>
+							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<input type='text' value=" . $_SESSION['companyID'] . " readonly>
-						<input type='text' name='oldCompanyName' value=" . $_SESSION['companyName'] . " readonly>
-						<input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly>
 						<br>
+						company id: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
+						company name: <input type='text' name='oldCompanyName' value=" . $_SESSION['companyName'] . " readonly> <br>
+						subscription plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
+						<br>
+							</td>
+							<td style='border: 2px solid black; border-collapse: collapse;'>
 						TO
-						<input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly>
-						<input type='text' name='companyName' value=" . $_SESSION['companyName'] . ">
-						<input type='text' name='planID' value=" . $_SESSION['planID'] . ">
+						<br>
+						company id: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
+						company name: <input type='text' name='companyName' value=" . $_SESSION['companyName'] . "><br>
+						subscription plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
 						<input type='submit' name='submitChange' value='Update'>
-						</form>";
+						</form>
+							</td>
+						</tr>
+						</table>
+							";
 				echo $form;
 				
 				if (@$_SESSION['message1']){
@@ -95,15 +89,11 @@ if (isset($_POST['submitChange'])) {
 						// dont exists
 						if($num_rows == 0){
 							$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message1'] = "<p style='color: green;'>Company new name ->\"". $companyName. "\"</p>";
-							$_SESSION['code1'] = "changename";			
-							
+							$_SESSION['message1'] = "<p style='color: green;'>Company new name ->\"". $companyName. "\"</p>";							
 							$_SESSION['companyName'] = $companyName;
 						}
 						else{
 							$_SESSION['message1'] = "Company name already exists";
-							$_SESSION['code1'] = "namenochange";			
-
 							$_POST['companyName'] = $_POST['oldCompanyName'];
 						}
 					}else $_SESSION['message1'] = "";
@@ -120,14 +110,10 @@ if (isset($_POST['submitChange'])) {
 						if($num_rows > 0){
 							$result2 = mysqli_query($db,"UPDATE company SET PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
 							$_SESSION['message2'] = "<p style='color: green;'>Company subscription plan updated.</p>";
-							$_SESSION['code2'] = "changeplan";
 							$_SESSION['planID'] = $planID;
-							
 						}
 						else{
 							$_SESSION['message2'] = "Subscription plan does not exists";
-							$_SESSION['code2'] = "nochange";
-
 						}
 					}else $_SESSION['message2'] = "";
 					

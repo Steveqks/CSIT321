@@ -43,7 +43,6 @@ if(isset($_POST['suspendddd']))
 if (isset($_POST['editCAdmin'])) {
 
 	$_SESSION['cAdminID'] = $_POST['cAdminID'];
-	$_SESSION['companyID'] = $_POST['companyID'];
 	$_SESSION['fname'] = $_POST['fname'];
 	$_SESSION['lname'] = $_POST['lname'];
 	$_SESSION['emailAdd'] = $_POST['emailAdd'];
@@ -116,7 +115,7 @@ if (isset($_POST['editCAdmin'])) {
 							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
 							<input type='hidden' name='emailAdd' value='" . $Row['Email'] . "'/>
-							<input type='submit' name='editCompanyAdmin' value='Edit'>
+							<input type='submit' name='editCAdmin' value='Edit'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>

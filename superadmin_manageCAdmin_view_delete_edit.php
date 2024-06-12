@@ -1,60 +1,7 @@
 <?php
 session_start();
 
-include_once('superadmin_manageCAdmin_view_functions.php');
 
-
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_edit_specialisation.php');
-}
-
-if(isset($_POST['deleteCAdmin']))
-{
-	$cAdminID = $_POST['cAdminID'];
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM companyadmin WHERE CAdminID = '$cAdminID' ") or die("Select Error");
-	
-	$_SESSION['message'] = "Company Admin \"" .$_POST['fname']. " ". $_POST['lname'] . "\" deleted successfully";
-	header('Location: superadmin_manageCAdmin_view_delete.php');
-	exit;
-}
-
-if(isset($_POST['suspendddd']))
-{
-	$companyID = $_POST['companyID'];
-	$status = $_POST['Status'];
-	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	
-	if($status == 1){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
-	}
-	else if($status == 0){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
-	}
-	header('Location: superadmin_manageCompany_view.php');
-	exit;
-}
-
-if (isset($_POST['editCAdmin'])) {
-	
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
-							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='hidden' name='emailAdd' value='" . $Row['Email'] . "'/>
-	$_SESSION['cAdminID'] = $_POST['cAdminID'];
-	$_SESSION['companyID'] = $_POST['companyID'];
-	$_SESSION['fname'] = $_POST['fname'];
-	$_SESSION['lname'] = $_POST['lname'];
-	$_SESSION['emailAdd'] = $_POST['emailAdd'];
-	$_SESSION['message'] = '';
-	header('Location: superadmin_manageCompany_view-edit.php');
-}
 
 ?>
 <!DOCTYPE html>
@@ -88,61 +35,92 @@ if (isset($_POST['editCAdmin'])) {
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-  
-			<?php     
-
-				$view = new userAccount();
-						$qres = $view->viewCAdmin();
-						
-					if($qres){
-						$accountsTable = "<table border = 1 class='center'>";
-						$accountsTable .= "	<tr>
-												<th>Company Admin ID</th>
-												<th>Company ID</th>
-												<th>First Name</th>
-												<th>Last Name</th>
-												<th>Email</th>
-												<th>Status</th>
-												</tr>\n";
-						$accountsTable .= "<br/>";
-						}
-					while ($Row = $qres->fetch_assoc()) {
-						$accountsTable.= "<tr>\n"
-						."<td>" . $Row['CAdminID'] . "</td>" 
-						."<td>" . $Row['CompanyID'] . "</td>" 
-						."<td>" . $Row['FirstName'] . "</td>" 
-						."<td>" . $Row['LastName'] . "</td>"
-						."<td>" . $Row['Email'] . "</td>"
-						."<td>" . $Row['Status'] . "</td>";
-						
-						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
-							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='hidden' name='emailAdd' value='" . $Row['Email'] . "'/>
-							<input type='submit' name='editCompanyAdmin' value='Edit'>
-							</form></td>";
-						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='status' value='" . $Row['Status'] . "'/>
-							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
-							</form></td>";
-						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='submit' name='deleteCAdmin' value='Delete'>
-							</form></td>";
-						$accountsTable.= "</tr>";
-					}
-					$accountsTable.= "</table>";
-					echo  $accountsTable;
+            <!-- Add more content as needed -->
+			<?php   
+				echo "Edit Company Admin:<br>";
+				$form = "<form action'' method='POST'>
+						<br>
+						<table >
+						<tr>
+							<td style='border: 2px solid black; border-collapse: collapse;'>
+						FROM 
+						<br>
+						company id: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
+						first name: <input type='text' name='oldfname' value=" . $_SESSION['fname'] . " readonly> <br>
+						last name: <input type='text' name='oldlname' value=" . $_SESSION['lname'] . " readonly> <br>
+						email address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
+						<br>
+							</td>
+							<td style='border: 2px solid black; border-collapse: collapse;'> 
+						TO
+						<br>
+						company id: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
+						first name: <input type='text' name='newfname' value=" . $_SESSION['fname'] . "><br>
+						last name: <input type='text' name='newlname' value=" . $_SESSION['lname'] . "><br>
+						email address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
+						<input type='submit' name='submitChanges' value='Update'>
+						</form>
+							</td>
+						</tr>
+						</table>
+							";
+				echo $form;
+				
+				echo @$_SESSION['message1'];
+				echo @$_SESSION['message2'];
+				echo @$_SESSION['message3'];
+				
+				
+				
+				if(isset($_POST['submitChanges'])){
+					$newfname = $_POST['newfname'];			
+					$newlname = $_POST['newlname'];
+					$cAdminID = $_POST['cAdminID'];
+					$newemailAdd = $_POST['newemailAdd'];
 					
-					if(@$_SESSION['message'])
-						echo $_SESSION['message'];
+					if ($_POST['oldemailAdd'] != $_POST['newemailAdd']){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-
+						//check if email exists.
+						$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE Email = '$newemailAdd'") or die("Select Error");
+			
+						$num_rows=mysqli_num_rows($result);
+						// dont exists
+						if($num_rows == 0){
+							$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newemailAdd' WHERE CAdminID = '$cAdminID'") or die("update Error");
+							$_SESSION['message1'] = "Email address changed";
+							$_SESSION['emailAdd'] = $newemailAdd;
+						}
+						// exists
+						else{
+							$_SESSION['message1'] = "Email address already exists";
+							$_SESSION['code1'] = "namenochange";			
+						}
+					}
+					else $_SESSION['message1'] = "";
+					
+					// if first name changed
+					if(@$_POST['oldfname'] != @$newfname){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+						$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newfname' WHERE CAdminID = '$cAdminID'") or die("update Error");
+						$_SESSION['message2'] = "<p style='color: green;'>First Name updated.</p>";
+						$_SESSION['fname'] = $newfname;
+					}
+					else $_SESSION['message2'] = "";
+					
+					// if last name changed
+					if(@$_POST['oldlname'] != @$newlname){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+						$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newlname' WHERE CAdminID = '$cAdminID'") or die("update Error");
+						$_SESSION['message3'] = "<p style='color: green;'>Last Name updated.</p>";
+						$_SESSION['lname'] = $newlname;
+					}
+					else $_SESSION['message3'] = "";
+					
+					
+					header('Location: superadmin_manageCAdmin_view_delete_edit.php');
+					exit;
+				}
 			?>
         </div>
     </div>
