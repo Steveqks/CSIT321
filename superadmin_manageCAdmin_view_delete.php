@@ -21,22 +21,22 @@ if(isset($_POST['deleteCAdmin']))
 	exit;
 }
 
-if(isset($_POST['suspendddd']))
+if(isset($_POST['activateSuspend']))
 {
-	$companyID = $_POST['companyID'];
-	$status = $_POST['Status'];
+	$cAdminID = $_POST['cAdminID'];
+	$status = $_POST['status'];
 	
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 	
 	if($status == 1){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
+		$result = mysqli_query($db,	"UPDATE companyadmin SET Status = 0 WHERE CAdminID = '$cAdminID'") or die("Select Error");
+		$_SESSION['message'] = "Company Admin \"" .$cAdminID. "\" status set to 0.";
 	}
 	else if($status == 0){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
+		$result = mysqli_query($db,	"UPDATE companyadmin SET Status = 1 WHERE CAdminID = '$cAdminID'") or die("Select Error");
+		$_SESSION['message'] = "Company Admin \"" .$cAdminID. "\" status set to 1.";
 	}
-	header('Location: superadmin_manageCompany_view.php');
+	header('Location: superadmin_manageCAdmin_view_delete.php');
 	exit;
 }
 
