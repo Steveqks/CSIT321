@@ -34,15 +34,14 @@ session_start();
         <div style="width: 80%; padding: 10px;">
 
             <!-- Add more content as needed -->
-			&lt;&lt;homepage&gt;&gt;
+			<h2>Company Admin Homepage</h2>
 			<br>
 			1.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
 			2.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete Specialisation</a>
 			<br>
-			
-			3...
+			3. 
 			<br>
 			
 			4...
