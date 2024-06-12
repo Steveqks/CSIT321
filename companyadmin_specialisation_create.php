@@ -44,12 +44,32 @@ session_start();
 							
 					if(isset($_POST['submit'])){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 						$specialisation = $_POST['specialisation'];
 
-						$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName) VALUES (NULL, '$specialisation')") or die("Select Error");
-						
-						echo $specialisation . " created";
+						//check if specialisation exists
+						if(isSpecialisationExists($specialisation, $db)){
+							echo "<p style='color: red;'> Specialisation \"" . $specialisation . "\" already exists.</p>";
+						}
+						// don't exists create new
+						else{
+							$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName) VALUES (NULL, '$specialisation')") or die("Select Error");
+							echo "<p style='color: green;'> Specialisation \"" . $specialisation . "\" created.</p>";
+						}
+					}
+					
+					function isSpecialisationExists(string $specialisation, mysqli $db):bool{
+						$sql = "SELECT * FROM specialisation WHERE SpecialisationName = '$specialisation'";
+						$qres = mysqli_query($db, $sql); 
+						$num_rows=mysqli_num_rows($qres);
+
+						// exists
+						if($num_rows > 0){
+							return true; 
+						}
+						// dont exists
+						else{
+							return false; 
+						}
 					}
 				?>
         </div>
