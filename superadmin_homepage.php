@@ -46,7 +46,7 @@ session_start();
 			3. <a href="superadmin_manageCompany_view.php">Edit/Delete/View Company </a>
 			<br>
 			
-			4...
+			4. <a href="superadmin_manageCAdmin_create.php">Create Company Admin</a>
 			
         </div>
     </div>
