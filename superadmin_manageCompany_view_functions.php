@@ -1,18 +1,4 @@
 <?php    
-class viewSpecialisationController{
-	public function viewSpecialisation():bool|mysqli_result
-	{
-		$viewacc = new userAccount();
-		$qres = $viewacc->viewSpecialisation();
-		
-		if($qres === false){
-			return false; 
-		}
-		else{
-			return $qres; 
-		}
-	}
-}
 
 class userAccount{
 	public $conn;
@@ -26,16 +12,7 @@ class userAccount{
 		mysqli_select_db($this->conn,"TMS");
 	}
 	
-	public function viewSpecialisation():bool|mysqli_result{
-        $Sql = "SELECT * FROM specialisation";
-        $qres = mysqli_query($this->conn, $Sql); 
-        if($qres === false){
-            return false; 
-        }
-        else{
-            return $qres; 
-        }
-    }
+
 	
     public function approveAccount(string $fname, string $lname, string $email, string $password, string $cname, string $PlanID):int{
 		//1.1	check company exist
@@ -133,10 +110,7 @@ class userAccount{
 		return $row['CompanyID'];
 	}
 	
-	public function deleteSpecialisation(string $specialisationID){
-		$sql = "DELETE FROM specialisation WHERE SpecialisationID = '$specialisationID'";
-		$qres = mysqli_query($this->conn, $sql); 
-	}
+
 	
 	public function viewCompany():bool|mysqli_result{
 	    $Sql = "SELECT * FROM company";

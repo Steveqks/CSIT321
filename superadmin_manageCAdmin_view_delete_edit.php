@@ -41,14 +41,19 @@ if(isset($_POST['suspendddd']))
 }
 
 if (isset($_POST['editCAdmin'])) {
-
+	
+							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
+							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
+							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
+							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
+							<input type='hidden' name='emailAdd' value='" . $Row['Email'] . "'/>
 	$_SESSION['cAdminID'] = $_POST['cAdminID'];
 	$_SESSION['companyID'] = $_POST['companyID'];
 	$_SESSION['fname'] = $_POST['fname'];
 	$_SESSION['lname'] = $_POST['lname'];
 	$_SESSION['emailAdd'] = $_POST['emailAdd'];
 	$_SESSION['message'] = '';
-	header('Location: superadmin_manageCAdmin_view_delete_edit.php');
+	header('Location: superadmin_manageCompany_view-edit.php');
 }
 
 ?>
