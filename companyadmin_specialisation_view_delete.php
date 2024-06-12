@@ -52,9 +52,13 @@ if (isset($_POST['editSpecialisation'])) {
         <div style="width: 80%; padding: 10px;">
             <!-- Add more content as needed -->
 				<?php   
+					$temptID = '3';
+					$companyID = $temptID;
+					//$companyID = $_SESSION[$companyID];
+				
 
-					$view = new viewSpecialisationController();
-					$qres = $view->viewSpecialisation();
+					$view = new userAccount();
+					$qres = $view->viewSpecialisation($companyID);
 					
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
@@ -86,7 +90,7 @@ if (isset($_POST['editSpecialisation'])) {
 					$accountsTable.= "</table>";
 					echo  $accountsTable;
 
-					if($_SESSION['message']) echo $_SESSION['message'];
+					if(@$_SESSION['message']) echo $_SESSION['message'];
 
 				?>
 	

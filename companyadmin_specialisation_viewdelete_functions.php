@@ -1,18 +1,4 @@
 <?php    
-class viewSpecialisationController{
-	public function viewSpecialisation():bool|mysqli_result
-	{
-		$viewacc = new userAccount();
-		$qres = $viewacc->viewSpecialisation();
-		
-		if($qres === false){
-			return false; 
-		}
-		else{
-			return $qres; 
-		}
-	}
-}
 
 class userAccount{
 	public $conn;
@@ -26,8 +12,8 @@ class userAccount{
 		mysqli_select_db($this->conn,"TMS");
 	}
 	
-	public function viewSpecialisation():bool|mysqli_result{
-        $Sql = "SELECT * FROM specialisation";
+	public function viewSpecialisation(string $companyID):bool|mysqli_result{
+        $Sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID'";
         $qres = mysqli_query($this->conn, $Sql); 
         if($qres === false){
             return false; 

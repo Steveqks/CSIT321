@@ -40,25 +40,30 @@ session_start();
 			</form>
 			
 				<?php   
-		
+					
+					$temptID = '3';
+					$companyID = $temptID;
+					//$companyID = $_SESSION[$companyID];
 							
 					if(isset($_POST['submit'])){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$specialisation = $_POST['specialisation'];
 
 						//check if specialisation exists
-						if(isSpecialisationExists($specialisation, $db)){
+						if(isSpecialisationExists($specialisation, $companyID , $db)){
 							echo "<p style='color: red;'> Specialisation \"" . $specialisation . "\" already exists.</p>";
 						}
 						// don't exists create new
 						else{
-							$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName) VALUES (NULL, '$specialisation')") or die("Select Error");
+							$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, companyID) VALUES (NULL, '$specialisation', '$companyID')") or die("Select Error");
 							echo "<p style='color: green;'> Specialisation \"" . $specialisation . "\" created.</p>";
 						}
 					}
 					
-					function isSpecialisationExists(string $specialisation, mysqli $db):bool{
-						$sql = "SELECT * FROM specialisation WHERE SpecialisationName = '$specialisation'";
+					echo $companyID;
+					
+					function isSpecialisationExists(string $specialisation, string $companyID, mysqli $db):bool{
+						$sql = "SELECT * FROM specialisation WHERE SpecialisationName = '$specialisation' AND CompanyID = '$companyID'";
 						$qres = mysqli_query($db, $sql); 
 						$num_rows=mysqli_num_rows($qres);
 
