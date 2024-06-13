@@ -39,12 +39,13 @@ session_start();
 			1.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
-			2.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete Specialisation</a>
-			<br>
-			3. 
+			2.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
 			<br>
 			
-			4...
+			3. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
+			<br>
+			
+			4. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
 			
 			
         </div>
