@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+$_SESSION['message1'] = "";
+$_SESSION['message2'] = "";
+$_SESSION['message3'] = "";
+$_SESSION['message4'] = "";
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,8 +45,6 @@ session_start();
 			<br>
 			1. <a href="superadmin_ManageAccount.php">Manage Account</a>
 			<br>
-			
-			1. <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
 			<br>
 			
 			2. <a href="superadmin_manageCompany_create.php">Create Company </a>
@@ -49,10 +53,14 @@ session_start();
 			3. <a href="superadmin_manageCompany_view.php">Edit/Delete/View Company </a>
 			<br>
 			
-			4. <a href="superadmin_manageCAdmin_create.php">Create Company Admin</a>
+			4. <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
+			<br>
 			<br>
 			
-			5. <a href="superadmin_manageCAdmin_view_delete.php">Edit/Delete/View/Activate/Suspend Company Admin</a>
+			5. <a href="superadmin_manageCAdmin_create.php">Create Company Admin</a>
+			<br>
+			
+			6. <a href="superadmin_manageCAdmin_view_delete.php">Edit/Delete/View/Activate/Suspend Company Admin</a>
 			<br>
         </div>
     </div>
