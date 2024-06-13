@@ -21,14 +21,15 @@ if(isset($_POST['deleteTeam']))
 	exit;
 }
 
-if (isset($_POST['editCAdmin'])) {
+if (isset($_POST['editTeam'])) {
 
-	$_SESSION['cAdminID'] = $_POST['cAdminID'];
-	$_SESSION['fname'] = $_POST['fname'];
-	$_SESSION['lname'] = $_POST['lname'];
-	$_SESSION['emailAdd'] = $_POST['emailAdd'];
-	$_SESSION['message'] = '';
-	header('Location: superadmin_manageCAdmin_view_delete_edit.php');
+	$_SESSION['teamID'] = $_POST['teamID'];
+	$_SESSION['teamName'] = $_POST['teamName'];
+	$_SESSION['managerID'] = $_POST['managerID'];
+	$_SESSION['sdate'] = $_POST['sdate'];
+	$_SESSION['edate'] = $_POST['edate'];
+
+	header('Location: companyadmin_teamManagement_view_delete_edit.php');
 }
 
 ?>
@@ -91,17 +92,16 @@ if (isset($_POST['editCAdmin'])) {
 					."<td>" . $Row['EndDate'] . "</td>";
 					
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='cAdminID' value='" . $Row['TeamID'] . "'/>
-						<input type='hidden' name='companyID' value='" . $Row['TeamName'] . "'/>
-						<input type='hidden' name='fname' value='" . $Row['ManagerID'] . "'/>
-						<input type='hidden' name='lname' value='" . $Row['StartDate'] . "'/>
-						<input type='hidden' name='emailAdd' value='" . $Row['EndDate'] . "'/>
-						<input type='submit' name='editCAdmin' value='Edit'>
+						<input type='hidden' name='teamID' value='" . $Row['TeamID'] . "'/>
+						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
+						<input type='hidden' name='managerID' value='" . $Row['ManagerID'] . "'/>
+						<input type='hidden' name='sdate' value='" . $Row['StartDate'] . "'/>
+						<input type='hidden' name='edate' value='" . $Row['EndDate'] . "'/>
+						<input type='submit' name='editTeam' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='teamID' value='" . $Row['TeamID'] . "'/>
-						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
 						<input type='submit' name='deleteTeam' value='Delete'>
 						</form></td>";
 					$accountsTable.= "</tr>";

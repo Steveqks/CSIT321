@@ -37,6 +37,9 @@ session_start();
 		
             <!-- Add more content as needed -->
 			<?php   
+				$temptID = '21';
+				$companyID = $temptID;
+			
 				echo "Edit Company Admin:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
@@ -45,19 +48,21 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br>
-						company id: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
-						first name: <input type='text' name='oldfname' value=" . $_SESSION['fname'] . " readonly> <br>
-						last name: <input type='text' name='oldlname' value=" . $_SESSION['lname'] . " readonly> <br>
-						email address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
+						Team id: <input type='text' value=" . $_SESSION['teamID'] . " readonly><br>
+						Team Name: <input type='text' name='oldTeamName' value=" . $_SESSION['teamName'] . " readonly> <br>
+						Manager: <input type='text' name='oldManagerID' value=" . $_SESSION['managerID'] . " readonly> <br>
+						Start Date: <input type='text' name='oldSDate' value=" . $_SESSION['sdate'] . " readonly> <br>
+						End Date: <input type='text' name='oldEDate' value=" . $_SESSION['edate'] . " readonly><br>
 						<br>
 							</td>
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
 						<br>
-						company id: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
-						first name: <input type='text' name='newfname' value=" . $_SESSION['fname'] . "><br>
-						last name: <input type='text' name='newlname' value=" . $_SESSION['lname'] . "><br>
-						email address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
+						Team id: <input type='text' name='teamID' value=" . $_SESSION['teamID'] . " readonly> <br>
+						Team Name: <input type='text' name='newTeamName' value=" . $_SESSION['teamName'] . "><br>
+						Manager: <input type='text' name='newManagerID' value=" . $_SESSION['managerID'] . "><br>
+						Start Date: <input type='date' name='newSDate' value=" . $_SESSION['sdate'] . "><br>
+						End Date: <input type='date' name='newEDate' value=" . $_SESSION['edate'] . "><br>
 						<input type='submit' name='submitChanges' value='Update'>
 						</form>
 							</td>
@@ -69,56 +74,66 @@ session_start();
 				echo @$_SESSION['message1'];
 				echo @$_SESSION['message2'];
 				echo @$_SESSION['message3'];
-				
-				
+				echo @$_SESSION['message4'];
 				
 				if(isset($_POST['submitChanges'])){
-					$newfname = $_POST['newfname'];			
-					$newlname = $_POST['newlname'];
-					$cAdminID = $_POST['cAdminID'];
-					$newemailAdd = $_POST['newemailAdd'];
+					$teamID = $_POST['teamID'];			
+					$newTeamName = $_POST['newTeamName'];			
+					$newManagerID = $_POST['newManagerID'];			
+					$newSDate = $_POST['newSDate'];
+					$newEDate = $_POST['newEDate'];
 					
-					if ($_POST['oldemailAdd'] != $_POST['newemailAdd']){
+					//check if there are changes in team name
+					if ($_POST['oldTeamName'] != $_POST['newTeamName']){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-						//check if email exists.
-						$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE Email = '$newemailAdd'") or die("Select Error");
+						//check if team name already exists
+						$result = mysqli_query($db,	"SELECT * FROM team WHERE TeamName = '$newTeamName' AND CompanyID = $companyID") or die("Select Error");
 			
 						$num_rows=mysqli_num_rows($result);
 						// dont exists
 						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newemailAdd' WHERE CAdminID = '$cAdminID'") or die("update Error");
-							$_SESSION['message1'] = "Email address changed";
-							$_SESSION['emailAdd'] = $newemailAdd;
+							$result2 = mysqli_query($db,"UPDATE team SET TeamName = '$newTeamName' WHERE TeamID = '$teamID'") or die("update Error");
+							$_SESSION['message1'] = "Team name has been changed";
+							$_SESSION['teamName'] = $newTeamName;
 						}
 						// exists
 						else{
-							$_SESSION['message1'] = "Email address already exists";
-							$_SESSION['code1'] = "namenochange";			
+							$_SESSION['message1'] = "Team name already exists";
 						}
 					}
 					else $_SESSION['message1'] = "";
 					
-					// if first name changed
-					if(@$_POST['oldfname'] != @$newfname){
+					// if there are changes in manager
+					if(@$_POST['oldManagerID'] != $newManagerID){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newfname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message2'] = "<p style='color: green;'>First Name updated.</p>";
-						$_SESSION['fname'] = $newfname;
+						$result2 = mysqli_query($db,"UPDATE team SET ManagerID = '$newManagerID' WHERE TeamID = '$teamID'") or die("update Error");
+						$_SESSION['message2'] = "<p style='color: green;'>Manager has been changed.</p>";
+						$_SESSION['managerID'] = $newManagerID;
 					}
 					else $_SESSION['message2'] = "";
 					
 					// if last name changed
-					if(@$_POST['oldlname'] != @$newlname){
+					if(@$_POST['oldSDate'] != $newSDate){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newlname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Last Name updated.</p>";
-						$_SESSION['lname'] = $newlname;
+						$result2 = mysqli_query($db,"UPDATE team SET StartDate = '$newSDate' WHERE TeamID = '$teamID'") or die("update Error");
+						$_SESSION['message3'] = "<p style='color: green;'>Start Date has been changed.</p>";
+						$_SESSION['sdate'] = $newSDate;
 					}
 					else $_SESSION['message3'] = "";
 					
+					header('Location: companyadmin_teamManagement_view_delete_edit.php');
 					
-					header('Location: superadmin_manageCAdmin_view_delete_edit.php');
+					// if last name changed
+					if(@$_POST['oldEDate'] != $newEDate){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+						$result2 = mysqli_query($db,"UPDATE team SET EndDate = '$newEDate' WHERE TeamID = '$teamID'") or die("update Error");
+						$_SESSION['message4'] = "<p style='color: green;'> End Date has been changed.</p>";
+						$_SESSION['edate'] = $newEDate;
+					}
+					else $_SESSION['message4'] = "";
+					
+					header('Location: companyadmin_teamManagement_view_delete_edit.php');
 					exit;
 				}
 			?>
