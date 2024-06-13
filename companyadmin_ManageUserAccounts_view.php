@@ -3,33 +3,29 @@ session_start();
 
 include_once('superadmin_manageCAdmin_view_functions.php');
 
-
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_edit_specialisation.php');
-}
-
-if(isset($_POST['deleteTeam']))
+if(isset($_POST['deleteUser']))
 {
-	$teamID = $_POST['teamID'];
+	$userID = $_POST['userID'];
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM team WHERE TeamID = '$teamID' ") or die("Select Error");
+	$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
 	
-	$_SESSION['message'] = "Team id\"" .$_POST['teamID']. " ,". $_POST['teamName'] . "\" deleted successfully";
-	header('Location: companyadmin_teamManagement_view_delete.php');
+	$_SESSION['message1'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
+	header('Location: companyadmin_ManageUserAccounts_view.php');
 	exit;
 }
 
-if (isset($_POST['editTeam'])) {
-
-	$_SESSION['teamID'] = $_POST['teamID'];
-	$_SESSION['teamName'] = $_POST['teamName'];
-	$_SESSION['managerID'] = $_POST['managerID'];
-	$_SESSION['sdate'] = $_POST['sdate'];
-	$_SESSION['edate'] = $_POST['edate'];
-
-	header('Location: companyadmin_teamManagement_view_delete_edit.php');
+if (isset($_POST['editAccount'])) 
+{
+	$_SESSION['userID'] = $_POST['userID'];
+	$_SESSION['fname'] = $_POST['fname'];
+	$_SESSION['lname']  = $_POST['lname'];
+	$_SESSION['gender'] = $_POST['gender'];
+	$_SESSION['email'] = $_POST['email'];
+	$_SESSION['specialisation'] = $_POST['specialisation'];
+	$_SESSION['role'] = $_POST['role'];
+	
+	
+	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
 }
 
 ?>
@@ -99,26 +95,28 @@ if (isset($_POST['editTeam'])) {
 					."<td>" . $Row['Status'] . "</td>";
 					
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['FirstName'] . "'/>
-						<input type='hidden' name='teamName' value='" . $Row['LastName'] . "'/>
-						<input type='hidden' name='managerID' value='" . $Row['Gender'] . "'/>
-						<input type='hidden' name='sdate' value='" . $Row['Email'] . "'/>
-						<input type='hidden' name='edate' value='" . $Row['SpecialisationID'] . "'/>
-						<input type='hidden' name='edate' value='" . $Row['Role'] . "'/>
-						<input type='submit' name='editTeam' value='Edit'>
+						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
+						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
+						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
+						<input type='hidden' name='gender' value='" . $Row['Gender'] . "'/>
+						<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
+						<input type='hidden' name='specialisation' value='" . $Row['SpecialisationID'] . "'/>
+						<input type='hidden' name='role' value='" . $Row['Role'] . "'/>
+						<input type='submit' name='editAccount' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['UserID'] . "'/>
-						<input type='submit' name='deleteTeam' value='Delete'>
+						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
+						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
+						<input type='submit' name='deleteUser' value='Delete'>
 						</form></td>";
 					$accountsTable.= "</tr>";
 				}
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message'])
-					echo $_SESSION['message'];
+				if(@$_SESSION['message1'])
+					echo $_SESSION['message1'];
 			?>
         </div>
     </div>

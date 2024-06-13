@@ -33,13 +33,13 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-		
+			<h2>Edit Team</h2>
+
             <!-- Add more content as needed -->
 			<?php   
 				
 				$companyID = $_SESSION['companyID'];;
 			
-				echo "Edit Company Admin:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
 						<table >
