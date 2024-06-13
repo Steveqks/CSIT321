@@ -84,49 +84,43 @@ if (isset($_POST['editCAdmin'])) {
 		
   
 			<?php     
+				$temptID = '21';
+				$companyID = $temptID;
 
-				$view = new userAccount();
-						$qres = $view->viewCAdmin();
-						
-					if($qres){
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				$result = mysqli_query($db,	"SELECT * FROM team WHERE CompanyID = '$companyID'") or die("Select Error");
+				
+					if($result){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>Company Admin ID</th>
-												<th>Company ID</th>
-												<th>First Name</th>
-												<th>Last Name</th>
-												<th>Email</th>
-												<th>Status</th>
+												<th>Team ID ID</th>
+												<th>Team Name</th>
+												<th>Manager ID</th>
+												<th>Start Date</th>
+												<th>End Date</th>
 												</tr>\n";
 						$accountsTable .= "<br/>";
 						}
-					while ($Row = $qres->fetch_assoc()) {
+					while ($Row = $result->fetch_assoc()) {
 						$accountsTable.= "<tr>\n"
-						."<td>" . $Row['CAdminID'] . "</td>" 
-						."<td>" . $Row['CompanyID'] . "</td>" 
-						."<td>" . $Row['FirstName'] . "</td>" 
-						."<td>" . $Row['LastName'] . "</td>"
-						."<td>" . $Row['Email'] . "</td>"
-						."<td>" . $Row['Status'] . "</td>";
+						."<td>" . $Row['TeamID'] . "</td>" 
+						."<td>" . $Row['TeamName'] . "</td>" 
+						."<td>" . $Row['ManagerID'] . "</td>" 
+						."<td>" . $Row['StartDate'] . "</td>"
+						."<td>" . $Row['EndDate'] . "</td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
-							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='hidden' name='emailAdd' value='" . $Row['Email'] . "'/>
+							<input type='hidden' name='cAdminID' value='" . $Row['TeamID'] . "'/>
+							<input type='hidden' name='companyID' value='" . $Row['TeamName'] . "'/>
+							<input type='hidden' name='fname' value='" . $Row['ManagerID'] . "'/>
+							<input type='hidden' name='lname' value='" . $Row['StartDate'] . "'/>
+							<input type='hidden' name='emailAdd' value='" . $Row['EndDate'] . "'/>
 							<input type='submit' name='editCAdmin' value='Edit'>
 							</form></td>";
+
 						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='status' value='" . $Row['Status'] . "'/>
-							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
-							</form></td>";
-						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
-							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='submit' name='deleteCAdmin' value='Delete'>
+							<input type='hidden' name='cAdminID' value='" . $Row['TeamID'] . "'/>
+							<input type='submit' name='deleteTeam' value='Delete'>
 							</form></td>";
 						$accountsTable.= "</tr>";
 					}
