@@ -35,17 +35,21 @@ session_start();
 
             <!-- Add more content as needed -->
 			<h2>Company Admin Homepage</h2>
+			
 			<br>
-			1.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
+			1.  <a href="companyadmin_ManageAccount.php">Manage Account</a>
 			<br>
 			
-			2.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
+			2.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
-			3. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
+			3.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
 			<br>
 			
-			4. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
+			4. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
+			<br>
+			
+			5. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
 			
 			
         </div>

@@ -38,9 +38,9 @@ header('Location: superadmin_manageCompany_view-edit.php');
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <!-- Add more content as needed -->
+			<h2>Edit Company</h2>
+
 			<?php   
-				echo "Edit Company:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
 						<table>

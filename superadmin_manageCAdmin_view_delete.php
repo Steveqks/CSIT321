@@ -82,7 +82,8 @@ if (isset($_POST['editCAdmin'])) {
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-  
+  			<h2>View Company Admins</h2>
+
 			<?php     
 
 				$view = new userAccount();

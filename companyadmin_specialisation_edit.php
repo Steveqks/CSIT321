@@ -38,7 +38,8 @@ if (isset($_POST['submitSpecialisation'])) {
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <!-- Add more content as needed -->
+			<h2>Edit Specialisation</h2>
+
 			<?php   
 				echo "Change specialisation:<br>";
 				$form = "<form action'' method='POST'>

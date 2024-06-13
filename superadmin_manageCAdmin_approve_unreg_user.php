@@ -33,8 +33,8 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 
-            <!-- Add more content as needed -->
-			
+			<h2>Approve Users</h2>
+
 				<?php   include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 
 						$view = new viewAccountController();

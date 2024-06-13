@@ -50,7 +50,8 @@ if (isset($_POST['editSpecialisation'])) {
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-            <!-- Add more content as needed -->
+			<h2>View Specialisation</h2>
+
 				<?php   
 					$temptID = '3';
 					$companyID = $temptID;

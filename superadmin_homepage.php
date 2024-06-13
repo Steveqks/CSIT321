@@ -37,6 +37,9 @@ session_start();
 			
 			<h2>Super Admin Homepage</h2>
 			<br>
+			1. <a href="superadmin_ManageAccount.php">Manage Account</a>
+			<br>
+			
 			1. <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
 			<br>
 			

@@ -46,7 +46,6 @@ if (isset($_POST['submitSpecialisation'])) {
 			</form>
 			
 			<?php   
-
 				//create company
 				if(isset($_POST['submit'])){
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

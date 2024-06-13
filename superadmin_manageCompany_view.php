@@ -79,7 +79,9 @@ if (isset($_POST['editCompany'])) {
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-		
+						
+			<h2>View Companies</h2>
+
   
 			<?php     
 

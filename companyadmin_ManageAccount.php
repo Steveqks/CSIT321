@@ -2,6 +2,7 @@
 session_start();
 
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,12 +35,11 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <!-- Add more content as needed -->
+			<h2>Manage Account</h2>
 			<?php   
-				$temptID = '21';
-				$companyID = $temptID;
+				$temptID = '5';
+				$cadminID = $temptID;
 			
-				echo "Edit Company Admin:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
 						<table >
@@ -47,21 +47,19 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br>
-						Team id: <input type='text' value=" . $_SESSION['teamID'] . " readonly><br>
-						Team Name: <input type='text' name='oldTeamName' value=" . $_SESSION['teamName'] . " readonly> <br>
-						Manager: <input type='text' name='oldManagerID' value=" . $_SESSION['managerID'] . " readonly> <br>
-						Start Date: <input type='text' name='oldSDate' value=" . $_SESSION['sdate'] . " readonly> <br>
-						End Date: <input type='text' name='oldEDate' value=" . $_SESSION['edate'] . " readonly><br>
-						<br>
-							</td>
+						
+						First Name: <input type='text' value=" . $_SESSION['teamID'] . " readonly><br>
+						Last Name: <input type='text' name='oldTeamName' value=" . $_SESSION['teamName'] . " readonly> <br>
+						Email: <input type='text' name='oldManagerID' value=" . $_SESSION['managerID'] . " readonly> <br>
+						<br></td>
+							
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
 						<br>
-						Team id: <input type='text' name='teamID' value=" . $_SESSION['teamID'] . " readonly> <br>
-						Team Name: <input type='text' name='newTeamName' value=" . $_SESSION['teamName'] . "><br>
-						Manager: <input type='text' name='newManagerID' value=" . $_SESSION['managerID'] . "><br>
-						Start Date: <input type='date' name='newSDate' value=" . $_SESSION['sdate'] . "><br>
-						End Date: <input type='date' name='newEDate' value=" . $_SESSION['edate'] . "><br>
+						First Name: <input type='text' name='teamID' value=" . $_SESSION['teamID'] . " readonly> <br>
+						Last Name: <input type='text' name='newTeamName' value=" . $_SESSION['teamName'] . "><br>
+						Email: <input type='text' name='newManagerID' value=" . $_SESSION['managerID'] . "><br>
+						
 						<input type='submit' name='submitChanges' value='Update'>
 						</form>
 							</td>

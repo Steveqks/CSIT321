@@ -63,7 +63,8 @@ if (isset($_POST['editTeam'])) {
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-		
+					<h2>View Teams</h2>
+
   
 			<?php     
 				$temptID = '21';

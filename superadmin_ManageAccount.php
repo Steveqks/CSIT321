@@ -2,6 +2,7 @@
 session_start();
 
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,12 +35,11 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <!-- Add more content as needed -->
+			<h2>Manage Account</h2>
 			<?php   
 				$temptID = '21';
 				$companyID = $temptID;
 			
-				echo "Edit Company Admin:<br>";
 				$form = "<form action'' method='POST'>
 						<br>
 						<table >
