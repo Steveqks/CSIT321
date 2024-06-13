@@ -93,7 +93,7 @@ if (isset($_POST['editCompany'])) {
 						$accountsTable .= "	<tr>
 												<th>Company ID</th>
 												<th>Company Name</th>
-												<th>Subcription Plan</th>
+												<th>Subscription Plan</th>
 												<th>Status</th>
 												</tr>\n";
 						$accountsTable .= "<br/>";
