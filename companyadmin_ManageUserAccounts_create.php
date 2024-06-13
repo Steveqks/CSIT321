@@ -86,7 +86,7 @@ if (isset($_POST['submitSpecialisation'])) {
 					$status = $_POST['status'];
 					
 					//check if email exists in existinguser
-					if(isUserEmailExists($companyID, $db)){
+					if(isUserEmailExists($emailadd, $db)){
 						echo "<p style='color: red;'>Email Address\"".$emailadd."\" already in use.</p>";
 					}
 					//doesn't exist, add to db
