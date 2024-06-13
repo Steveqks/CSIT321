@@ -40,6 +40,12 @@ session_start();
 			1.  <a href="companyadmin_ManageAccount.php">Manage Account</a>
 			<br>
 			
+			2.  <a href="companyadmin_ManageUserAccounts_create.php">Create User Accounts</a>
+			<br>
+			
+			3.  <a href="companyadmin_ManageUserAccounts_view.php">View/Edit/Delete User Accounts</a>
+			<br>
+			
 			2.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
