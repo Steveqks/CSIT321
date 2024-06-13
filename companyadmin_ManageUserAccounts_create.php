@@ -67,8 +67,7 @@ if (isset($_POST['submitSpecialisation'])) {
 			
 			<?php   
 			
-				$temptID = '21';
-				$companyID = $temptID;
+				$companyID = $_SESSION['companyID'];
 			
 				//create user
 				if(isset($_POST['submit'])){

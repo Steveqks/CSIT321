@@ -53,8 +53,7 @@ if (isset($_POST['editSpecialisation'])) {
 			<h2>View Specialisation</h2>
 
 				<?php   
-					$temptID = '3';
-					$companyID = $temptID;
+					$companyID = $_SESSION['companyID'];;
 					//$companyID = $_SESSION[$companyID];
 				
 

@@ -67,8 +67,8 @@ if (isset($_POST['editTeam'])) {
 
   
 			<?php     
-				$temptID = '21';
-				$companyID = $temptID;
+				
+				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"SELECT * FROM team WHERE CompanyID = '$companyID'") or die("Select Error");

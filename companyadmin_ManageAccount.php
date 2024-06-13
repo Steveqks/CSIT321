@@ -37,8 +37,7 @@ session_start();
 		
 			<h2>Manage Account</h2>
 			<?php   
-				$temptID = '5';
-				$cadminID = $temptID;
+				$cadminID = $_SESSION['cadminID'];
 				
 				//get Company Admin data
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+$_SESSION['companyID'] = "21";
+$_SESSION['cadminID'] = "6";
+
+$_SESSION['message1'] = "";
+$_SESSION['message2'] = "";
+$_SESSION['message3'] = "";
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,23 +46,26 @@ session_start();
 			<br>
 			1.  <a href="companyadmin_ManageAccount.php">Manage Account</a>
 			<br>
+			<br>
 			
 			2.  <a href="companyadmin_ManageUserAccounts_create.php">Create User Accounts</a>
 			<br>
 			
 			3.  <a href="companyadmin_ManageUserAccounts_view.php">View/Edit/Delete User Accounts</a>
 			<br>
-			
-			2.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
-			3.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
+			4.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
 			<br>
 			
-			4. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
+			5.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
+			<br>
 			<br>
 			
-			5. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
+			6. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
+			<br>
+			
+			7. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
 			
 			
         </div>

@@ -36,8 +36,8 @@ session_start();
 		
             <!-- Add more content as needed -->
 			<?php   
-				$temptID = '21';
-				$companyID = $temptID;
+				
+				$companyID = $_SESSION['companyID'];;
 			
 				echo "Edit Company Admin:<br>";
 				$form = "<form action'' method='POST'>

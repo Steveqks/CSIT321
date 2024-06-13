@@ -41,9 +41,7 @@ session_start();
 			
 				<?php   
 					
-					$temptID = '3';
-					$companyID = $temptID;
-					//$companyID = $_SESSION[$companyID];
+					$companyID = $_SESSION['companyID'];
 							
 					if(isset($_POST['submit'])){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -59,9 +57,7 @@ session_start();
 							echo "<p style='color: green;'> Specialisation \"" . $specialisation . "\" created.</p>";
 						}
 					}
-					
-					echo $companyID;
-					
+										
 					function isSpecialisationExists(string $specialisation, string $companyID, mysqli $db):bool{
 						$sql = "SELECT * FROM specialisation WHERE SpecialisationName = '$specialisation' AND CompanyID = '$companyID'";
 						$qres = mysqli_query($db, $sql); 

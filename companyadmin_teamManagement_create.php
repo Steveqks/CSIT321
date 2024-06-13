@@ -47,9 +47,9 @@ session_start();
 					<?php
 					
 					//tempt
-					$temptCompanyID = '21';
 					
-					$companyID = $temptCompanyID;
+					$companyID = $_SESSION['companyID'];
+					
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$sql = "SELECT * FROM existinguser WHERE Role = 'Manager' AND CompanyID = '$companyID' ";
 						$qres = mysqli_query($db, $sql); 
