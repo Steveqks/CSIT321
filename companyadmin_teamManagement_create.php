@@ -39,9 +39,9 @@ session_start();
 					
 					<h4>Team Name: <input name = "tname" type = "text" placeholder = "first name" required >
 					</h4>
-					<h4>Start Date: <input type='date' name = "sdate" type = "text" placeholder = "last name" required>
+					<h4>Start Date: <input type='date' name = "sdate" type = "text" required>
 					</h4>
-					<h4>End Date: <input type='date' name = "edate" type = "text" placeholder = "email address" required>
+					<h4>End Date: <input type='date' name = "edate" type = "text" required>
 					</h4>
 					<h4>
 					<?php
@@ -88,7 +88,7 @@ session_start();
 					else
 					{
 						$result = mysqli_query($db,"INSERT INTO team (TeamID, CompanyID, TeamName, ManagerID, StartDate, EndDate) 
-													VALUES (NULL, '$companyID','$tname', '$managerID', '$sdate', 'edate')") 
+													VALUES (NULL, '$companyID','$tname', '$managerID', '$sdate', '$edate')") 
 													or die("Select Error");
 						
 						echo "<p style='color: green;'>Team \"". $tname . "\" Created.</p>";
