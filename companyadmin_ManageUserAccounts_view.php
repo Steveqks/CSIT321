@@ -28,6 +28,25 @@ if (isset($_POST['editAccount']))
 	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
 }
 
+if (isset($_POST['toggleStatus'])) 
+{
+	$userID = $_POST['userID'];
+	
+	if ($_POST['status'] == 0)
+	{
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
+	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
+	}
+	else
+	{
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
+	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
+	}
+	
+	header('Location: companyadmin_ManageUserAccounts_view.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +82,7 @@ if (isset($_POST['editAccount']))
 
   
 			<?php     
-				
+				echo @$_SESSION['message0'];
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -103,6 +122,12 @@ if (isset($_POST['editAccount']))
 						<input type='hidden' name='specialisation' value='" . $Row['SpecialisationID'] . "'/>
 						<input type='hidden' name='role' value='" . $Row['Role'] . "'/>
 						<input type='submit' name='editAccount' value='Edit'>
+						</form></td>";
+
+					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
+						<input type='hidden' name='status' value='" . $Row['Status'] . "'/>
+						<input type='submit' name='toggleStatus' value='Activate/Suspend'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>

@@ -4,6 +4,7 @@ session_start();
 $_SESSION['companyID'] = "21";
 $_SESSION['cadminID'] = "6";
 
+$_SESSION['message0'] = "";
 $_SESSION['message1'] = "";
 $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";
