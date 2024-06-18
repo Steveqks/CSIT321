@@ -8,6 +8,7 @@ if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
 	header('Location: companyadmin_edit_specialisation.php');
+	exit;
 }
 
 if(isset($_POST['deleteCompany']))
@@ -46,6 +47,7 @@ if (isset($_POST['editCompany'])) {
 	$_SESSION['planID'] = $_POST['planID'];
 	$_SESSION['message'] = '';
 	header('Location: superadmin_manageCompany_view-edit.php');
+	exit;
 }
 
 ?>
@@ -129,7 +131,9 @@ if (isset($_POST['editCompany'])) {
 					echo  $accountsTable;
 					
 					if($_SESSION['message'])
+					{
 						echo $_SESSION['message'];
+					}
 
 
 			?>

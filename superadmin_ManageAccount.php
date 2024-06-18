@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-
-
+$_SESSION['message1'] = "";
+$_SESSION['message2'] = "";
+$_SESSION['message3'] = "";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +38,7 @@ session_start();
 		
 			<h2>Manage Account</h2>
 			<?php   
-				$temptID = '1';
-				$SAdminID = $temptID;
+				$SAdminID = $_SESSION['SAdminID'];
 				
 				//get Super Admin data
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -109,7 +109,7 @@ session_start();
 					else $_SESSION['message3'] = "";
 					
 					header('Location: superadmin_ManageAccount.php');
-					
+					exit;
 				}
 			?>
         </div>

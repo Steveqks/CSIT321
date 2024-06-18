@@ -6,6 +6,9 @@ $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";
 $_SESSION['message4'] = "";
 
+$temptID = '1';
+$_SESSION['SAdminID'] = $temptID;
+
 
 ?>
 <!DOCTYPE html>

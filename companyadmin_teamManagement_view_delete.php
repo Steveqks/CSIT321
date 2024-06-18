@@ -7,7 +7,9 @@ include_once('superadmin_manageCAdmin_view_functions.php');
 if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
+	
 	header('Location: companyadmin_edit_specialisation.php');
+	exit;
 }
 
 if(isset($_POST['deleteTeam']))
@@ -17,6 +19,7 @@ if(isset($_POST['deleteTeam']))
 	$result = mysqli_query($db,	"DELETE FROM team WHERE TeamID = '$teamID' ") or die("Select Error");
 	
 	$_SESSION['message'] = "Team id\"" .$_POST['teamID']. " ,". $_POST['teamName'] . "\" deleted successfully";
+	
 	header('Location: companyadmin_teamManagement_view_delete.php');
 	exit;
 }
@@ -30,6 +33,7 @@ if (isset($_POST['editTeam'])) {
 	$_SESSION['edate'] = $_POST['edate'];
 
 	header('Location: companyadmin_teamManagement_view_delete_edit.php');
+	exit;
 }
 
 ?>

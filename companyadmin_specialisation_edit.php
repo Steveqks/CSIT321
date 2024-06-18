@@ -5,6 +5,7 @@ if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
 	header('Location: companyadmin_specialisation_edit.php');
+	exit;
 }
 ?>
 <!DOCTYPE html>

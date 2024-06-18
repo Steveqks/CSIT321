@@ -1,11 +1,6 @@
 <?php
 session_start();
 
-if (isset($_POST['submitChange'])) {
-	
-header('Location: superadmin_manageCompany_view-edit.php');
-
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

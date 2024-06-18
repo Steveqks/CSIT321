@@ -87,7 +87,7 @@ session_start();
 								
 								//create both
 								case 3 : echo "company and company admin created."; break;
-								default : echo "nothing"; break;
+								default : echo "nothing happened"; break;
 							}
 
 						}

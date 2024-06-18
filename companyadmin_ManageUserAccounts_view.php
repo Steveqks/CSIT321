@@ -26,6 +26,7 @@ if (isset($_POST['editAccount']))
 	
 	
 	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
+	exit;
 }
 
 if (isset($_POST['toggleStatus'])) 
@@ -46,6 +47,7 @@ if (isset($_POST['toggleStatus']))
 	}
 	
 	header('Location: companyadmin_ManageUserAccounts_view.php');
+	exit;
 }
 ?>
 <!DOCTYPE html>

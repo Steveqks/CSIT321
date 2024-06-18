@@ -120,9 +120,7 @@ session_start();
 						$_SESSION['sdate'] = $newSDate;
 					}
 					else $_SESSION['message3'] = "";
-					
-					header('Location: companyadmin_teamManagement_view_delete_edit.php');
-					
+										
 					// if last name changed
 					if(@$_POST['oldEDate'] != $newEDate){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

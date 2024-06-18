@@ -18,6 +18,7 @@ if (isset($_POST['editSpecialisation'])) {
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
 	$_SESSION['message'] = '';
 	header('Location: companyadmin_specialisation_edit.php');
+	exit();
 }
 ?>
 <!DOCTYPE html>
@@ -54,7 +55,6 @@ if (isset($_POST['editSpecialisation'])) {
 
 				<?php   
 					$companyID = $_SESSION['companyID'];;
-					//$companyID = $_SESSION[$companyID];
 				
 
 					$view = new userAccount();

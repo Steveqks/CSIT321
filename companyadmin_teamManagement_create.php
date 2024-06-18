@@ -44,10 +44,8 @@ session_start();
 					<h4>End Date: <input type='date' name = "edate" type = "text" required>
 					</h4>
 					<h4>
+					
 					<?php
-					
-					//tempt
-					
 					$companyID = $_SESSION['companyID'];
 					
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
