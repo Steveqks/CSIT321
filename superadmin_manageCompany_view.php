@@ -120,6 +120,7 @@ if (isset($_POST['editCompany'])) {
 							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
+							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='submit' name='deleteCompany' value='Delete'>
 							</form></td>";

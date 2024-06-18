@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+$_SESSION['message'] = "";
 $_SESSION['message1'] = "";
 $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";

@@ -112,7 +112,8 @@ session_start();
 						}
 					}else $_SESSION['message2'] = "";
 					
-					
+					header('Location: superadmin_manageCompany_view-edit.php');
+					exit;
 				}
 				
 			?>
