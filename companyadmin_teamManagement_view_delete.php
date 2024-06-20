@@ -25,13 +25,8 @@ if(isset($_POST['deleteTeam']))
 }
 
 if (isset($_POST['editTeam'])) {
-
-	$_SESSION['teamID'] = $_POST['teamID'];
 	$_SESSION['teamName'] = $_POST['teamName'];
-	$_SESSION['managerID'] = $_POST['managerID'];
-	$_SESSION['sdate'] = $_POST['sdate'];
-	$_SESSION['edate'] = $_POST['edate'];
-
+	$_SESSION['teamID'] = $_POST['teamID'];
 	header('Location: companyadmin_teamManagement_view_delete_edit.php');
 	exit;
 }
@@ -113,6 +108,7 @@ if (isset($_POST['editTeam'])) {
 
 					
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
 						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
 						<input type='submit' name='editTeam' value='Edit'>
 						</form></td>";

@@ -33,106 +33,69 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-			<h2>Edit Team</h2>
+			
 
             <!-- Add more content as needed -->
 			<?php   
-				
-				$companyID = $_SESSION['companyID'];;
-			
-				$form = "<form action'' method='POST'>
-						<br>
-						<table >
-						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						FROM 
-						<br>
-						Team id: <input type='text' value=" . $_SESSION['teamID'] . " readonly><br>
-						Team Name: <input type='text' name='oldTeamName' value=" . $_SESSION['teamName'] . " readonly> <br>
-						Manager: <input type='text' name='oldManagerID' value=" . $_SESSION['managerID'] . " readonly> <br>
-						Start Date: <input type='text' name='oldSDate' value=" . $_SESSION['sdate'] . " readonly> <br>
-						End Date: <input type='text' name='oldEDate' value=" . $_SESSION['edate'] . " readonly><br>
-						<br>
-							</td>
-							<td style='border: 2px solid black; border-collapse: collapse;'> 
-						TO
-						<br>
-						Team id: <input type='text' name='teamID' value=" . $_SESSION['teamID'] . " readonly> <br>
-						Team Name: <input type='text' name='newTeamName' value=" . $_SESSION['teamName'] . "><br>
-						Manager: <input type='text' name='newManagerID' value=" . $_SESSION['managerID'] . "><br>
-						Start Date: <input type='date' name='newSDate' value=" . $_SESSION['sdate'] . "><br>
-						End Date: <input type='date' name='newEDate' value=" . $_SESSION['edate'] . "><br>
-						<input type='submit' name='submitChanges' value='Update'>
-						</form>
-							</td>
-						</tr>
-						</table>
-							";
-				echo $form;
-				
-				echo @$_SESSION['message1'];
-				echo @$_SESSION['message2'];
-				echo @$_SESSION['message3'];
-				echo @$_SESSION['message4'];
-				
-				if(isset($_POST['submitChanges'])){
-					$teamID = $_POST['teamID'];			
-					$newTeamName = $_POST['newTeamName'];			
-					$newManagerID = $_POST['newManagerID'];			
-					$newSDate = $_POST['newSDate'];
-					$newEDate = $_POST['newEDate'];
-					
-					//check if there are changes in team name
-					if ($_POST['oldTeamName'] != $_POST['newTeamName']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-						//check if team name already exists
-						$result = mysqli_query($db,	"SELECT * FROM team WHERE TeamName = '$newTeamName' AND CompanyID = $companyID") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result);
-						// dont exists
-						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE team SET TeamName = '$newTeamName' WHERE TeamID = '$teamID'") or die("update Error");
-							$_SESSION['message1'] = "Team name has been changed";
-							$_SESSION['teamName'] = $newTeamName;
-						}
-						// exists
-						else{
-							$_SESSION['message1'] = "Team name already exists";
-						}
+				$companyID = $_SESSION['companyID'];;
+				$teamID = $_SESSION['teamID'];
+				$teamName = $_SESSION['teamName'];
+				
+				echo "<h2>View Team: ". $teamName . " </h2>";
+				
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				$result = 	mysqli_query($db,	
+								"SELECT 
+									(@row_number := @row_number + 1) AS RowNumber,
+									eu.FirstName,
+									eu.LastName,
+									s.SpecialisationName
+								FROM 
+									(SELECT @row_number := 0) AS init
+								JOIN 
+									team t ON 1=1 
+								JOIN 
+									existinguser eu ON t.UserID = eu.UserID
+								JOIN 
+									specialisation s ON eu.SpecialisationID = s.SpecialisationID
+								WHERE 
+									t.MainTeamID = '$teamID'
+								ORDER BY 
+									RowNumber;
+								") 
+							or die("Select Error");
+				
+				if($result){
+					$accountsTable = "<table border = 1 class='center'>";
+					$accountsTable .= "	<tr>
+											<th>S/N</th>
+											<th>First Name</th>
+											<th>Last Name</th>
+											<th>Specialisation Name</th>
+											</tr>\n";
+					$accountsTable .= "<br/>";
 					}
-					else $_SESSION['message1'] = "";
-					
-					// if there are changes in manager
-					if(@$_POST['oldManagerID'] != $newManagerID){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE team SET ManagerID = '$newManagerID' WHERE TeamID = '$teamID'") or die("update Error");
-						$_SESSION['message2'] = "<p style='color: green;'>Manager has been changed.</p>";
-						$_SESSION['managerID'] = $newManagerID;
-					}
-					else $_SESSION['message2'] = "";
-					
-					// if last name changed
-					if(@$_POST['oldSDate'] != $newSDate){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE team SET StartDate = '$newSDate' WHERE TeamID = '$teamID'") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Start Date has been changed.</p>";
-						$_SESSION['sdate'] = $newSDate;
-					}
-					else $_SESSION['message3'] = "";
-										
-					// if last name changed
-					if(@$_POST['oldEDate'] != $newEDate){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE team SET EndDate = '$newEDate' WHERE TeamID = '$teamID'") or die("update Error");
-						$_SESSION['message4'] = "<p style='color: green;'> End Date has been changed.</p>";
-						$_SESSION['edate'] = $newEDate;
-					}
-					else $_SESSION['message4'] = "";
-					
-					header('Location: companyadmin_teamManagement_view_delete_edit.php');
-					exit;
+				while ($Row = $result->fetch_assoc()) {
+					$accountsTable.= "<tr>\n"
+					."<td>" . $Row['RowNumber'] . "</td>" 
+					."<td>" . $Row['FirstName'] . "</td>" 
+					."<td>" . $Row['LastName'] . "</td>" 
+					."<td>" . $Row['SpecialisationName'] . "</td>";
+
+	
+					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='teamID' value='" . $Row['RowNumber'] . "'/>
+						<input type='submit' name='deleteTeam' value='Remove'>
+						</form></td>";
+
+					$accountsTable.= "</tr>";
 				}
+				$accountsTable.= "</table>";
+				echo  $accountsTable;
+				
+				if(@$_SESSION['message'])
+					echo $_SESSION['message'];
 			?>
         </div>
     </div>
