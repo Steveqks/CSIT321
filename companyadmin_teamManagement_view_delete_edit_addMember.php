@@ -1,13 +1,23 @@
 <?php
 session_start();
 
-if (isset($_POST['addTeamMember'])) {
-	$_SESSION['teamID'] = $_POST['teamID'];
+if (isset($_POST['AddMember'])) {
+	//$_SESSION['message'] = $_POST['userID'];
+	//$_SESSION['message'] = $_SESSION['teamID'];
+	$userID = $_POST['userID'];
+	$teamID = $_SESSION['teamID'];
 	
+	
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = 	mysqli_query($db, "
+			INSERT INTO team(TeamID, MainTeamID, UserID)
+			VALUES (Null, '$teamID', '$userID');
+				") 
+							or die("Select Error");
+							
 	header('Location: companyadmin_teamManagement_view_delete_edit_addMember.php');
 	exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,34 +58,34 @@ if (isset($_POST['addTeamMember'])) {
 				$teamID = $_SESSION['teamID'];
 				$teamName = $_SESSION['teamName'];
 				
-				echo "<h2>View Team: ". $teamName . " </h2>";
+				echo "<h2>Add Member to Team: ". $teamName . " </h2>";
 				
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = 	mysqli_query($db,	
-								"SELECT 
-									(@row_number := @row_number + 1) AS RowNumber,
-									eu.FirstName,
-									eu.LastName,
-									s.SpecialisationName
-								FROM 
-									(SELECT @row_number := 0) AS init
-								JOIN 
-									team t ON 1=1 
-								JOIN 
-									existinguser eu ON t.UserID = eu.UserID
-								JOIN 
-									specialisation s ON eu.SpecialisationID = s.SpecialisationID
-								WHERE 
-									t.MainTeamID = '$teamID'
-								ORDER BY 
-									RowNumber;
-								") 
+				$result = 	mysqli_query($db, "
+					SELECT 
+						eu.UserID,
+						eu.FirstName,
+						eu.LastName,
+						s.SpecialisationName
+					FROM 
+						existinguser eu
+					JOIN 
+						specialisation s ON eu.SpecialisationID = s.SpecialisationID
+					WHERE 
+						eu.CompanyID = '$companyID'
+						AND eu.Role IN ('PT', 'FT')
+						AND NOT EXISTS (
+							SELECT 1 
+							FROM team t 
+							WHERE t.UserID = eu.UserID AND t.MainTeamID = $teamID
+						);
+
+						") 
 							or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
 					$accountsTable .= "	<tr>
-											<th>S/N</th>
 											<th>First Name</th>
 											<th>Last Name</th>
 											<th>Specialisation Name</th>
@@ -84,26 +94,31 @@ if (isset($_POST['addTeamMember'])) {
 					}
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['RowNumber'] . "</td>" 
 					."<td>" . $Row['FirstName'] . "</td>" 
 					."<td>" . $Row['LastName'] . "</td>" 
 					."<td>" . $Row['SpecialisationName'] . "</td>";
 
 	
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['RowNumber'] . "'/>
-						<input type='submit' name='deleteTeam' value='Remove'>
+						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
+						<input type='submit' name='AddMember' value='Add'>
 						</form></td>";
 
 					$accountsTable.= "</tr>";
 
 				}
+				
+				//if zero rows returned
+				if (!@$hasRows) {
+					$accountsTable .= "<tr>"
+						. "<td>-</td>"
+						. "<td>-</td>"
+						. "<td>-</td>"
+						. "</tr>";
+				}
 				$accountsTable.= "</table> <br>";
 				
-				$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $teamID . "'/>
-						<input type='submit' name='addTeamMember' value='ADD TEAM MEMBER'>
-						</form></td>";
+			
 				echo  $accountsTable;
 				
 				if(@$_SESSION['message'])
