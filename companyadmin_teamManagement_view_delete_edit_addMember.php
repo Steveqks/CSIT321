@@ -6,15 +6,17 @@ if (isset($_POST['AddMember'])) {
 	//$_SESSION['message'] = $_SESSION['teamID'];
 	$userID = $_POST['userID'];
 	$teamID = $_SESSION['teamID'];
-	
+	$fullname = $_POST['fullname'];
+
 	
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-		$result = 	mysqli_query($db, "
-			INSERT INTO team(TeamID, MainTeamID, UserID)
-			VALUES (Null, '$teamID', '$userID');
-				") 
-							or die("Select Error");
+	$result = 	mysqli_query($db, "
+		INSERT INTO team(TeamID, MainTeamID, UserID)
+		VALUES (Null, '$teamID', '$userID');
+			") or die("Select Error");
 							
+	$_SESSION['message'] = " ";
+	$_SESSION['message1'] = $fullname . " is added to team";
 	header('Location: companyadmin_teamManagement_view_delete_edit_addMember.php');
 	exit;
 }
@@ -100,6 +102,7 @@ if (isset($_POST['AddMember'])) {
 
 	
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='fullname' value='" . $Row['FirstName'] .' '. $Row['LastName']  . "'/>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
 						<input type='submit' name='AddMember' value='Add'>
 						</form></td>";
@@ -121,8 +124,8 @@ if (isset($_POST['AddMember'])) {
 			
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message'])
-					echo $_SESSION['message'];
+				if(@$_SESSION['message1'])
+					echo $_SESSION['message1'];
 			?>
         </div>
     </div>

@@ -8,6 +8,23 @@ if (isset($_POST['addTeamMember'])) {
 	exit;
 }
 
+if (isset($_POST['removeMember'])) {
+	$teamID = $_SESSION['teamID'];
+	$userID = $_POST['userID'];
+	$fullname = $_POST['fullname'];
+	
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$result = 	mysqli_query($db, "
+								DELETE FROM team
+								WHERE UserID = '$userID' AND MainTeamID = $teamID;
+								") or die("Select Error");
+	
+	$_SESSION['message'] = $fullname . " is removed from team";
+	$_SESSION['message1'] = " ";
+	header('Location: companyadmin_teamManagement_view_delete_edit.php');
+	exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,26 +68,28 @@ if (isset($_POST['addTeamMember'])) {
 				echo "<h2>View Team: ". $teamName . " </h2>";
 				
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = 	mysqli_query($db,	
-								"SELECT 
-									(@row_number := @row_number + 1) AS RowNumber,
-									eu.FirstName,
-									eu.LastName,
-									s.SpecialisationName
-								FROM 
-									(SELECT @row_number := 0) AS init
-								JOIN 
-									team t ON 1=1 
-								JOIN 
-									existinguser eu ON t.UserID = eu.UserID
-								JOIN 
-									specialisation s ON eu.SpecialisationID = s.SpecialisationID
-								WHERE 
-									t.MainTeamID = '$teamID'
-								ORDER BY 
-									RowNumber;
-								") 
-							or die("Select Error");
+				$result = mysqli_query($db,	
+					"
+					SELECT 
+						(@row_number := @row_number + 1) AS RowNumber,
+						eu.UserID,
+						eu.FirstName,
+						eu.LastName,
+						s.SpecialisationName
+					FROM 
+						(SELECT @row_number := 0) AS init
+					JOIN 
+						team t ON 1=1 
+					JOIN 
+						existinguser eu ON t.UserID = eu.UserID
+					JOIN 
+						specialisation s ON eu.SpecialisationID = s.SpecialisationID
+					WHERE 
+						t.MainTeamID = '$teamID'
+					ORDER BY 
+						RowNumber;
+					") 
+				or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
@@ -91,8 +110,9 @@ if (isset($_POST['addTeamMember'])) {
 
 	
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['RowNumber'] . "'/>
-						<input type='submit' name='deleteTeam' value='Remove'>
+						<input type='hidden' name='fullname' value='" . $Row['FirstName'] .' '. $Row['LastName']  . "'/>
+						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
+						<input type='submit' name='removeMember' value='Remove'>
 						</form></td>";
 
 					$accountsTable.= "</tr>";
