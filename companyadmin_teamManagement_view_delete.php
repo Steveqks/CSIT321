@@ -1,17 +1,6 @@
 <?php
 session_start();
 
-include_once('superadmin_manageCAdmin_view_functions.php');
-
-
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	
-	header('Location: companyadmin_edit_specialisation.php');
-	exit;
-}
-
 if(isset($_POST['deleteTeam']))
 {
 	$teamID = $_POST['teamID'];
@@ -38,7 +27,7 @@ if(isset($_POST['deleteTeam']))
 if (isset($_POST['editTeam'])) {
 	$_SESSION['teamName'] = $_POST['teamName'];
 	$_SESSION['teamID'] = $_POST['teamID'];
-	header('Location: companyadmin_teamManagement_view_delete.php');
+	header('Location: companyadmin_teamManagement_view_delete_edit.php');
 	exit;
 }
 
@@ -83,22 +72,21 @@ if (isset($_POST['editTeam'])) {
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db,	
 								"SELECT 
-									tinfo.MainTeamID,
-									tinfo.TeamName,
-									CONCAT(e.FirstName, ' ', e.LastName) AS ManagerName,
-									COUNT(t.UserID) AS TotalUsers
+									ti.MainTeamID,
+									ti.TeamName,
+									eu.FirstName,
+									eu.LastName,
+									COUNT(t.TeamID) AS TotalUsers
 								FROM 
-									team t
-								JOIN 
-									teaminfo tinfo ON t.MainTeamID = tinfo.MainTeamID
+									teaminfo ti
 								LEFT JOIN 
-									existinguser e ON tinfo.ManagerID = e.UserID
+									existinguser eu ON ti.ManagerID = eu.UserID
+								LEFT JOIN 
+									team t ON ti.MainTeamID = t.MainTeamID
 								WHERE 
-									tinfo.CompanyID = '$companyID'
+									ti.CompanyID = '$companyID'
 								GROUP BY 
-									tinfo.MainTeamID,
-									tinfo.TeamName, 
-									ManagerName;
+									ti.MainTeamID, ti.TeamName, eu.FirstName, eu.LastName;
 								") 
 							or die("Select Error");
 				
@@ -114,7 +102,7 @@ if (isset($_POST['editTeam'])) {
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
 					."<td>" . $Row['TeamName'] . "</td>" 
-					."<td>" . $Row['ManagerName'] . "</td>" 
+					."<td>" . $Row['FirstName'] . " " . $Row['LastName'] . "</td>" 
 					."<td>" . $Row['TotalUsers'] . "</td>";
 
 					

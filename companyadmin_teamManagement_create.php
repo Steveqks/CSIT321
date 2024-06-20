@@ -39,12 +39,8 @@ session_start();
 					
 					<h4>Team Name: <input name = "tname" type = "text" placeholder = "first name" required >
 					</h4>
-					<h4>Start Date: <input type='date' name = "sdate" type = "text" required>
-					</h4>
-					<h4>End Date: <input type='date' name = "edate" type = "text" required>
-					</h4>
+
 					<h4>
-					
 					<?php
 					$companyID = $_SESSION['companyID'];
 					
@@ -72,8 +68,6 @@ session_start();
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 					$tname = $_POST['tname'];
-					$sdate = $_POST['sdate'];
-					$edate = $_POST['edate'];
 					$managerID = $_POST['managerID'];
 				
 					
@@ -82,19 +76,21 @@ session_start();
 						//exist already
 						echo "<p style='color: red;'>Team name \"". $tname . "\" in use.</p>";
 					}
+					
 					//doesn't exist, add to db
 					else
 					{
-						$result = mysqli_query($db,"INSERT INTO team (TeamID, CompanyID, TeamName, ManagerID, StartDate, EndDate) 
-													VALUES (NULL, '$companyID','$tname', '$managerID', '$sdate', '$edate')") 
-													or die("Select Error");
+						$result = mysqli_query($db,"
+													INSERT INTO teaminfo(MainTeamID, ManagerID, CompanyID, TeamName)
+													VALUES (NULL, '$managerID', '$companyID', '$tname')
+													") or die("Select Error");
 						
 						echo "<p style='color: green;'>Team \"". $tname . "\" Created.</p>";
 					}
 				}
 					
 				function isTeamExists(string $companyID, string $tname, mysqli $db):bool{
-					$sql = "SELECT * FROM team WHERE CompanyID = '$companyID' AND TeamName = '$tname'";
+					$sql = "SELECT * FROM teaminfo WHERE CompanyID = '$companyID' AND TeamName = '$tname'";
 					$qres = mysqli_query($db, $sql); 
 
 					$num_rows=mysqli_num_rows($qres);
@@ -108,8 +104,6 @@ session_start();
 						return false; 
 					}
 				}
-				
-				
 			?>
         </div>
     </div>
