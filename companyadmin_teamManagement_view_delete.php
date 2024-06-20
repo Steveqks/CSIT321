@@ -15,19 +15,30 @@ if (isset($_POST['submitSpecialisation'])) {
 if(isset($_POST['deleteTeam']))
 {
 	$teamID = $_POST['teamID'];
+	$totalUser = $_POST['totalUser'];
+	$teamName = $_POST['teamName'];
+	
+	//remove team members from team first, then delete team
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM team WHERE TeamID = '$teamID' ") or die("Select Error");
+	$result = 	mysqli_query($db, "
+								DELETE FROM team
+								WHERE MainTeamID = '$teamID';
+								") or die("Select Error");
+								
+	$result2 = 	mysqli_query($db, "
+								DELETE FROM teaminfo
+								WHERE MainTeamID = '$teamID';
+								") or die("Select Error");
 	
-	$_SESSION['message'] = "Team id\"" .$_POST['teamID']. " ,". $_POST['teamName'] . "\" deleted successfully";
-	
-	header('Location: companyadmin_teamManagement_view_delete.php');
-	exit;
+	$_SESSION['message'] = " ";
+	$_SESSION['message1'] = " ";
+	$_SESSION['message2'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
 }
 
 if (isset($_POST['editTeam'])) {
 	$_SESSION['teamName'] = $_POST['teamName'];
 	$_SESSION['teamID'] = $_POST['teamID'];
-	header('Location: companyadmin_teamManagement_view_delete_edit.php');
+	header('Location: companyadmin_teamManagement_view_delete.php');
 	exit;
 }
 
@@ -114,6 +125,8 @@ if (isset($_POST['editTeam'])) {
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='totalUser' value='" . $Row['TotalUsers'] . "'/>
+						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
 						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
 						<input type='submit' name='deleteTeam' value='Delete'>
 						</form></td>";
@@ -123,8 +136,8 @@ if (isset($_POST['editTeam'])) {
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message'])
-					echo $_SESSION['message'];
+				if(@$_SESSION['message2'])
+					echo $_SESSION['message2'];
 			?>
         </div>
     </div>
