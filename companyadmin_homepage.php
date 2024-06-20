@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$_SESSION['companyID'] = "21";
+$_SESSION['companyID'] = "24";
 $_SESSION['cadminID'] = "6";
 
 $_SESSION['message0'] = "";

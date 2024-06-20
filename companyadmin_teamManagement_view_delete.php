@@ -75,40 +75,53 @@ if (isset($_POST['editTeam'])) {
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = mysqli_query($db,	"SELECT * FROM team WHERE CompanyID = '$companyID'") or die("Select Error");
+				$result = 	mysqli_query($db,	
+								"SELECT 
+									tinfo.MainTeamID,
+									tinfo.TeamName,
+									CONCAT(e.FirstName, ' ', e.LastName) AS ManagerName,
+									COUNT(t.UserID) AS TotalUsers
+								FROM 
+									team t
+								JOIN 
+									teaminfo tinfo ON t.MainTeamID = tinfo.MainTeamID
+								LEFT JOIN 
+									existinguser e ON tinfo.ManagerID = e.UserID
+								WHERE 
+									tinfo.CompanyID = '$companyID'
+								GROUP BY 
+									tinfo.MainTeamID,
+									tinfo.TeamName, 
+									ManagerName;
+								") 
+							or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
 					$accountsTable .= "	<tr>
-											<th>Team ID ID</th>
 											<th>Team Name</th>
-											<th>Manager ID</th>
-											<th>Start Date</th>
-											<th>End Date</th>
+											<th>Manager In Charge</th>
+											<th>Total Staff In Team</th>
 											</tr>\n";
 					$accountsTable .= "<br/>";
 					}
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['TeamID'] . "</td>" 
 					."<td>" . $Row['TeamName'] . "</td>" 
-					."<td>" . $Row['ManagerID'] . "</td>" 
-					."<td>" . $Row['StartDate'] . "</td>"
-					."<td>" . $Row['EndDate'] . "</td>";
+					."<td>" . $Row['ManagerName'] . "</td>" 
+					."<td>" . $Row['TotalUsers'] . "</td>";
+
 					
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['TeamID'] . "'/>
-						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
-						<input type='hidden' name='managerID' value='" . $Row['ManagerID'] . "'/>
-						<input type='hidden' name='sdate' value='" . $Row['StartDate'] . "'/>
-						<input type='hidden' name='edate' value='" . $Row['EndDate'] . "'/>
+						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
 						<input type='submit' name='editTeam' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $Row['TeamID'] . "'/>
+						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
 						<input type='submit' name='deleteTeam' value='Delete'>
 						</form></td>";
+
 					$accountsTable.= "</tr>";
 				}
 				$accountsTable.= "</table>";
