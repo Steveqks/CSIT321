@@ -64,7 +64,7 @@
 					
 					echo "<script> alert('Login For Company Admin Successful')</script>";
 					//Route to Company Admin HomePage Here
-					header("Location:CompanyAdmin.php");
+					header("Location:../Company Admin/companyadmin_homepage.php");
 				}
 				else
 				{
@@ -81,7 +81,7 @@
 						$_SESSION['FirstName'] = $row2['FirstName'];
 						
 						//Route to Super Admin HomePage Here
-						header("Location:SuperAdmin.php");
+						header("Location:../Super Admin/superadmin_homepage.php");
 					}
 					else
 					{
