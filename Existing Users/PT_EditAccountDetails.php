@@ -246,7 +246,7 @@ CloseCon($conn);
                 <i class="fas fa-user-edit"></i>
                 <h2>Edit Account Details</h2>
             </div>
-            <form action="PT_Update_Account.php" method="post" class="edit-form" onsubmit="return validateForm()">
+            <form action="PT_UpdateAccount.php" method="post" class="edit-form" onsubmit="return validateForm()">
                 <div class="form-half">
                     <div class="form-group">
                         <label for="first_name">First Name</label>
