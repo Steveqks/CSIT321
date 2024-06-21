@@ -19,7 +19,10 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $start_from = ($page - 1) * $limit;
 
 // Fetch total number of tasks
-$sql_total = "SELECT COUNT(TaskID) FROM task WHERE UserID = 1";
+$sql_total = "SELECT COUNT(t.TaskID) 
+              FROM task t
+              JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+              WHERE t.UserID = 1";
 $stmt_total = $conn->prepare($sql_total);
 $stmt_total->execute();
 $stmt_total->bind_result($total_records);
@@ -29,7 +32,11 @@ $stmt_total->close();
 $total_pages = ceil($total_records / $limit);
 
 // Fetch tasks for the current page
-$sql = "SELECT TaskName, StartDate, DueDate FROM task WHERE UserID = 1 LIMIT ?, ?";
+$sql = "SELECT t.TaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.TaskDesc 
+        FROM task t
+        JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+        WHERE t.UserID = 1
+        LIMIT ?, ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $start_from, $limit);
 $stmt->execute();
@@ -177,6 +184,30 @@ CloseCon($conn);
             pointer-events: none;
             opacity: 0.5;
         }
+
+        /* Styles for collapsible content */
+        .task-desc {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-top: none;
+            background-color: #f9f9f9;
+        }
+
+        .task-name {
+            cursor: pointer;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s;
+        }
+
+        .task-name:hover {
+            background-color: #ddd;
+        }
+
+        .expand-icon {
+            margin-right: 5px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -219,10 +250,13 @@ CloseCon($conn);
                 <tbody>
                     <?php if (count($tasks) > 0): ?>
                         <?php foreach ($tasks as $task): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($task['TaskName']); ?></td>
+                            <tr class="task-name" onclick="toggleDescription(<?php echo $task['TaskID']; ?>)">
+                                <td><i class="fas fa-angle-down expand-icon" id="icon-<?php echo $task['TaskID']; ?>"></i><?php echo htmlspecialchars($task['TaskName']); ?></td>
                                 <td><?php echo htmlspecialchars($task['StartDate']); ?></td>
                                 <td><?php echo htmlspecialchars($task['DueDate']); ?></td>
+                            </tr>
+                            <tr id="desc-<?php echo $task['TaskID']; ?>" class="task-desc">
+                                <td colspan="3"><?php echo htmlspecialchars($task['TaskDesc']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -279,5 +313,21 @@ CloseCon($conn);
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleDescription(taskID) {
+            var descRow = document.getElementById("desc-" + taskID);
+            var icon = document.getElementById("icon-" + taskID);
+            if (descRow.style.display === "none" || descRow.style.display === "") {
+                descRow.style.display = "table-row";
+                icon.classList.remove("fa-angle-down");
+                icon.classList.add("fa-angle-up");
+            } else {
+                descRow.style.display = "none";
+                icon.classList.remove("fa-angle-up");
+                icon.classList.add("fa-angle-down");
+            }
+        }
+    </script>
 </body>
 </html>
