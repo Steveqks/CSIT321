@@ -37,7 +37,7 @@ session_start();
 				<h2>Create Team</h2>
 				
 					
-					<h4>Team Name: <input name = "tname" type = "text" placeholder = "first name" required >
+					<h4>Team Name: <input name = "tname" type = "text" placeholder = "team name" required >
 					</h4>
 
 					<h4>
