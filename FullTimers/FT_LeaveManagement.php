@@ -20,7 +20,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Account Details (PT)</title>
+    <title>Leave Management(FT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
 		body 
@@ -147,9 +147,9 @@
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
+                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="FT_AttendanceMgmt.php">Attendance Management</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
