@@ -79,6 +79,7 @@ if (isset($_POST['toggleStatus']))
 				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
 				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
 				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
+				<a href="Logout.php">Logout</a>
 
 			</div>
         

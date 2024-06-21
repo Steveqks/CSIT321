@@ -7,9 +7,6 @@ $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";
 $_SESSION['message4'] = "";
 
-$temptID = '1';
-$_SESSION['SAdminID'] = $temptID;
-
 
 ?>
 <!DOCTYPE html>
@@ -40,6 +37,8 @@ $_SESSION['SAdminID'] = $temptID;
 			  <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve New Company (Create New Company & Company Admin)</a>
 			  <a href="superadmin_manageCAdmin_create.php">Manage Company Admin > Create Company Admin</a>
 			  <a href="superadmin_manageCAdmin_view_delete.php">Manage Company Admin > View Company Admin</a>
+			  <a href="Logout.php">Logout</a>
+			  
 			</div>
         
         <!-- Right Section (Activity) -->
