@@ -2,13 +2,19 @@
 session_start();
 include 'db_connection.php';
 
-// Check if user is logged in
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
+// Set the timezone to Singapore
+date_default_timezone_set('Asia/Singapore');
 
-// $user_id = $_SESSION['user_id'];
+// Check if user is logged in
+if (!isset($_SESSION['Email'])) 
+{
+	header("Location: ../Unregistered Users/LoginPage.php");
+	exit();
+}
+
+$user_id = $_SESSION['UserID'];
+$Email = $_SESSION['Email'];
+$FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
 $conn = OpenCon();
@@ -17,9 +23,9 @@ $conn = OpenCon();
 $today = date("Y-m-d");
 
 // Check if user has work today
-$sql_schedule = "SELECT StartWork, EndWork FROM schedule WHERE UserID = 1 AND WorkDate = ?";
+$sql_schedule = "SELECT StartWork, EndWork FROM schedule WHERE UserID = ? AND WorkDate = ?";
 $stmt_schedule = $conn->prepare($sql_schedule);
-$stmt_schedule->bind_param("s", $today);
+$stmt_schedule->bind_param("is", $user_id, $today);
 $stmt_schedule->execute();
 $result_schedule = $stmt_schedule->get_result();
 $schedule = $result_schedule->fetch_assoc();
@@ -31,9 +37,9 @@ $hasWorkToday = $schedule ? true : false;
 $clockInExists = false;
 $clockOutExists = false;
 if ($hasWorkToday) {
-    $sql_attendance = "SELECT ClockIn, ClockOut FROM attendance WHERE UserID = 1 AND DATE(ClockIn) = ?";
+    $sql_attendance = "SELECT ClockIn, ClockOut FROM attendance WHERE UserID = ? AND DATE(ClockIn) = ?";
     $stmt_attendance = $conn->prepare($sql_attendance);
-    $stmt_attendance->bind_param("s", $today);
+    $stmt_attendance->bind_param("is", $user_id, $today);
     $stmt_attendance->execute();
     $result_attendance = $stmt_attendance->get_result();
     $attendance = $result_attendance->fetch_assoc();
@@ -181,9 +187,9 @@ CloseCon($conn);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#">name, Staff (PT)</a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
+                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="#">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
@@ -204,13 +210,13 @@ CloseCon($conn);
                 <?php if (!$clockInExists): ?>
                     <!-- Clock In Page -->
                     <div class="info-text">
-                        Your shift today starts at <span class="underline"><?php echo date("Hi", strtotime($schedule['StartWork'])); ?>h</span> and ends at <span class="underline"><?php echo date("Hi", strtotime($schedule['EndWork'])); ?>h</span>.
+                        Your shift today starts at <span class="underline"><?php echo date("H:i", strtotime($schedule['StartWork'])); ?>h</span> and ends at <span class="underline"><?php echo date("H:i", strtotime($schedule['EndWork'])); ?>h</span>.
                     </div>
                     <div>
 						The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
 					</div>
 					<div class="button-container">
-						<a href="clock_in.php" class="clock-button">Clock In</a>
+						<a href="PT_ClockIn.php" class="clock-button">Clock In</a>
 					</div>
                 <?php elseif ($clockInExists && !$clockOutExists): ?>
                     <!-- Clock Out Page -->
@@ -221,7 +227,7 @@ CloseCon($conn);
 						The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
 					</div>
 					<div class="button-container">
-						<a href="clock_out.php" class="clock-button">Clock Out</a>
+						<a href="PT_ClockOut.php" class="clock-button">Clock Out</a>
 					</div>
                 <?php else: ?>
                     <!-- Already Clocked Out -->

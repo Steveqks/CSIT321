@@ -3,20 +3,23 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
+if (!isset($_SESSION['Email'])) 
+{
+	header("Location: ../Unregistered Users/LoginPage.php");
+	exit();
+}
 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['UserID'];
+$Email = $_SESSION['Email'];
+$FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
 $conn = OpenCon();
 
 // Fetch user details
-$sql = "SELECT FirstName, LastName, Email FROM existinguser WHERE UserID = 1";
+$sql = "SELECT FirstName, LastName, Email FROM existinguser WHERE UserID = ?";
 $stmt = $conn->prepare($sql);
-// $stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
@@ -164,9 +167,9 @@ CloseCon($conn);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#">name, Staff (PT)</a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
+                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="#">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
@@ -186,7 +189,7 @@ CloseCon($conn);
             <div class="details">
                 <p>Full Name: <span><?php echo htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']); ?></span></p>
                 <p>Email: <span><?php echo htmlspecialchars($user['Email']); ?></span></p>
-                <a href="edit_account_pt.php" class="edit-button">Edit Account Details</a>
+                <a href="PT_EditAccountDetails.php" class="edit-button">Edit Account Details</a>
             </div>
 			
 			<!-- Display success message if exists -->

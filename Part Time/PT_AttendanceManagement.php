@@ -3,12 +3,15 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
+if (!isset($_SESSION['Email'])) 
+{
+	header("Location: ../Unregistered Users/LoginPage.php");
+	exit();
+}
 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['UserID'];
+$Email = $_SESSION['Email'];
+$FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
 $conn = OpenCon();
@@ -143,9 +146,9 @@ CloseCon($conn);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#">name, Staff (PT)</a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
+                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="#">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
@@ -162,9 +165,9 @@ CloseCon($conn);
                 <h2>Attendance Management</h2>
             </div>
             <div class="management-buttons">
-                <a href="view_atd_pt.php" class="management-button">View Attendance</a>
-                <a href="take_atd_pt.php" class="management-button">Take Attendance</a>
-                <a href="break_pt.php" class="management-button">Start / End Break</a>
+                <a href="PT_ViewAttendance.php" class="management-button">View Attendance</a>
+                <a href="PT_TakeAttendance.php" class="management-button">Take Attendance</a>
+                <a href="PT_Break.php" class="management-button">Start / End Break</a>
             </div>
         </div>
     </div>

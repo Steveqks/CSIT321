@@ -3,20 +3,23 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
+if (!isset($_SESSION['Email'])) 
+{
+	header("Location: ../Unregistered Users/LoginPage.php");
+	exit();
+}
 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['UserID'];
+$Email = $_SESSION['Email'];
+$FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
 $conn = OpenCon();
 
 // Fetch user details
-$sql = "SELECT FirstName, LastName, Email, Password FROM existinguser WHERE UserID = 1"; // Assuming UserID is 1 for demonstration
+$sql = "SELECT FirstName, LastName, Email, Password FROM existinguser WHERE UserID = ?";
 $stmt = $conn->prepare($sql);
-// $stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
@@ -197,6 +200,13 @@ CloseCon($conn);
             margin-bottom: 15px;
             font-size: 0.9em;
         }
+		
+		.success-message {
+			color: green;
+			margin-top: -10px;
+			margin-bottom: 15px;
+			font-size: 0.9em;
+		}
     </style>
     <script>
         function validateForm() {
@@ -225,9 +235,9 @@ CloseCon($conn);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#">name, Staff (PT)</a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
+                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="#">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
@@ -243,7 +253,8 @@ CloseCon($conn);
                 <i class="fas fa-user-edit"></i>
                 <h2>Edit Account Details</h2>
             </div>
-            <form action="update_account.php" method="post" class="edit-form" onsubmit="return validateForm()">
+			
+            <form action="PT_UpdateAccount.php" method="post" class="edit-form" onsubmit="return validateForm()">
                 <div class="form-half">
                     <div class="form-group">
                         <label for="first_name">First Name</label>
@@ -263,9 +274,15 @@ CloseCon($conn);
                         <input type="password" id="confirm_password" name="confirm_password" required>
                     </div>
                 </div>
-                <div id="error-message" class="error-message"></div>
+				<?php
+					if (isset($_GET['message'])) {
+						echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+					} elseif (isset($_GET['error'])) {
+						echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+					}
+				?>
                 <div class="button-group">
-                    <a href="acc_details_pt.php" class="cancel-button">Cancel</a>
+                    <a href="PT_AccountDetails.php" class="cancel-button">Cancel</a>
                     <button type="submit" class="edit-button">Save Changes</button>
                 </div>
             </form>

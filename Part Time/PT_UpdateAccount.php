@@ -3,12 +3,14 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
+if (!isset($_SESSION['Email'])) {
+    header("Location: ../Unregistered Users/LoginPage.php");
+    exit();
+}
 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['UserID'];
+$Email = $_SESSION['Email'];
+$FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
 $conn = OpenCon();
@@ -23,20 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if passwords match
     if ($password != $confirm_password) {
-        header("Location: edit_account_pt.php?error=Passwords do not match. Please try again.");
+        header("Location: PT_EditAccountDetails.php?error=Passwords do not match. Please try again.");
         exit();
     }
 
     // Prepare and execute the update statement
-    $sql = "UPDATE existinguser SET FirstName = ?, LastName = ?, Email = ?, Password = ? WHERE UserID = 1";
+    $sql = "UPDATE existinguser SET FirstName = ?, LastName = ?, Email = ?, Password = ? WHERE UserID = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $first_name, $last_name, $email, $password);
+    $stmt->bind_param("ssssi", $first_name, $last_name, $email, $password, $user_id);
     
     if ($stmt->execute()) {
-        header("Location: acc_details_pt.php?message=Account details updated successfully.");
+        header("Location: PT_EditAccountDetails.php?message=Account details updated successfully.");
         exit();
     } else {
-        header("Location: edit_account_pt.php?error=Error updating account details.");
+        header("Location: PT_EditAccountDetails.php?error=Error updating account details.");
         exit();
     }
 
