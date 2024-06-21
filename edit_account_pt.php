@@ -14,17 +14,12 @@ include 'db_connection.php';
 $conn = OpenCon();
 
 // Fetch user details
-$sql = "SELECT FirstName, LastName, Email, Password, SpecialisationID FROM existinguser WHERE UserID = 1"; // Assuming UserID is 1 for demonstration
+$sql = "SELECT FirstName, LastName, Email, Password FROM existinguser WHERE UserID = 1"; // Assuming UserID is 1 for demonstration
 $stmt = $conn->prepare($sql);
 // $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-
-// Fetch specialisations
-$sql_specialisations = "SELECT SpecialisationID, SpecialisationName FROM specialisation";
-$result_specialisations = $conn->query($sql_specialisations);
-$specialisations = $result_specialisations->fetch_all(MYSQLI_ASSOC);
 
 // Close the database connection
 $stmt->close();
@@ -266,15 +261,6 @@ CloseCon($conn);
 
                         <label for="confirm_password">Confirm Password</label>
                         <input type="password" id="confirm_password" name="confirm_password" required>
-
-                        <label for="specialisation">Specialisation</label>
-                        <select id="specialisation" name="specialisation" required>
-                            <?php foreach ($specialisations as $specialisation): ?>
-                                <option value="<?php echo htmlspecialchars($specialisation['SpecialisationID']); ?>" <?php if ($specialisation['SpecialisationID'] == $user['SpecialisationID']) echo 'selected'; ?>>
-                                    <?php echo htmlspecialchars($specialisation['SpecialisationName']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
                     </div>
                 </div>
                 <div id="error-message" class="error-message"></div>
