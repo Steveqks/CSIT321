@@ -1,0 +1,90 @@
+/* CSS Reset */
+body, header, nav, main, section, aside, footer {
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styles */
+header {
+    background-color: #333; /* Example background color */
+    color: #fff; /* Example text color */
+    padding: 20px;
+}
+
+.logo {
+    /* Add your logo styles here */
+}
+
+/* Navigation Styles */
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333; /* Example link color */
+}
+
+/* Main Content Styles */
+main {
+    display: flex;
+}
+
+.left-sidebar {
+    width: 20%; /* Example width for left sidebar */
+    background-color: #f2f2f2; /* Example background color */
+    padding: 20px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333; /* Example background color */
+    color: #fff; /* Example text color */
+    padding: 20px;
+}
+
+footer ul {
+    list-style-type: none;
+}
+
+footer ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+footer ul li a {
+    text-decoration: none;
+    color: #fff; /* Example link color */
+}
+
+
+.vertical-menu {
+  width: 20%;
+}
+
+.vertical-menu a {
+  background-color: #eee;
+  color: black;
+  display: block;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.vertical-menu a:hover {
+  background-color: #ccc;
+}
+
+.vertical-menu a.active {
+  background-color: #04AA6D;
+  color: white;
+}
