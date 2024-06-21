@@ -1,27 +1,4 @@
 <?php    
-class viewAccountController{
-	public function viewAccount():bool|mysqli_result
-	{
-		$viewacc = new userAccount();
-		$qres = $viewacc->viewAccount();
-		
-		if($qres === false){
-			return false; 
-		}
-		else{
-			return $qres; 
-		}
-	}
-}
-
-class approveAccountController{
-	public function approveAccount():int
-	{
-		$approve = new userAccount();
-		$var = $approve->approveAccount($_POST['fname'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID']);
-			return $var;
-	}
-}
 
 class userAccount{
 	public $conn;
@@ -35,16 +12,7 @@ class userAccount{
 		mysqli_select_db($this->conn,"TMS");
 	}
 	
-	public function viewAccount():bool|mysqli_result{
-        $Sql = "SELECT * FROM unregisteredusers";
-        $qres = mysqli_query($this->conn, $Sql); 
-        if($qres === false){
-            return false; 
-        }
-        else{
-            return $qres; 
-        }
-    }
+
 	
     public function approveAccount(string $fname, string $lname, string $email, string $password, string $cname, string $PlanID):int{
 		//1.1	check company exist
@@ -142,5 +110,17 @@ class userAccount{
 		return $row['CompanyID'];
 	}
 	
+
+	
+	public function viewCompany():bool|mysqli_result{
+	    $Sql = "SELECT * FROM company";
+        $qres = mysqli_query($this->conn, $Sql); 
+        if($qres === false){
+            return false; 
+        }
+        else{
+            return $qres; 
+        }	
+	}
 }
 ?>
