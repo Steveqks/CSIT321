@@ -268,7 +268,7 @@ CloseCon($conn);
                 </div>
                 <div id="error-message" class="error-message"></div>
                 <div class="button-group">
-                    <a href="acc_details_pt.php" class="cancel-button">Cancel</a>
+                    <a href="PT_AccountDetails.php" class="cancel-button">Cancel</a>
                     <button type="submit" class="edit-button">Save Changes</button>
                 </div>
             </form>
