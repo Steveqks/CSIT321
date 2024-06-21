@@ -38,7 +38,7 @@ $total_pages = ceil($total_records / $limit);
 $sql = "SELECT t.TaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.TaskDesc 
         FROM task t
         JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-        WHERE t.UserID = 1
+        WHERE t.UserID = $user_id
         LIMIT ?, ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $start_from, $limit);
