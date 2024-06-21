@@ -93,30 +93,44 @@ if (isset($_POST['toggleStatus']))
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = mysqli_query($db,	"SELECT * FROM existinguser WHERE CompanyID = '$companyID'") or die("Select Error");
+				$result = mysqli_query($db,	"SELECT 
+												eu.UserID,
+												eu.FirstName,
+												eu.LastName,
+												eu.Gender,
+												eu.Email AS EmailAddress,
+												s.SpecialisationName,
+												s.SpecialisationID,
+												eu.Role,
+												eu.Status
+											FROM 
+												existinguser eu
+											JOIN 
+												specialisation s ON eu.SpecialisationID = s.SpecialisationID
+											WHERE 
+												eu.CompanyID = '$companyID';
+											") or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
 					$accountsTable .= "	<tr>
-										<th>User ID</th>
 										<th>First Name</th>
 										<th>Last Name</th>
 										<th>Gender</th>
 										<th>Email Address</th>
+										<th>Specialisation</th>
 										<th>Role</th>
-										<th>Specialisation ID</th>
 										<th>Status</th>
 										</tr>\n";
 					$accountsTable .= "<br/>";
 					}
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['UserID'] . "</td>" 
 					."<td>" . $Row['FirstName'] . "</td>" 
 					."<td>" . $Row['LastName'] . "</td>" 
 					."<td>" . $Row['Gender'] . "</td>"
-					."<td>" . $Row['Email'] . "</td>" 
-					."<td>" . $Row['SpecialisationID'] . "</td>" 
+					."<td>" . $Row['EmailAddress'] . "</td>" 
+					."<td>" . $Row['SpecialisationName'] . "</td>" 
 					."<td>" . $Row['Role'] . "</td>" 
 					."<td>" . $Row['Status'] . "</td>";
 					
@@ -125,7 +139,7 @@ if (isset($_POST['toggleStatus']))
 						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
 						<input type='hidden' name='gender' value='" . $Row['Gender'] . "'/>
-						<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
+						<input type='hidden' name='email' value='" . $Row['EmailAddress'] . "'/>
 						<input type='hidden' name='specialisation' value='" . $Row['SpecialisationID'] . "'/>
 						<input type='hidden' name='role' value='" . $Row['Role'] . "'/>
 						<input type='submit' name='editAccount' value='Edit'>
@@ -138,6 +152,7 @@ if (isset($_POST['toggleStatus']))
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
 						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
 						<input type='submit' name='deleteUser' value='Delete'>

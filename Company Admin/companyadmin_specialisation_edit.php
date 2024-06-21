@@ -1,12 +1,9 @@
 <?php
 session_start();
 
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_specialisation_edit.php');
-	exit;
-}
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,10 +73,16 @@ if (isset($_POST['submitSpecialisation'])) {
 					if($num_rows == 0){
 						$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
 						$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
+						$_SESSION['specialisationName'] = $specialisationName;
+						$_SESSION['specialisationID'] = $specialisationID;
+							header('Location: companyadmin_specialisation_edit.php');
+							exit;
 					}
 					// exists
 					else{
 						$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
+						header('Location: companyadmin_specialisation_edit.php');
+							exit;
 					}
 				}
 				

@@ -98,12 +98,12 @@ session_start();
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 						//check if email already exists
-						$result = mysqli_query($db,	"SELECT * FROM existinguser WHERE Email = '$newEmail' ") or die("Select Error");
+						$result = mysqli_query($db,	"SELECT * FROM existinguser WHERE Email = '$newemail' ") or die("Select Error");
 			
 						$num_rows=mysqli_num_rows($result);
 						// dont exists
 						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE existinguser SET Email = '$newEmail' WHERE UserID = 'userID") or die("update Error");
+							$result2 = mysqli_query($db,"UPDATE existinguser SET Email = '$newemail' WHERE UserID = '$userID'") or die("update Error");
 							$_SESSION['message1'] = "Email Address has been changed";
 							$_SESSION['email'] = $newemail;
 						}
@@ -136,7 +136,7 @@ session_start();
 					if(@$_POST['oldgender'] != $_POST['newgender']){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$result2 = mysqli_query($db,"UPDATE existinguser SET Gender = '$newgender' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Last Name has been changed.</p>";
+						$_SESSION['message3'] = "<p style='color: green;'>Gender has been changed.</p>";
 						$_SESSION['gender'] = $newgender;
 
 					}
@@ -144,10 +144,24 @@ session_start();
 					
 					// if specialisation changed
 					if(@$_POST['oldspecialisation'] != $_POST['newspecialisation']){
+						
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE existinguser SET SpecialisationID = '$newspecialisation' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Last Name has been changed.</p>";
-						$_SESSION['specialisation'] = $newspecialisation;
+						//check if specialisation exists
+						$result = mysqli_query($db,	"SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID = '$newspecialisation'") or die("Select Error");
+			
+						$num_rows=mysqli_num_rows($result);
+						// dont exists
+						if($num_rows == 0){
+							$_SESSION['message1'] = "Specialisation does not exists";
+						}
+						// exists
+						else{
+							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+							$result2 = mysqli_query($db,"UPDATE existinguser SET SpecialisationID = '$newspecialisation' WHERE UserID = '$userID' ") or die("update Error");
+							$_SESSION['message3'] = "<p style='color: green;'>Specialisation has been changed.</p>";
+							$_SESSION['specialisation'] = $newspecialisation;
+						}
+			
 					}
 					else $_SESSION['message5'] = "";
 					
@@ -155,7 +169,7 @@ session_start();
 					if(@$_POST['oldrole'] != $_POST['newrole']){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$result2 = mysqli_query($db,"UPDATE existinguser SET Role = '$newrole' WHERE UserID = 'userID'") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Last Name has been changed.</p>";
+						$_SESSION['message3'] = "<p style='color: green;'>Role has been changed.</p>";
 						$_SESSION['role'] = $newrole;
 					}
 					else $_SESSION['message6'] = "";

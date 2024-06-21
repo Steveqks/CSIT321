@@ -14,6 +14,10 @@ if (isset($_POST['submitSpecialisation'])) {
 if(isset($_POST['deleteCompany']))
 {
 	$companyID = $_POST['companyID'];
+	
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$result = mysqli_query($db,	"DELETE FROM companyadmin WHERE CompanyID = '$companyID' ") or die("Select Error");
+	
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
 	
