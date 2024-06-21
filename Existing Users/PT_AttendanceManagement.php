@@ -147,8 +147,8 @@ CloseCon($conn);
         <div class="navbar">
             <ul>
                 <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
+                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="#">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
