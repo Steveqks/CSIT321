@@ -58,7 +58,8 @@
 				if($count1 == 1)
 				{
 					//Session Related to Company Admin
-					$_SESSION['CAdminID'] = $row1['CAdminID'];
+					$_SESSION['cadminID'] = $row1['CAdminID'];
+					$_SESSION['companyID'] = $row1['CompanyID'];
 					$_SESSION['Email'] = $row1['Email'];
 					$_SESSION['FirstName'] = $row1['FirstName'];
 					

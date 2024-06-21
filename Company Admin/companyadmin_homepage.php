@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-$_SESSION['companyID'] = "24";
-$_SESSION['cadminID'] = "6";
-
 $_SESSION['message'] = "";
 $_SESSION['message0'] = "";
 $_SESSION['message1'] = "";
@@ -44,6 +41,7 @@ $_SESSION['message6'] = "";
 				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
 				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
 				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
+				<a href="Logout.php">Logout</a>
 
 			</div>
         

@@ -81,6 +81,7 @@ if (isset($_POST['editCAdmin'])) {
 			  <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve New Company (Create New Company & Company Admin)</a>
 			  <a href="superadmin_manageCAdmin_create.php">Manage Company Admin > Create Company Admin</a>
 			  <a href="superadmin_manageCAdmin_view_delete.php">Manage Company Admin > View Company Admin</a>
+			  <a href="Logout.php">Logout</a>
 			</div>
         
         <!-- Right Section (Activity) -->
