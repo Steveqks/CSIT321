@@ -272,7 +272,7 @@ CloseCon($conn);
 
             <!-- Pagination controls -->
             <div class="pagination">
-                <a href="home_pt.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
+                <a href="PT_HomePage.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
                 
                 <?php
                 // Adjust the start and end pages to show a maximum of 5 page buttons
