@@ -312,7 +312,7 @@ CloseCon($conn);
                 }
                 ?>
 
-                <a href="PT_HomePage.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9654;</a>
+                <a href="PT_HomePage.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
             </div>
         </div>
     </div>
