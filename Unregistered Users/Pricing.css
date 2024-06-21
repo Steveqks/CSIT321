@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css?family=Inter');
+
+*{
+    text-decoration: none;
+    font-family: "Inter"
+}
+
+/* Navigation Bar */
+.navbar{
+    background:white;  
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.navdiv{
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+}
+.logo a{
+    font-size: 35px; 
+    font-weight: 600; 
+    color: black;
+}
+li{
+    list-style: none; display: inline-block;
+}
+li a{
+    color: black; 
+    font-size: 18px; 
+    font-weight: bold; 
+    margin-right: 25px;
+}
+.LoginBtn{
+    background-color: orange; 
+    margin-left: 10px; 
+    padding: 10px; 
+    width: 90px;
+    border: none;
+}
+
+.LoginBtn:hover{
+	background-color:darkorange;
+}
+
+
+button a{
+    color: black; 
+    font-weight: bold; 
+    font-size: 15px;
+}
+
+#PricingTitleContainer
+{
+    width:100%;
+    height: 250px;
+    background:lightgray;
+    
+}
+
+
+h2{
+    text-align: center;
+    vertical-align:middle;
+    line-height: 250px;
+    font-size: 40px;
+}
+
+#Pricing1, #Pricing2, #Pricing3{
+    width: 513px;
+    height: 571px;
+}
+
+#Pricing1
+{
+    background-color: lightblue;
+}
+
+#Pricing2{
+    background-color: lightgreen;
+}
+
+#Pricing3{
+    background-color: lightpink;
+}
+
+#PricingContainer{
+    display: flex;
+    justify-content: center;
+    
+}
+
+#PricingContainer > div{
+    margin: 100px;
+}
+
+h3{
+    text-align: center;
+    font-size: 40px;
+}
+
+h4{
+    text-align: center;
+    font-size: 24px;
+}
+#teamlogo{
+    height: 20vh;
+    width: auto;
+}
