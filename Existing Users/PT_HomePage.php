@@ -293,7 +293,7 @@ CloseCon($conn);
                 }
 
                 if ($start_page > 1) {
-                    echo '<a href="home_pt.php?page=1">1</a>';
+                    echo '<a href="PT_HomePage.php?page=1">1</a>';
                     if ($start_page > 2) {
                         echo '<span>...</span>';
                     }
@@ -301,18 +301,18 @@ CloseCon($conn);
 
                 for ($i = $start_page; $i <= $end_page; $i++):
                     ?>
-                    <a href="home_pt.php?page=<?php echo $i; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
+                    <a href="PT_HomePage.php?page=<?php echo $i; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
                 <?php endfor;
 
                 if ($end_page < $total_pages) {
                     if ($end_page < $total_pages - 1) {
                         echo '<span>...</span>';
                     }
-                    echo '<a href="home_pt.php?page=' . $total_pages . '">' . $total_pages . '</a>';
+                    echo '<a href="PT_HomePage.php?page=' . $total_pages . '">' . $total_pages . '</a>';
                 }
                 ?>
 
-                <a href="home_pt.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
+                <a href="PT_HomePage.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
             </div>
         </div>
     </div>
