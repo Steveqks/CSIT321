@@ -1,11 +1,9 @@
 <?php
 session_start();
+				
+	$companyID = $_SESSION['companyID'];
 
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_edit_specialisation.php');
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +51,7 @@ if (isset($_POST['submitSpecialisation'])) {
 					</h4>
 					<h4>Gender: <input name = "gender" type = "text" placeholder = "gender" required>
 					</h4>
-					<h4>Password: <input name = "password" type = "text" placeholder = "password" required>
+					<h4>Password: <input name = "password" type = "password" placeholder = "password" required>
 					</h4>
 					<h4>  <label for="Role">Role:</label>
 					  <select name="role" id="">
@@ -62,8 +60,23 @@ if (isset($_POST['submitSpecialisation'])) {
 						  <option value="PT">PT</option>
 					  </select>
 					</h4>
-					<h4>Specialisation: <input name = "specialisation" type = "text" placeholder = "specialisation" required>
-					</h4>
+					
+							<?php
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
+						$qres = mysqli_query($db, $sql); 
+						
+						$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
+									<select name='specialisationID' id=''>";		
+						while ($Row = $qres->fetch_assoc()) 
+						{
+							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> ID:" . $Row['SpecialisationID']. ", " 
+									. $Row['SpecialisationName'] . " </option>";
+						}
+						$select .= "</select> </h4>";
+						echo $select;
+						
+					?>
 					<h4>Status: <input name = "status" type = "text" placeholder = "status" required>
 					</h4>
 					<button id = "submitBtn" name = "submit">Create</button>
@@ -71,7 +84,6 @@ if (isset($_POST['submitSpecialisation'])) {
 			
 			<?php   
 			
-				$companyID = $_SESSION['companyID'];
 			
 				//create user
 				if(isset($_POST['submit'])){
@@ -85,7 +97,7 @@ if (isset($_POST['submitSpecialisation'])) {
 					$password = $_POST['password'];
 					
 					$role = $_POST['role'];
-					$specialisation = $_POST['specialisation'];
+					$specialisation = $_POST['specialisationID'];
 					$status = $_POST['status'];
 					
 					//check if email exists in existinguser

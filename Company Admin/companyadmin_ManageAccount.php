@@ -104,16 +104,61 @@ session_start();
 					}
 					else $_SESSION['message2'] = "";
 					
-					// if last name changed
+					
+					//if email is changed
 					if(@$_POST['oldEmail'] != $newEmail){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newEmail' WHERE CAdminID = '$cadminID'") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Email Address has been changed.</p>";
+						
+						$sql = "SELECT * FROM companyadmin WHERE Email = '$newEmail'";
+						$qres = mysqli_query($db, $sql); 
+						$num_rows=mysqli_num_rows($qres);
+
+						// exists
+						if($num_rows > 0){
+							//return error
+							$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+						}
+						// dont exists
+						else{
+							$sql = "SELECT * FROM superadmin WHERE Email = '$newEmail'";
+							$qres = mysqli_query($db, $sql); 
+							$num_rows=mysqli_num_rows($qres);
+							
+							// exists
+							if($num_rows > 0){
+								//return error
+								$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+							}
+							// dont exists
+							else{
+								// exists
+								if($num_rows > 0){
+									//return error
+									$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+								}
+								// dont exists
+								else{
+									$sql = "SELECT * FROM existinguser WHERE Email = '$newEmail'";
+									$qres = mysqli_query($db, $sql); 
+									$num_rows=mysqli_num_rows($qres);
+								
+									if($num_rows > 0){
+									//return error
+									$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+									}
+									// dont exists
+									else{
+										$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+										$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newEmail' WHERE CAdminID = '$cadminID'") or die("update Error");
+										$_SESSION['message3'] = "<p style='color: green;'>Email Address has been changed.</p>";
+									}
+								}
+							}
+						}
 					}
 					else $_SESSION['message3'] = "";
 					
 					header('Location: companyadmin_ManageAccount.php');
-					
+					exit;
 				}
 			?>
         </div>
