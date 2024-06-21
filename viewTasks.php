@@ -12,23 +12,29 @@
 
         $conn = OpenCon();
 
-        $userID = 1;
-        $statusID = 1;
+        $userID = 2;
+        $userStatusID = 1;
+        $taskStatusID = 1;
         $employeeType = "Manager";
 
         if ($employeeType == "Manager") {
 
+            // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("
-                . " SELECT a.TeamID, b.SpecialisationID, COUNT(b.UserID) AS totalNumStaff FROM team a"
-                . " INNER JOIN existinguser b ON a.TeamID = b.TeamID"
-                . " WHERE a.ManagerID = ".$userID." GROUP BY a.TeamID, b.SpecialisationID"
+                . " SELECT a.MainTeamID, c.SpecialisationID, COUNT(c.UserID) AS totalNumStaff FROM teaminfo a"
+                . " INNER JOIN team b ON a.MainTeamID = b.MainTeamID"
+                . " LEFT JOIN existinguser c ON b.UserID = c.UserID"
+                . " WHERE a.ManagerID = ".$userID." GROUP BY a.MainTeamID, c.SpecialisationID"
                 . ")"
-                . " SELECT d.TaskName, d.StartDate, d.DueDate, d.NumStaff, a.totalNumStaff, c.MainTaskID, concat(b.FirstName, ' ', b.LastName) AS fullName, b.UserID FROM abc a"
-                ." INNER JOIN existinguser b ON a.TeamID = b.TeamID"
-                ." INNER JOIN task c ON b.UserID = c.UserID"
-                ." INNER JOIN taskinfo d ON d.MainTaskID = c.MainTaskID"
-                ." WHERE d.SpecialisationID = a.SpecialisationID AND d.Status = ".$statusID
-                ." GROUP BY d.TaskName, d.NumStaff, d.StartDate, d.DueDate, d.MainTaskID, fullName;";
+            // GET NUMBER AND DETAILS OF USERS FROM THE TEAM THAT MATCHED THE TASK
+                . " SELECT e.TaskName, e.StartDate, e.DueDate, e.NumStaff, a.totalNumStaff, d.MainTaskID, concat(c.FirstName, ' ', c.LastName) AS fullName, c.UserID FROM abc a"
+                . " INNER JOIN team b ON a.MainTeamID = b.MainTeamID"
+                . " INNER JOIN existinguser c ON c.UserID = b.UserID"
+                . " INNER JOIN task d ON c.UserID = d.UserID"
+                . " INNER JOIN taskinfo e ON e.MainTaskID = d.MainTaskID"
+                . " WHERE e.SpecialisationID = a.SpecialisationID AND e.Status = ".$taskStatusID
+                . " AND c.Status = ".$userStatusID
+                . " GROUP BY e.TaskName, e.NumStaff,a.totalNumStaff, e.StartDate, e.DueDate, e.MainTaskID, fullName;";
         } else {
             $sql = "SELECT a.TaskName, a.StartDate, a.DueDate FROM taskinfo a inner join task b on a.MainTaskID = b.MainTaskID WHERE b.UserID = 4";
         }
@@ -85,7 +91,7 @@
                         if ($employeeType == "Manager") {
                     ?>
                         <th>Assigned To</th>
-                        <th>Req Number of Staff</th>
+                        <th>Avail / Req Number of Staff</th>
                     <?php
                         }
                     ?>

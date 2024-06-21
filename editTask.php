@@ -12,10 +12,11 @@
 
         $conn = OpenCon();
 
-    $userID = 1;
+    $userID = 2;
 
     $taskStatus = 1;
     $userStatus = 1;
+    $companyID = 21;
     $employeeType = "Manager";
 
     $validSpecialisation = FALSE;
@@ -25,23 +26,22 @@
     $isManual = FALSE;
 
     // get specialisation for the select option
-    $sql = "SELECT * FROM specialisation";
+    // get specialisation for the select option
+    $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
     $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
-
-
-    // get project for the select option
-    $sql = "SELECT ProjectID, ProjectName FROM project"
-        . " WHERE ProjectManagerID = ".$userID." AND EndDate >= CURRENT_DATE()";
+    // get team for the select option
+    $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
+        . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    $projects = $result->fetch_all(MYSQLI_ASSOC);
+    $teams = $result->fetch_all(MYSQLI_ASSOC);
 
 
 
@@ -49,14 +49,14 @@
         $mainTaskID = $_GET['maintaskid'];
     
         // get task detail of the specific task
-        $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, d.ProjectID, d.ProjectName
+        $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
                 FROM taskinfo a
                 INNER JOIN task b ON a.MainTaskID = b.MainTaskID
+                INNER JOIN teaminfo f ON f.MainTeamID = b.MainTeamID
                 INNER JOIN existinguser c ON b.UserID = c.UserID
-                INNER JOIN project d ON d.TeamID = c.TeamID
                 INNER JOIN specialisation e ON e.SpecialisationID = a.SpecialisationID
                 WHERE a.MainTaskID = ".$mainTaskID."
-                GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, d.ProjectID, d.ProjectName;";
+                GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -78,7 +78,7 @@
         $endDate = date('Y-m-d', $eDate);
 
         $priority = $_POST['priority'];
-        $projectID = $_POST['projectid'];
+        $teamID = $_POST['team'];
         $statusID = $_POST['statusid'];
 
         $mainTaskID = $_POST['maintaskid'];
@@ -94,12 +94,21 @@
 
 
         // find how many and who is in the team that the manager is managing with the specific specialisation
-        $sql = "WITH abc AS (SELECT TeamID FROM project WHERE ProjectManagerID = ".$userID." AND ProjectID = ".$projectID.")"
-            . " SELECT b.UserID FROM abc a"
-            . " INNER JOIN existinguser b on a.TeamID = b.TeamID"
-            . " WHERE b.SpecialisationID = ".$specialisationIDSub
-            . " AND (b.Role = 'F' OR b.Role = 'P') AND b.Status = ".$userStatus.";";
+        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
+        . " SELECT c.UserID FROM abc a"
+        . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+        . " INNER JOIN existinguser c on c.UserID = b.UserID"
+        . " WHERE c.SpecialisationID = ".$specialisationIDSub;
 
+        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
+
+            $sql .= " AND c.Role = 'PT' AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
+
+        } else {
+
+            $sql .= " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
+            
+        }
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -115,18 +124,18 @@
 
         } else {
             echo "<script type='text/javascript'>";
-            echo "alert('There are no staff with ".$specialisationName.". Please select other employee type or specialisation.');";
-            echo "window.location = 'addTask.php';";
+            echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
+            echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
             echo "</script>";
         }
 
 
         // check if the staff from previous query is working on the dates stated
         $sql = "SELECT a.UserID, a.FirstName, IFNULL(SUM(d.Status),0) AS totalTasks FROM existinguser a"
-                . " LEFT JOIN schedule b ON a.UserID = b.UserID"
-                . " LEFT JOIN task c ON b.UserID = c.UserID"
-                . " LEFT JOIN taskinfo d ON c.MainTaskID = d.MainTaskID"
-                . " WHERE b.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
+            . " LEFT JOIN schedule b ON a.UserID = b.UserID"
+            . " LEFT JOIN task c ON b.UserID = c.UserID"
+            . " LEFT JOIN taskinfo d ON c.MainTaskID = d.MainTaskID"
+            . " WHERE b.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
             
         $sql .= " AND (a.UserID = ".$teamUserIDs[0]['UserID'];
 
@@ -164,24 +173,24 @@
             } else {
                 echo "<script type='text/javascript'>";
                 echo "alert('There are no staff working between ".$startDate." and ".$endDate.". Please select other date.');";
-                echo "window.location = 'addTask.php';";
+                echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
                 echo "</script>";
             }
 
         } else {
             echo "<script type='text/javascript'>";
             echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-            echo "window.location = 'addTask.php';";
+            echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
             echo "</script>";
         }
 
 
         if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
             
-            $autoallocate = $_POST['autoallocate'];
+            $autoallocate = TRUE;
 
             if ($validSpecialisation && $validSchedule && $validDate) {
-                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&projectid=".$projectID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
             }
 
         } else {
@@ -189,7 +198,7 @@
             $isManual = TRUE;
             
             if ($validSpecialisation && $validSchedule && $validSchedule && $validDate) {
-                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&projectid=".$projectID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
             }
         }
     }
@@ -267,25 +276,15 @@
 
                                         </select>
 
-                                        <!--
-
-                                        <label for="employeetype">Employee Type</label>
-                                        <select id="employeetype" name="employeetype" oninput="checkOption(this)" required>
-                                            <option value="F">Full-Time</option>
-                                            <option value="P">Casual</option>
-                                        </select>
-                                            -->
-                                        
-
-                                        <label for="project">Project</label>
-                                        <select id="projectid" name="projectid" required>
+                                        <label for="team">Team</label>
+                                        <select id="team" name="team" required>
 
                                             <?php foreach ($taskDetails as $taskDetail):
-                                                echo "<option value='". $taskDetail['ProjectID']."'>-- " . $taskDetail['ProjectName']." --</option>";
+                                                echo "<option value='". $taskDetail['MainTeamID']."'>-- " . $taskDetail['TeamName']." --</option>";
                                             endforeach; ?>
 
-                                            <?php foreach ($projects as $project):
-                                                echo "<option value='". $project['ProjectID']."'>" . $project['ProjectName']."</option>";
+                                            <?php foreach ($teams as $team):
+                                                echo "<option value='". $team['MainTeamID']."'>" . $team['TeamName']."</option>";
                                             endforeach; ?>
 
                                         </select>
@@ -331,7 +330,7 @@
                                         </select>
 
                                         <label>
-                                            Auto Allocate <input type="checkbox" name="autoallocate">
+                                            Auto Allocate (for Part-Time)<input type="checkbox" name="autoallocate">
                                         </label>
 
                                     </div>

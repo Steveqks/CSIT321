@@ -6,7 +6,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/header.css" />
     <link rel="stylesheet" href="./css/all.css" />
-    
 <!--
     <script type="text/javascript">
         
@@ -15,36 +14,37 @@
             let x = obj.value;
             
             switch (x) {
-            case 'P':
-                text = "End Date will be the same as Start Date";
+            case 'auto':
+                text = "Auto allocate has been selected.";
                 break;
-            case 'F':
+            case 'manual':
                 text = "";
                 break;
             default:
                 text = "";
             }
-            document.getElementById("disableEnddate").innerText = text;
+            document.getElementById("disableTeam").innerText = text;
             
-            var input = document.getElementById("enddate");
-            input.disabled = obj.value == "P";
+            var input = document.getElementById("team");
+            input.disabled = obj.value == "auto";
             
             
         }
         
 
     </script>
-            -->
+-->
     <?php
         include 'db_connection.php';
 
         $conn = OpenCon();
 
-    $userID = 1;
+    $userID = 2;
 
     $taskStatus = 1;
     $userStatus = 1;
     $employeeType = "Manager";
+    $companyID = 21;
 
     $validSpecialisation = FALSE;
     $validSchedule = FALSE;
@@ -53,7 +53,7 @@
     $isManual = FALSE;
 
     // get specialisation for the select option
-    $sql = "SELECT * FROM specialisation";
+    $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -61,15 +61,14 @@
     $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
 
-
-    // get project for the select option
-    $sql = "SELECT ProjectID, ProjectName FROM project"
-        . " WHERE ProjectManagerID = ".$userID." AND EndDate >= CURRENT_DATE()";
+    // get team for the select option
+    $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
+        . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    $projects = $result->fetch_all(MYSQLI_ASSOC);
+    $teams = $result->fetch_all(MYSQLI_ASSOC);
 
 
     // date from FORM
@@ -85,7 +84,10 @@
         $endDate = date('Y-m-d', $eDate);
 
         $priority = $_POST['priority'];
-        $projectID = $_POST['projectid'];
+
+        if (isset($_POST['team'])) {
+            $teamID = $_POST['team'];
+        }
 
         $specialisationIDName = $_POST['specialisationidname'];
 
@@ -96,103 +98,110 @@
         $specialisationName = $specialisationIDNameE[1];
 
 
-        // find how many and who is in the team that the manager is managing with the specific specialisation
-        $sql = "WITH abc AS (SELECT TeamID FROM project WHERE ProjectManagerID = ".$userID." AND ProjectID = ".$projectID.")"
-            . " SELECT b.UserID FROM abc a"
-            . " INNER JOIN existinguser b on a.TeamID = b.TeamID"
-            . " WHERE b.SpecialisationID = ".$specialisationIDSub
-            . " AND (b.Role = 'F' OR b.Role = 'P') AND b.Status = ".$userStatus.";";
+        // find how many and which staff with the specific specialisation
+        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
+            . " SELECT c.UserID FROM abc a"
+            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            . " INNER JOIN existinguser c on c.UserID = b.UserID"
+            . " WHERE c.SpecialisationID = ".$specialisationIDSub;
 
+        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $teamUserIDs = $result->fetch_all(MYSQLI_ASSOC);
-
-        $numStaffTeam = count($teamUserIDs);
-
-        // indicate that there are staff in the team with the specific specialisation
-        if ($numStaffTeam > 0) {
-
-            $validSpecialisation = TRUE;
+            $sql .= " AND c.Role = 'PT' AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
 
         } else {
-            echo "<script type='text/javascript'>";
-            echo "alert('There are no staff with ".$specialisationName.". Please select other employee type or specialisation.');";
-            echo "window.location = 'addTask.php';";
-            echo "</script>";
-        }
 
-
-        // check if the staff from previous query is working on the dates stated
-        $sql = "SELECT a.UserID, a.FirstName, IFNULL(SUM(d.Status),0) AS totalTasks FROM existinguser a"
-                . " LEFT JOIN schedule b ON a.UserID = b.UserID"
-                . " LEFT JOIN task c ON b.UserID = c.UserID"
-                . " LEFT JOIN taskinfo d ON c.MainTaskID = d.MainTaskID"
-                . " WHERE b.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
+            $sql .= " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
             
-        $sql .= " AND (a.UserID = ".$teamUserIDs[0]['UserID'];
-
-        // if there are more than 1 staff
-        if ($numStaffTeam > 1) {
-            for ($i = 1; $i < $numStaffTeam; $i++) {
-    
-                $sql .= " OR a.UserID = ".$teamUserIDs[$i]['UserID'];
-                    
-            }
         }
-                                
-        $sql .= ") GROUP BY a.UserID, a.FirstName"
-            ." ORDER BY totalTasks ASC;";
-    
-        //echo " ; SQL2 = ".$sql;
-    
-        $result = $conn->query($sql);
-                    
-        // Check for errors
-        if (!$result) {
-            die("Query failed: " . $conn->error);
-        }
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $teamUserIDs = $result->fetch_all(MYSQLI_ASSOC);
 
-        // check if endDate is not less than startDate
-        if ($endDate >= $startDate) {
+            $numStaffTeam = count($teamUserIDs);
 
-            $validDate = TRUE;
 
-            // if there are staff working on the specific date
-            if ($result->num_rows > 0) {
-        
-                $validSchedule = TRUE;
-        
+            // indicate that there are staff in the team with the specific specialisation
+            if ($numStaffTeam > 0) {
+
+                $validSpecialisation = TRUE;
+
             } else {
                 echo "<script type='text/javascript'>";
-                echo "alert('There are no staff working between ".$startDate." and ".$endDate.". Please select other date.');";
+                echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
                 echo "window.location = 'addTask.php';";
                 echo "</script>";
             }
 
-        } else {
-            echo "<script type='text/javascript'>";
-            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-            echo "window.location = 'addTask.php';";
-            echo "</script>";
-        }
 
+            // check if the staff from previous query is working on the dates stated
+            $sql = "SELECT a.UserID, a.FirstName, IFNULL(SUM(d.Status),0) AS totalTasks FROM existinguser a"
+                . " LEFT JOIN schedule b ON a.UserID = b.UserID"
+                . " LEFT JOIN task c ON b.UserID = c.UserID"
+                . " LEFT JOIN taskinfo d ON c.MainTaskID = d.MainTaskID"
+                . " WHERE b.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
+                
+            $sql .= " AND (a.UserID = ".$teamUserIDs[0]['UserID'];
 
-        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
+            // if there are more than 1 staff
+            if ($numStaffTeam > 1) {
+                for ($i = 1; $i < $numStaffTeam; $i++) {
+
+                    $sql .= " OR a.UserID = ".$teamUserIDs[$i]['UserID'];
+                        
+                }
+            }
+                                    
+            $sql .= ") GROUP BY a.UserID, a.FirstName"
+                ." ORDER BY totalTasks ASC;";
+
+            //echo " ; SQL2 = ".$sql;
+
+            $result = $conn->query($sql);
             
-            $autoallocate = $_POST['autoallocate'];
 
-            if ($validSpecialisation && $validSchedule && $validDate) {
-                header('location: addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&projectid=".$projectID);
+            // check if endDate is not less than startDate
+            if ($endDate >= $startDate) {
+
+                $validDate = TRUE;
+
+                // if there are staff working on the specific date
+                if ($result->num_rows > 0) {
+            
+                    $validSchedule = TRUE;
+            
+                } else {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('There are no staff working between ".$startDate." and ".$endDate.". Please select other date.');";
+                    echo "window.location = 'addTask.php';";
+                    echo "</script>";
+                }
+
+            } else {
+                echo "<script type='text/javascript'>";
+                echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                echo "window.location = 'addTask.php';";
+                echo "</script>";
             }
 
+        // auto allocation for PT only
+        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
+
+            $autoallocate = TRUE;
+
+            if ($validSpecialisation && $validSchedule && $validDate) {
+                header('location: addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam.'&mainteamid='.$teamID);
+            }
+
+
+        // manual allocation for both FT and PT
         } else {
 
             $isManual = TRUE;
             
             if ($validSpecialisation && $validSchedule && $validSchedule && $validDate) {
-                header('location: addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&projectid=".$projectID);
+                header('location: addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam.'&mainteamid='.$teamID);
             }
         }
     }
@@ -259,20 +268,10 @@
                                             endforeach; ?>
                                         </select>
 
-                                        <!--
-
-                                        <label for="employeetype">Employee Type</label>
-                                        <select id="employeetype" name="employeetype" oninput="checkOption(this)" required>
-                                            <option value="F">Full-Time</option>
-                                            <option value="P">Casual</option>
-                                        </select>
-                                            -->
-                                        
-
-                                        <label for="project">Project</label>
-                                        <select id="projectid" name="projectid" required>
-                                            <?php foreach ($projects as $project):
-                                                echo "<option value='". $project['ProjectID']."'>" . $project['ProjectName']."</option>";
+                                        <label for="team">Team</label><!--<p id="disableTeam" style="color:red;"></p>-->
+                                        <select id="team" name="team" required>
+                                            <?php foreach ($teams as $team):
+                                                echo "<option value='". $team['MainTeamID']."'>" . $team['TeamName']."</option>";
                                             endforeach; ?>
                                         </select>
                                     
@@ -290,13 +289,18 @@
                                         <label for="startdate">Start Date</label>
                                         <input type="date" id="startdate" name="startdate" required>
 
-                                        <label for="enddate">End Date</label><!--<p id="disableEnddate" style="color:red;"></p>-->
+                                        <label for="enddate">End Date</label>
                                         <input type="date" id="enddate" name="enddate" required>
-                                        
-                                        <label>
-                                            Auto Allocate <input type="checkbox" name="autoallocate">
-                                        </label>
 
+                                        <!--<label for="allocate">Manual or Auto Allocate?</label>
+                                        <select id="allocate" name="allocate" oninput="checkOption(this)">
+                                            <option value="manual">Manual Allocation</option>
+                                            <option value="auto">Auto Allocation</option>
+                                        </select>-->
+
+                                        <label>
+                                            Auto Allocate (for Part-Time) <input type="checkbox" name="autoallocate" value="on">
+                                        </label>
                                     </div>
                                 
                                 </div>

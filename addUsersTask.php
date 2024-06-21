@@ -16,7 +16,7 @@
 
         $taskStatus = 1;
         $userStatus = 1;
-        $userID = 1;
+        $userID = 2;
         $employeeType = "Manager";
 
 
@@ -54,11 +54,11 @@
             $specialisationName = $specialisationIDNameE[1];
         }
 
-        if(isset($_GET['projectid'])) {
-            $projectID = $_GET['projectid'];
+        if(isset($_GET['mainteamid'])) {
+            $teamID = $_GET['mainteamid'];
         }
 
-        if(isset($_GET['autoallocate']) && $_GET['autoallocate'] == 'on') {
+        if(isset($_GET['autoallocate'])) {
             $autoallocate = $_GET['autoallocate'];
         }
 
@@ -88,8 +88,8 @@
             $priority = $_POST['priority'];
         }
 
-        if(isset($_POST['projectid'])) {
-            $projectID = $_POST['projectid'];
+        if(isset($_POST['mainteamid'])) {
+            $teamID = $_POST['mainteamid'];
         }
 
         if(isset($_POST['specialisationidname'])) {
@@ -113,16 +113,26 @@
 
         if((isset($_POST['addTask'])) || (isset($_GET['ismanual']) == 1)) {
 
-            $sql = "WITH abc AS (SELECT TeamID FROM project WHERE ProjectManagerID = ".$userID." AND ProjectID = ".$projectID.")"
-                . " SELECT b.UserID, concat(b.FirstName,' ',b.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM abc a"
-                . " INNER JOIN existinguser b ON a.TeamID = b.TeamID"
-                . " LEFT JOIN schedule c ON b.UserID = c.UserID"
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+                . " INNER JOIN team b ON a.UserID = b.UserID"
+                . " LEFT JOIN schedule c ON a.UserID = c.UserID"
                 . " LEFT JOIN task d ON c.UserID = d.UserID"
                 . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
-                . " WHERE b.SpecialisationID = ".$specialisationID
-                . " AND (b.Role = 'F' OR b.Role = 'P') AND b.Status = ".$userStatus
-                . " AND c.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'"
-                . " GROUP BY b.UserID"
+                . " WHERE a.SpecialisationID = ".$specialisationID
+                . " AND a.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$teamID
+                . " AND c.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
+
+            if (isset($_GET['ismanual']) == 1) {
+
+                $sql .= " AND (a.Role = 'FT' OR a.Role = 'PT')";
+
+            } else if(isset($_POST['numstaff'])) {
+                
+                $sql .= " AND a.Role = 'PT'";
+            }
+
+            $sql .= " GROUP BY a.UserID"
                 . " ORDER BY totalTasks ASC";
 
             if (isset($_POST['numstaff'])) {
@@ -130,54 +140,55 @@
                 $sql .= " LIMIT ".$numStaff.";";
             }
 
+            //echo ";; SQL = ".$sql;
+
             $stmt = $conn->prepare($sql);
             
             $stmt->execute();
             $result = $stmt->get_result();
             $users = $result->fetch_all(MYSQLI_ASSOC);
 
-            //echo " ;; SQL = ".$sql;
-
             // auto allocation
             if(isset($_POST['numstaff'])) {
 
                 if ($numStaffTeam >= $numStaff) {
                 
+                // Insert into TaskInfo query
+                $stmt = $conn->prepare("INSERT INTO taskinfo (SpecialisationID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
+
+                $stmt->bind_param("issssiii",$specialisationID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
+
+                if ($stmt->execute()) {
+
+                    $newMainTaskID = $stmt->insert_id;
+
+
+
                     // Insert into TaskInfo query
-                    $stmt = $conn->prepare("INSERT INTO taskinfo (SpecialisationID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
+                    $sql = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
 
-                    $stmt->bind_param("issssiii",$specialisationID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
+                    foreach ($users as $user):
 
-                    if ($stmt->execute()) {
+                        $sql->bind_param("iii",$teamID,$newMainTaskID, $user['UserID']);
 
-                        $newMainTaskID = $stmt->insert_id;
+                        $sql->execute();
 
-                        // Insert into TaskInfo query
-                        $sql = $conn->prepare("INSERT INTO task (MainTaskID,UserID) VALUES (?,?)");
+                        echo "<script type='text/javascript'>";
+                        echo "alert('Task has been auto allocated.');";
+                        echo "window.location = 'viewTasks.php';";
+                        echo "</script>";
+                    endforeach;
 
-                        foreach ($users as $user):
-
-                            $sql->bind_param("ii",$newMainTaskID, $user['UserID']);
-
-                            $sql->execute();
-
-                            echo "<script type='text/javascript'>";
-                            echo "alert('Task has been auto allocated.');";
-                            echo "window.location = 'viewTasks.php';";
-                            echo "</script>";
-                        endforeach;
-
-                    } else {
-                        echo "FAILED! Error: " . $stmt->error;
-                    }
-                            
                 } else {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
-                    echo "window.location = 'addTask.php';";
-                    echo "</script>";
+                    echo "FAILED! Error: " . $stmt->error;
                 }
-            
+            } else {
+                echo "<script type='text/javascript'>";
+                echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
+                echo "window.location = 'addTask.php';";
+                echo "</script>";
+            }
+
             // manual allocation
             } else if (isset($_POST['selectStaff'])) {
 
@@ -195,12 +206,11 @@
                     $newMainTaskID = $stmt->insert_id;
 
                     // Insert into TaskInfo query
-                    $sql = $conn->prepare("INSERT INTO task (MainTaskID,UserID) VALUES (?,?)");
-                    //echo "newMainTaskID = ".count($availStaff);
-
+                    $sql = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
+                    
                     foreach ($selectStaff as $selectStaffID) {
 
-                        $sql->bind_param("ii",$newMainTaskID, $selectStaffID);
+                        $sql->bind_param("iii",$teamID,$newMainTaskID, $selectStaffID);
 
                         $sql->execute();
 
@@ -215,6 +225,7 @@
                 }
             }
         }
+        
     ?>
 
 </head>
@@ -267,21 +278,24 @@
                                         <input type="hidden" name="enddate" value="<?php echo $endDate; ?>">
                                         <input type="hidden" name="priority" value="<?php echo $priority; ?>">
                                         <input type="hidden" name="numstaffteam" value="<?php echo $numStaffTeam; ?>">
-                                        <input type="hidden" name="projectid" value="<?php echo $projectID; ?>">
+                                        <input type="hidden" name="mainteamid" value="<?php echo $teamID; ?>">
 
                                         <?php
-                                        if (isset($_GET['autoallocate']) && $_GET['autoallocate'] == 'on') { ?>
+                                        if (isset($_GET['autoallocate']) && $_GET['autoallocate'] == 1) { ?>
 
                                             <input type="number" id="numstaff" name="numstaff">
 
-                                        <?php } else if ($isManual == 1){ ?>
+                                        <?php } else if (isset($_GET['ismanual']) && $_GET['ismanual'] == 1){ ?>
 
                                             <label for="userid">Staff Name</label>
-
-                                                <?php foreach ($users as $user):
-                                                    echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</option>";
-                                                endforeach; ?>
                                             
+                                                <div class="checkbox-container">
+                                                    <?php
+                                                    foreach ($users as $user):
+                                                        echo "<div class='checkbox-team'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
+                                                    endforeach;
+                                                    ?>
+                                                </div>
                                         
                                         <?php } ?>
                                     </div>
