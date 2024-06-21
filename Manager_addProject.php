@@ -48,7 +48,7 @@
 
                     echo "<script type='text/javascript'>";
                     echo "alert('Project Name with ".$projectName." already exist.');";
-                    echo "window.location = 'addProject.php';";
+                    echo "window.location = 'Manager_addProject.php';";
                     echo "</script>";
 
                 } else {
@@ -70,7 +70,7 @@
                                 
                             echo "<script type='text/javascript'>";
                             echo "alert('Project has been created successfully.');";
-                            echo "window.location = 'viewProject.php';";
+                            echo "window.location = 'Manager_viewProject.php';";
                             echo "</script>";
                         }
                     }
@@ -80,7 +80,7 @@
             } else {
                 echo "<script type='text/javascript'>";
                 echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                echo "window.location = 'addProject.php';";
+                echo "window.location = 'Manager_addProject.php';";
                 echo "</script>";
             }
 
@@ -102,12 +102,12 @@
                 <ul>
                     <?php if ($employeeType == "Manager") { ?>
                         <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
                         <li><a href="#">Logout</a></li>
                         <?php } ?>
                 </ul>
@@ -127,7 +127,7 @@
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="addProject" action="addProject.php" method="POST">
+                            <form name="addProject" action="Manager_addProject.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">

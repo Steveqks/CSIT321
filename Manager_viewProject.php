@@ -48,7 +48,7 @@
                 if ($stmt->execute()) {
                     echo "<script type='text/javascript'>";
                     echo "alert('Project has been deleted.');";
-                    echo "window.location = 'viewProject.php';";
+                    echo "window.location = 'Manager_viewProject.php';";
                     echo "</script>";
                 }
             }
@@ -71,12 +71,12 @@
                 <ul>
                     <?php if ($employeeType == "Manager") { ?>
                         <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
                         <li><a href="#">Logout</a></li>
                         <?php } ?>
                 </ul>
@@ -105,10 +105,10 @@
                         <?php foreach ($projects as $project): ?>
                             <tr>
                                 <td>
-                                    <a href="editProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>"><?php echo $project['ProjectName']; ?></a>
+                                    <a href="Manager_editProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>"><?php echo $project['ProjectName']; ?></a>
                                 </td>
                                 <td><?php echo $project['fullName']; ?></td>
-                                <td><a href="viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
+                                <td><a href="Manager_viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

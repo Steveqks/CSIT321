@@ -215,7 +215,7 @@
 
                                 echo "<script type='text/javascript'>";
                                 echo "alert('Task has been updated and has been auto allocated.');";
-                                echo "window.location = 'viewTasks.php';";
+                                echo "window.location = 'Manager_viewTasks.php';";
                                 echo "</script>";
                             endforeach;
                                 
@@ -227,7 +227,7 @@
                 } else {
                     echo "<script type='text/javascript'>";
                     echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
-                    echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
+                    echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
                     echo "</script>";
                 }
             
@@ -263,7 +263,7 @@
 
                             echo "<script type='text/javascript'>";
                             echo "alert('Task has updated.');";
-                            echo "window.location = 'viewTasks.php';";
+                            echo "window.location = 'Manager_viewTasks.php';";
                             echo "</script>";
                         }
                     }
@@ -289,16 +289,16 @@
         <div class="navBar">
             <nav>
                 <ul>
-                <?php if ($employeeType == "Manager") { ?>
-                    <li><a> &lt;name&gt;, Manager</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-					<li><a href="#">Logout</a></li>
-                    <?php } ?>
+                    <?php if ($employeeType == "Manager") { ?>
+                        <li><a> &lt;name&gt;, Manager</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="#">Logout</a></li>
+                        <?php } ?>
                 </ul>
             </nav>
         </div>
@@ -312,7 +312,7 @@
                 <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="editTask" action="editUsersTask.php" method="POST">
+                            <form name="editTask" action="Manager_editUsersTask.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">

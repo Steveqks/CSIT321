@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/all.css" />
 
     <?php
-        $userID = 1;
+        $userID = 2;
         $employeeType = "Manager";
     ?>
 
@@ -29,14 +29,14 @@
                 <ul>
                     <?php if ($employeeType == "Manager") { ?>
                         <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
                         <li><a href="#">Logout</a></li>
-                    <?php } ?>
+                        <?php } ?>
                 </ul>
             </nav>
         </div>
@@ -80,15 +80,15 @@
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['manageaccount']) == "true")) {
                 ?>
 
-                <a href="createUserAccount.php"><button>Create User Account</button></a>
-                <a href="editAccount.php"><button>Edit Account</button></a>
+                <a href="Manager_createUserAccount.php"><button>Create User Account</button></a>
+                <a href="Manager_editAccount.php"><button>Edit Account</button></a>
 
                 <?php }
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['taskmanagenent']) == "true")) {
                 ?>
 
-                <a href="viewTasks.php"><button>View Tasks</button></a>
-                <a href="addTask.php"><button>Allocate Task</button></a>
+                <a href="Manager_viewTasks.php"><button>View Tasks</button></a>
+                <a href="Manager_addTask.php"><button>Allocate Task</button></a>
 
                 <?php }
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['leavemanagenent']) == "true")) {
@@ -110,8 +110,8 @@
 
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['projectmanagenent']) == "true")) {
                 ?>
-                    <a href="addProject.php"><button>Create Project</button></a>
-                    <a href="viewProject.php"><button>View Projects</button></a>
+                    <a href="Manager_addProject.php"><button>Create Project</button></a>
+                    <a href="Manager_viewProject.php"><button>View Projects</button></a>
                 <?php } ?>
 
 

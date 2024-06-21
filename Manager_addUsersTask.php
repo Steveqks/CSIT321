@@ -162,8 +162,6 @@
 
                     $newMainTaskID = $stmt->insert_id;
 
-
-
                     // Insert into TaskInfo query
                     $sql = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
 
@@ -175,7 +173,7 @@
 
                         echo "<script type='text/javascript'>";
                         echo "alert('Task has been auto allocated.');";
-                        echo "window.location = 'viewTasks.php';";
+                        echo "window.location = 'Manager_viewTasks.php';";
                         echo "</script>";
                     endforeach;
 
@@ -185,7 +183,7 @@
             } else {
                 echo "<script type='text/javascript'>";
                 echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
-                echo "window.location = 'addTask.php';";
+                echo "window.location = 'Manager_addTask.php';";
                 echo "</script>";
             }
 
@@ -216,7 +214,7 @@
 
                         echo "<script type='text/javascript'>";
                         echo "alert('Task has been allocated.');";
-                        echo "window.location = 'viewTasks.php';";
+                        echo "window.location = 'Manager_viewTasks.php';";
                         echo "</script>";
                     }
 
@@ -245,13 +243,13 @@
                 <ul>
                 <?php if ($employeeType == "Manager") { ?>
                     <li><a> &lt;name&gt;, Manager</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-					<li><a href="#">Logout</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                    <li><a href="#">Logout</a></li>
                     <?php } ?>
                 </ul>
             </nav>
@@ -266,7 +264,7 @@
                 <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="addTask" action="addUsersTask.php" method="POST">
+                            <form name="addTask" action="Manager_addUsersTask.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">

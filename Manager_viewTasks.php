@@ -19,12 +19,22 @@
 
         if ($employeeType == "Manager") {
 
+            $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                    (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                    CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
+                    FROM task t
+                    JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+                    JOIN existinguser eu ON t.UserID = eu.UserID
+                    JOIN team te ON eu.UserID = te.UserID
+                    JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
+                    WHERE tei.ManagerID = ".$userID."
+                    ORDER BY ti.MainTaskID;";
+/*
             // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("
-                . " SELECT a.MainTeamID, c.SpecialisationID, COUNT(c.UserID) AS totalNumStaff FROM teaminfo a"
-                . " INNER JOIN team b ON a.MainTeamID = b.MainTeamID"
-                . " LEFT JOIN existinguser c ON b.UserID = c.UserID"
-                . " WHERE a.ManagerID = ".$userID." GROUP BY a.MainTeamID, c.SpecialisationID"
+                . " SELECT a.MainTeamID, a.MainTaskID, b.SpecialisationID, COUNT(a.UserID) AS totalNumStaff FROM task a
+                    INNER JOIN taskinfo b ON a.MainTaskID = b.MainTaskID
+                    GROUP BY a.MainTeamID, a.MainTaskID, b.SpecialisationID"
                 . ")"
             // GET NUMBER AND DETAILS OF USERS FROM THE TEAM THAT MATCHED THE TASK
                 . " SELECT e.TaskName, e.StartDate, e.DueDate, e.NumStaff, a.totalNumStaff, d.MainTaskID, concat(c.FirstName, ' ', c.LastName) AS fullName, c.UserID FROM abc a"
@@ -35,6 +45,8 @@
                 . " WHERE e.SpecialisationID = a.SpecialisationID AND e.Status = ".$taskStatusID
                 . " AND c.Status = ".$userStatusID
                 . " GROUP BY e.TaskName, e.NumStaff,a.totalNumStaff, e.StartDate, e.DueDate, e.MainTaskID, fullName;";
+*/
+                echo $sql;
         } else {
             $sql = "SELECT a.TaskName, a.StartDate, a.DueDate FROM taskinfo a inner join task b on a.MainTaskID = b.MainTaskID WHERE b.UserID = 4";
         }
@@ -61,16 +73,16 @@
         <div class="navBar">
             <nav>
                 <ul>
-                <?php if ($employeeType == "Manager") { ?>
-                    <li><a> &lt;name&gt;, Manager</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-					<li><a href="#">Logout</a></li>
-                    <?php } ?>
+                    <?php if ($employeeType == "Manager") { ?>
+                        <li><a> &lt;name&gt;, Manager</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="#">Logout</a></li>
+                        <?php } ?>
                 </ul>
             </nav>
         </div>
@@ -103,7 +115,7 @@
                             <tr>
                                 <td>
                                 <?php if ($employeeType == "Manager") { ?>
-                                    <a href="editTask.php?maintaskid=<?php echo htmlspecialchars($task['MainTaskID']); ?>"><?php echo htmlspecialchars($task['TaskName']); ?></a>
+                                    <a href="Manager_editTask.php?maintaskid=<?php echo htmlspecialchars($task['MainTaskID']); ?>"><?php echo htmlspecialchars($task['TaskName']); ?></a>
                                 <?php } else { ?>
                                     <?php echo htmlspecialchars($task['TaskName']); ?>
                                 <?php } ?>
@@ -113,7 +125,7 @@
 
                                 <?php if ($employeeType == "Manager") { ?>
                                     <td><?php echo htmlspecialchars($task['fullName']); ?></td>
-                                    <td><?php echo htmlspecialchars($task['NumStaff']); ?> / <?php echo htmlspecialchars($task['totalNumStaff']); ?></td>
+                                    <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
                                 <?php } ?>
 
                             </tr>

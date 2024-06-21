@@ -125,7 +125,7 @@
         } else {
             echo "<script type='text/javascript'>";
             echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-            echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
+            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
             echo "</script>";
         }
 
@@ -173,14 +173,14 @@
             } else {
                 echo "<script type='text/javascript'>";
                 echo "alert('There are no staff working between ".$startDate." and ".$endDate.". Please select other date.');";
-                echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
+                echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
                 echo "</script>";
             }
 
         } else {
             echo "<script type='text/javascript'>";
             echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-            echo "window.location = 'editTask.php?maintaskid=".$mainTaskID."'";
+            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
             echo "</script>";
         }
 
@@ -190,7 +190,7 @@
             $autoallocate = TRUE;
 
             if ($validSpecialisation && $validSchedule && $validDate) {
-                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
             }
 
         } else {
@@ -198,7 +198,7 @@
             $isManual = TRUE;
             
             if ($validSpecialisation && $validSchedule && $validSchedule && $validDate) {
-                header('location: editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
             }
         }
     }
@@ -220,16 +220,16 @@
         <div class="navBar">
             <nav>
                 <ul>
-                <?php if ($employeeType == "Manager") { ?>
-                    <li><a> &lt;name&gt;, Manager</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                    <li><a href="allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-					<li><a href="#">Logout</a></li>
-                    <?php } ?>
+                    <?php if ($employeeType == "Manager") { ?>
+                        <li><a> &lt;name&gt;, Manager</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                        <li><a href="#">Logout</a></li>
+                        <?php } ?>
                 </ul>
             </nav>
         </div>
@@ -248,7 +248,7 @@
                 <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="editTask" action="editTask.php" method="POST">
+                            <form name="editTask" action="Manager_editTask.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
