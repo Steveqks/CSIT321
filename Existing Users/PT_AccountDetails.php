@@ -189,7 +189,7 @@ CloseCon($conn);
             <div class="details">
                 <p>Full Name: <span><?php echo htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']); ?></span></p>
                 <p>Email: <span><?php echo htmlspecialchars($user['Email']); ?></span></p>
-                <a href="edit_account_pt.php" class="edit-button">Edit Account Details</a>
+                <a href="PT_EditAccountDetails.php" class="edit-button">Edit Account Details</a>
             </div>
 			
 			<!-- Display success message if exists -->
