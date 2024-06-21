@@ -165,9 +165,9 @@ CloseCon($conn);
                 <h2>Attendance Management</h2>
             </div>
             <div class="management-buttons">
-                <a href="view_atd_pt.php" class="management-button">View Attendance</a>
-                <a href="take_atd_pt.php" class="management-button">Take Attendance</a>
-                <a href="break_pt.php" class="management-button">Start / End Break</a>
+                <a href="PT_ViewAttendance.php" class="management-button">View Attendance</a>
+                <a href="PT_TakeAttendance.php" class="management-button">Take Attendance</a>
+                <a href="PT_Break.php" class="management-button">Start / End Break</a>
             </div>
         </div>
     </div>
