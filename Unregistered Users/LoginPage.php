@@ -34,7 +34,7 @@
 				if($row['Role'] == "FT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Existing Users/FT_Homepage.php");
+					header("Location:../FullTimers/FT_Homepage.php");
 				}
 				if($row['Role'] == "PT")
 				{
