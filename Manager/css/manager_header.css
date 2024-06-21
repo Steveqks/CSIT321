@@ -1,15 +1,18 @@
 .topSection {
     border: 1px solid black;
-    height: 15vh;
+    height: 20vh;
+    overflow: hidden;
+    text-align: left;
+    padding: 10px;
 }
 .logo {
+    height: 100%;
     width: auto;
-    height: 100px;
 }
 .contentNav {
     display: flex;
     border: 1px solid black;
-    height: auto;
+    height: 95vh;
 }
 .navBar {
     border: 1px solid black;

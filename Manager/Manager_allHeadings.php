@@ -8,8 +8,19 @@
     <link rel="stylesheet" href="./css/manager.css" />
 
     <?php
-        $userID = 2;
-        $employeeType = "Manager";
+        session_start();
+        include 'db_connection.php';
+
+        // Check if user is logged in
+        if (!isset($_SESSION['Email']))
+        {
+            header("Location: ../Unregistered Users/LoginPage.php");
+            exit();
+        }
+
+        $userID = $_SESSION['UserID'];
+        $firstName = $_SESSION['FirstName'];
+        $employeeType = $_SESSION['Role'];
     ?>
 
 </head>
@@ -27,16 +38,14 @@
         <div class="navBar">
             <nav>
                 <ul>
-                    <?php if ($employeeType == "Manager") { ?>
-                        <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                        <li><a href="#">Logout</a></li>
-                        <?php } ?>
+                    <li><?php echo "$firstName, Staff(Manager)"?></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                    <li><a href="Logout.php">Logout</a></li>
                 </ul>
             </nav>
         </div>

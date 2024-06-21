@@ -8,29 +8,26 @@
     <link rel="stylesheet" href="./css/manager.css" />
 
     <?php
-
         session_start();
+        include 'db_connection.php';
 
-    	// Check if user is logged in
+        // Check if user is logged in
         if (!isset($_SESSION['Email']))
         {
             header("Location: ../Unregistered Users/LoginPage.php");
             exit();
         }
 
-        $user_id = $_SESSION['UserID'];
-        $Email = $_SESSION['Email'];
-        $FirstName = $_SESSION['FirstName'];
+        $userID = $_SESSION['UserID'];
+        $firstName = $_SESSION['FirstName'];
+        $companyID = $_SESSION['CompanyID'];
+        $employeeType = $_SESSION['Role'];
 
-        
-        include 'db_connection.php';
-
+        // Connect to the database
         $conn = OpenCon();
 
         $taskStatus = 1;
         $userStatus = 1;
-        $userID = 2;
-        $employeeType = "Manager";
 
 
         if(isset($_GET['taskname'])) {
@@ -254,16 +251,14 @@
         <div class="navBar">
             <nav>
                 <ul>
-                <?php if ($employeeType == "Manager") { ?>
-                    <li><a> &lt;name&gt;, Manager</a></li>
+                    <li><?php echo "$firstName, Staff(Manager)"?></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                    <li><a href="#">Logout</a></li>
-                    <?php } ?>
+                    <li><a href="Logout.php">Logout</a></li>
                 </ul>
             </nav>
         </div>
