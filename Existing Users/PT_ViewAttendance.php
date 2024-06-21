@@ -3,10 +3,9 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-if (!isset($_SESSION['Email'])) 
-{
-	header("Location: ../Unregistered Users/LoginPage.php");
-	exit();
+if (!isset($_SESSION['Email'])) {
+    header("Location: ../Unregistered Users/LoginPage.php");
+    exit();
 }
 
 $user_id = $_SESSION['UserID'];
@@ -245,6 +244,7 @@ CloseCon($conn);
             </table>
 
             <!-- Pagination controls -->
+            <?php if ($total_pages > 1): ?>
             <div class="pagination">
                 <a href="PT_ViewAttendance.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
                 
@@ -288,6 +288,7 @@ CloseCon($conn);
 
                 <a href="PT_ViewAttendance.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>

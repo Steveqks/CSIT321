@@ -3,10 +3,9 @@ session_start();
 include 'db_connection.php';
 
 // Check if user is logged in
-if (!isset($_SESSION['Email'])) 
-{
-	header("Location: ../Unregistered Users/LoginPage.php");
-	exit();
+if (!isset($_SESSION['Email'])) {
+    header("Location: ../Unregistered Users/LoginPage.php");
+    exit();
 }
 
 $user_id = $_SESSION['UserID'];
@@ -38,7 +37,7 @@ $total_pages = ceil($total_records / $limit);
 $sql = "SELECT t.TaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.TaskDesc 
         FROM task t
         JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-        WHERE t.UserID = 1
+        WHERE t.UserID = $user_id
         LIMIT ?, ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $start_from, $limit);
@@ -271,6 +270,7 @@ CloseCon($conn);
             </table>
 
             <!-- Pagination controls -->
+            <?php if ($total_pages > 1): ?>
             <div class="pagination">
                 <a href="PT_HomePage.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
                 
@@ -283,10 +283,10 @@ CloseCon($conn);
                     } elseif ($page > $total_pages - 3) {
                         $start_page = $total_pages - 4;
                         $end_page = $total_pages;
-                    } else {
+                        } else {
                         $start_page = $page - 2;
                         $end_page = $page + 2;
-                    }
+						}
                 } else {
                     $start_page = 1;
                     $end_page = $total_pages;
@@ -314,6 +314,7 @@ CloseCon($conn);
 
                 <a href="PT_HomePage.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
