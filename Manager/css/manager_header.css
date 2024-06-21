@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 .topSection {
     border: 1px solid black;
     height: 20vh;
@@ -22,18 +26,6 @@
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-.top-section {
-    border: 1px solid black;
-    height: 20vh;
-    overflow: hidden;
-    text-align: left;
-    padding: 10px;
-}
 .navBar ul {
     list-style-type: none;
     padding: 0;
@@ -57,7 +49,7 @@ body {
     border-width: 1px 0px 0px 0px;
 }
 
-.navbar a:hover {
+.navBar a:hover {
     background-color: #ddd;
     color: #000;
     border: 0.5px solid black;
