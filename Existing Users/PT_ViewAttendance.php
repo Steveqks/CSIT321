@@ -23,8 +23,8 @@ $start_from = ($page - 1) * $limit;
 
 // Fetch total number of attendance records
 $sql_total = "SELECT COUNT(AttendanceID) FROM attendance WHERE UserID = ?";
-$stmt_total = $conn->prepare($sql_total);
 $stmt->bind_param("i", $user_id);
+$stmt_total = $conn->prepare($sql_total);
 $stmt_total->execute();
 $stmt_total->bind_result($total_records);
 $stmt_total->fetch();
