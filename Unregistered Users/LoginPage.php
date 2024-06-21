@@ -30,6 +30,7 @@
 				$_SESSION['Email'] = $row['Email'];
 				$_SESSION['FirstName'] = $row['FirstName'];
 				$_SESSION['Role']= $row['Role'];
+				$_SESSION['CompanyID']= $row['CompanyID'];
 				
 				if($row['Role'] == "FT")
 				{
@@ -44,7 +45,7 @@
 				if($row['Role'] == "Manager")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:Managers.php");
+					header("Location:../Manager/Manager_viewTasks.php");
 				}
 				
 			}
