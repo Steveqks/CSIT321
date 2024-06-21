@@ -25,7 +25,7 @@ $start_from = ($page - 1) * $limit;
 $sql_total = "SELECT COUNT(t.TaskID) 
               FROM task t
               JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-              WHERE t.UserID = 1";
+              WHERE t.UserID = $user_id";
 $stmt_total = $conn->prepare($sql_total);
 $stmt_total->execute();
 $stmt_total->bind_result($total_records);
