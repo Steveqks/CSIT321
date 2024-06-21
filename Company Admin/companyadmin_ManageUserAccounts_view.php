@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once('superadmin_manageCAdmin_view_functions.php');
+//include_once('superadmin_manageCAdmin_view_functions.php');
 
 if(isset($_POST['deleteUser']))
 {
