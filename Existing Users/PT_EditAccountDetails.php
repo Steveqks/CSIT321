@@ -200,6 +200,13 @@ CloseCon($conn);
             margin-bottom: 15px;
             font-size: 0.9em;
         }
+		
+		.success-message {
+			color: green;
+			margin-top: -10px;
+			margin-bottom: 15px;
+			font-size: 0.9em;
+		}
     </style>
     <script>
         function validateForm() {
@@ -246,6 +253,7 @@ CloseCon($conn);
                 <i class="fas fa-user-edit"></i>
                 <h2>Edit Account Details</h2>
             </div>
+			
             <form action="PT_UpdateAccount.php" method="post" class="edit-form" onsubmit="return validateForm()">
                 <div class="form-half">
                     <div class="form-group">
@@ -266,7 +274,13 @@ CloseCon($conn);
                         <input type="password" id="confirm_password" name="confirm_password" required>
                     </div>
                 </div>
-                <div id="error-message" class="error-message"></div>
+				<?php
+					if (isset($_GET['message'])) {
+						echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+					} elseif (isset($_GET['error'])) {
+						echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+					}
+				?>
                 <div class="button-group">
                     <a href="PT_AccountDetails.php" class="cancel-button">Cancel</a>
                     <button type="submit" class="edit-button">Save Changes</button>
