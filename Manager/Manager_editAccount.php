@@ -27,32 +27,22 @@
         $conn = OpenCon();
         $userStatus = 1;
 
-        // get specialisation for the select option
-        $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
+        // get manager's details to edit
+        $sql = "SELECT a.*, b.SpecialisationName FROM existinguser a
+                LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
+                WHERE a.UserID = ".$userID;
     
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $specialisations = $result->fetch_all(MYSQLI_ASSOC);
+        $managerDetails = $result->fetch_all(MYSQLI_ASSOC);
 
         $stmt->close();
 
-        if (isset($_POST['createAccount'])) {
-
-            $firstName = $_POST['firstname'];
-            $lastName = $_POST['lastname'];
-            $gender = $_POST['gender'];
+        if (isset($_POST['editAccount'])) {
+            
             $email = $_POST['email'];
-            $role = $_POST['role'];
             $password = $_POST['pwd'];
-
-            $specialisationIDName = $_POST['specialisationidname'];
-
-            $specialisationIDNameE = explode(" ", $specialisationIDName);
-        
-            $specialisationID = $specialisationIDNameE[0];
-                
-            $specialisationName = $specialisationIDNameE[1];
 
             $sql = "SELECT UserID FROM existinguser
                     WHERE email LIKE '%".$email."%'";
@@ -65,18 +55,19 @@
 
                 echo "<script type='text/javascript'>";
                 echo "alert('User exist.');";
-                echo "window.location = 'Manager_createUserAccount.php';";
+                echo "window.location = 'Manager_editAccount.php';";
                 echo "</script>";
 
             } else {
-                $stmt = $conn->prepare("INSERT INTO existinguser (CompanyID,SpecialisationID,Role,FirstName,LastName,Gender,Email,Password,Status) VALUES (?,?,?,?,?,?,?,?,?)");
 
-                $stmt->bind_param("iissssssi",$companyID,$specialisationID,$role,$firstName,$lastName,$gender,$email,$password,$userStatus);
+                $stmt = $conn->prepare("UPDATE existinguser SET Email=?,Password=? WHERE UserID=?");
+
+                $stmt->bind_param("ssi",$email,$password,$userID);
 
                 if ($stmt->execute()) {
                     echo "<script type='text/javascript'>";
-                    echo "alert('Account has been created successfully.');";
-                    echo "window.location = 'Manager_createUserAccount.php';";
+                    echo "alert('Account has been updated successfully.');";
+                    echo "window.location = 'Manager_editAccount.php';";
                     echo "</script>";
                 }
             }
@@ -122,49 +113,51 @@
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="createAccount" action="Manager_createUserAccount.php" method="POST">
+                            <form name="editAccount" action="Manager_editAccount.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
                                         <label for="firstname">First Name</label>
-                                        <input type="text" id="firstname" name="firstname" required>
+                                        <input type="text" id="firstname" name="firstname" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['FirstName']; endforeach; ?>" disabled>
                                         
                                         <label for="lastname">Last Name</label>
-                                        <input type="text" id="lastname" name="lastname" required>
+                                        <input type="text" id="lastname" name="lastname" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['LastName']; endforeach; ?>" disabled>
 
                                         <label for="gender">Gender</label>
-                                        <select id="gender" name="gender" required>
-                                            <option value="F">Female</option>
-                                            <option value="M">Male</option>
+                                        <select id="gender" name="gender" disabled>
+                                            <?php foreach ($managerDetails as $managerDetail):
+                                                echo "<option value='". $managerDetail['Gender']."'>" . $managerDetail['Gender']."</option>";
+                                            endforeach; ?>
                                         </select>
                                         
                                         <label for="email">Email</label>
-                                        <input type="email" id="email" name="email" required>
+                                        <input type="email" id="email" name="email" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['Email']; endforeach; ?>">
                                         
                                         <label for="role">Role</label>
-                                        <select id="role" name="role" required>
-                                            <option value="FT">Full-Time</option>
-                                            <option value="PT">Part-Time</option>
+                                        <select id="role" name="role" disabled>
+                                            <?php foreach ($managerDetails as $managerDetail):
+                                                echo "<option value='". $managerDetail['Role']."'>" . $managerDetail['Role']."</option>";
+                                            endforeach; ?>
                                         </select>
                                 
                                     </div>
                                     <div class="col-50">
 
                                         <label for="specialisation">Specialisation</label>
-                                        <select id="specialisationidname" name="specialisationidname" required>
-                                            <?php foreach ($specialisations as $specialisation):
-                                                echo "<option value='". $specialisation['SpecialisationID']." ".$specialisation['SpecialisationName']."'>" . $specialisation['SpecialisationName']."</option>";
+                                        <select id="specialisationidname" name="specialisationidname" disabled>
+
+                                            <?php foreach ($managerDetails as $managerDetail):
+                                                echo "<option value='". $managerDetail['SpecialisationID']." ".$managerDetail['SpecialisationName']."'>" . $managerDetail['SpecialisationName']."</option>";
                                             endforeach; ?>
+
                                         </select>
                                         
                                         <label for="pwd">Password</label>
-                                        <input type="text" id="pwd" name="pwd" required>
+                                        <input type="text" id="pwd" name="pwd" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['Password']; endforeach; ?>">
 
                                     </div>
 
-                                    
-
-                                <button name="createAccount" type="submit" class="btn">Save</button>
+                                <button name="editAccount" type="submit" class="btn">Save</button>
                                 
                             </form>
 
