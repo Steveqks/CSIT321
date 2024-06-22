@@ -170,7 +170,6 @@
             <ul>
 				<li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
                 <li><a href="FT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="FT_AttendanceMgmt.php">Attendance Management</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
