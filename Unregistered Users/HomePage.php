@@ -30,19 +30,49 @@
 			
 			$verify_query = mysqli_query($db, "SELECT email FROM unregisteredusers where Email = '$email'");
 			
-			if(mysqli_num_rows($verify_query) != 0)
+			//Regex validation for UEN:
+			if(strlen($companyuen) == 9)
 			{
-				echo "<div class='message'>
-                      <p>This email is used, Try another One Please!</p>
-                  </div> <br>";
+				//Check for 9 character UEN
+				if(mysqli_num_rows($verify_query) != 0)
+				{
+					echo "<div class='message'>
+						  <p>This email is used, Try another One Please!</p>
+					  </div> <br>";
+				}
+				else
+				{
+				mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,UEN,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyuen','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
+
+					echo "<div class='message'>
+						  <p>Credentials entered successfully!</p>
+					  </div> <br>";
+				}
+			}
+			else if(strlen($companyuen) == 10)
+			{
+				//Check for 10 character UEN
+				//Check for 9 character UEN
+				if(mysqli_num_rows($verify_query) != 0)
+				{
+					echo "<div class='message'>
+						  <p>This email is used, Try another One Please!</p>
+					  </div> <br>";
+				}
+				else
+				{
+				mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,UEN,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyuen','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
+
+					echo "<div class='message'>
+						  <p>Credentials entered successfully!</p>
+					  </div> <br>";
+				}
 			}
 			else
 			{
-			mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,UEN,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyuen','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
-
 				echo "<div class='message'>
-                      <p>Registration successfully!</p>
-                  </div> <br>";
+						  <p>Invalid UEN Length, Please enter a UEN which is 9 or 10 characters!</p>
+					  </div> <br>";
 			}
 			
 		}
