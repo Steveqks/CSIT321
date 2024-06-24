@@ -3,15 +3,15 @@ session_start();
 	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 	if(isset($_POST['approveAccount']))
 	{
-		$aprrove = new approveAccountController();
+		$aprrove = new userAccount();
 
-		switch ($aprrove->approveAccount()){
+		switch ($aprrove->approveAccount($_POST['fname'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID'])){
 			//company exists
 			case 1 : $_SESSION['message'] = "company already exists in system"; 
 			break;
 			
 			//company admin exists
-			case 2 : $_SESSION['message'] = "company admin already exists in system"; 
+			case 2 : $_SESSION['message'] = "company admin email already exists in system"; 
 			break;
 			
 			//create both
@@ -76,7 +76,7 @@ session_start();
 
 				<?php   
 
-						$view = new viewAccountController();
+						$view = new userAccount();
 						$qres = $view->viewAccount();
 						
 						if($qres){
