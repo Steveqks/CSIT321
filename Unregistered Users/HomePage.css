@@ -64,11 +64,10 @@ button a{
     padding-left: 5%
 }
 
-#firstname, #lastname,#email,#password, #companyname, #planschoice
+#firstname, #lastname,#email,#password, #companyname, #companyuen, #planschoice
 {
     width: 80%;
-    height: 30px;
-    margin-top: 20px;
+    height: 25px;
     text-align: center
 }
 #submitBtn{
@@ -87,5 +86,10 @@ button a{
 #teamlogo{
     height: 20vh;
     width: auto;
+}
+
+#group
+{
+	margin-top: 30px;
 }
 

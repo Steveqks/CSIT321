@@ -24,6 +24,7 @@
 			$lastname = $_POST['lastname'];
 			$email = $_POST['email'];
 			$password = $_POST['password'];
+			$companyuen = $_POST['companyuen'];
 			$companyname = $_POST['companyname'];
 			$planschoice = $_POST['plans'];
 			
@@ -37,7 +38,7 @@
 			}
 			else
 			{
-				mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
+			mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,UEN,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyuen','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
 				echo "<div class='message'>
                       <p>Registration successfully!</p>
@@ -69,6 +70,7 @@
 						<input id = "lastname" name = "lastname" type = "text" placeholder = "Last Name">
 						<input id = "email" name = "email" type = "text" placeholder = "Email Address">
 						<input id = "password" name = "password" type = "password" placeholder = "Password">
+						<input id = "companyuen" name = "companyuen" type = "text" placeholder = "Company UEN(Unique Entity Number)">
 						<input id = "companyname" name = "companyname" type = "text" placeholder = "Company Name">
 						<select id = "planschoice" name = "plans">
 							<option value = "1">Tier 1($9.99/month)</option>
