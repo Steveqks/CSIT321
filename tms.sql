@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 24, 2024 at 09:58 PM
+-- Generation Time: Jun 25, 2024 at 02:05 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -50,35 +50,35 @@ DROP TABLE IF EXISTS `company`;
 CREATE TABLE IF NOT EXISTS `company` (
   `CompanyID` int NOT NULL AUTO_INCREMENT,
   `CompanyName` varchar(16) NOT NULL,
+  `CompanyUEN` varchar(10) DEFAULT NULL,
   `PlanID` int NOT NULL,
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`CompanyID`),
   KEY `PlanID` (`PlanID`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
 --
 
-INSERT INTO `company` (`CompanyID`, `CompanyName`, `PlanID`, `Status`) VALUES
-(3, 'SIMcanteen1', 2, 1),
-(20, 'fightingco', 2, 0),
-(21, 'cookhouse', 1, 1),
-(24, 'bobsworld1', 1, 1),
-(42, 'transluce2', 1, 1),
-(44, 'nannycorp35', 2, 1),
-(45, 'yesman34', 1, 1),
-(51, 'yanka2', 2, 1),
-(53, 'peenut15', 1, 1),
-(54, 'nannycorp3', 1, 1),
-(55, 'yesman23', 1, 1),
-(56, 'deezy56', 2, 1),
-(58, 'kingthai3', 2, 1),
-(65, 'Company2', 2, 1),
-(67, 'ffflllemail', 1, 1),
-(68, 'emale', 3, 1),
-(69, 'Company1', 1, 1),
-(78, '123123333', 3, 1);
+INSERT INTO `company` (`CompanyID`, `CompanyName`, `CompanyUEN`, `PlanID`, `Status`) VALUES
+(3, 'SIMcanteen1', NULL, 2, 1),
+(20, 'fightingco', NULL, 2, 0),
+(21, 'cookhouse', NULL, 1, 1),
+(24, 'bobsworld1', NULL, 1, 1),
+(42, 'transluce2', NULL, 1, 1),
+(44, 'nannycorp35', NULL, 2, 1),
+(45, 'yesman34', NULL, 1, 1),
+(51, 'yanka2', NULL, 2, 1),
+(53, 'peenut15', NULL, 1, 1),
+(54, 'nannycorp3', NULL, 1, 1),
+(55, 'yesman23', NULL, 1, 1),
+(56, 'deezy56', NULL, 2, 1),
+(58, 'kingthai3', NULL, 2, 1),
+(65, 'Company2', NULL, 2, 1),
+(67, 'ffflllemail', NULL, 1, 1),
+(68, 'emale', NULL, 3, 1),
+(69, 'Company1', NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -424,6 +424,7 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
   `Email` varchar(32) NOT NULL,
   `Password` varchar(16) NOT NULL,
   `CompanyName` varchar(16) NOT NULL,
+  `CompanyUEN` varchar(10) DEFAULT NULL,
   `FirstName` varchar(16) NOT NULL,
   `LastName` varchar(16) NOT NULL,
   `PlanID` int NOT NULL,
@@ -435,106 +436,21 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
 -- Dumping data for table `unregisteredusers`
 --
 
-INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `FirstName`, `LastName`, `PlanID`) VALUES
-(1, 'bobworlds@hotmail.com', '', 'bobsworld', 'bobby', 'lee', 2),
-(2, 'michelleangelo@yahoo.com', '', 'cookhouse', 'michelle', 'angelo', 2),
-(3, 'mt@yawee.com', '', 'fightingco', 'tyson', 'mike', 2),
-(7, '1231231', '123123', '123123333', '123123', '231231', 3);
+INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `CompanyUEN`, `FirstName`, `LastName`, `PlanID`) VALUES
+(1, 'bobworlds@hotmail.com', '', 'bobsworld', NULL, 'bobby', 'lee', 2),
+(2, 'michelleangelo@yahoo.com', '', 'cookhouse', NULL, 'michelle', 'angelo', 2),
+(3, 'mt@yawee.com', '', 'fightingco', NULL, 'tyson', 'mike', 2),
+(7, '1231231', '123123', '123123333', NULL, '123123', '231231', 3);
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `attendance`
---
-ALTER TABLE `attendance`
-  ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
 -- Constraints for table `company`
 --
 ALTER TABLE `company`
   ADD CONSTRAINT `company_ibfk_1` FOREIGN KEY (`PlanID`) REFERENCES `plans` (`PlanID`);
-
---
--- Constraints for table `companyadmin`
---
-ALTER TABLE `companyadmin`
-  ADD CONSTRAINT `companyadmin_ibfk_1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
-
---
--- Constraints for table `existinguser`
---
-ALTER TABLE `existinguser`
-  ADD CONSTRAINT `existinguser_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `existinguser_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
-
---
--- Constraints for table `leaves`
---
-ALTER TABLE `leaves`
-  ADD CONSTRAINT `leaves_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `newsfeed`
---
-ALTER TABLE `newsfeed`
-  ADD CONSTRAINT `newsfeed_ibfk_1` FOREIGN KEY (`ManagerID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `project`
---
-ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainTeamID`) REFERENCES `team` (`MainTeamID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `projectinfo`
---
-ALTER TABLE `projectinfo`
-  ADD CONSTRAINT `projectinfo_ibfk_1` FOREIGN KEY (`ProjectManagerID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `projectinfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
-
---
--- Constraints for table `schedule`
---
-ALTER TABLE `schedule`
-  ADD CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `specialisation`
---
-ALTER TABLE `specialisation`
-  ADD CONSTRAINT `specialisation_ibfk_1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
-
---
--- Constraints for table `task`
---
-ALTER TABLE `task`
-  ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`MainTaskID`) REFERENCES `taskinfo` (`MainTaskID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainTeamID`) REFERENCES `teaminfo` (`MainTeamID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `taskinfo`
---
-ALTER TABLE `taskinfo`
-  ADD CONSTRAINT `taskinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `team`
---
-ALTER TABLE `team`
-  ADD CONSTRAINT `team_ibfk_1` FOREIGN KEY (`MainTeamID`) REFERENCES `teaminfo` (`MainTeamID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `team_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Constraints for table `teaminfo`
---
-ALTER TABLE `teaminfo`
-  ADD CONSTRAINT `teaminfo_ibfk_1` FOREIGN KEY (`ManagerID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `teaminfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `unregisteredusers`
