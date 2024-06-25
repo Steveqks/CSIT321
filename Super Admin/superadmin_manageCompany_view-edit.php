@@ -48,6 +48,7 @@ session_start();
 						<br>
 						company id: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
 						company name: <input type='text' name='oldCompanyName' value=" . $_SESSION['companyName'] . " readonly> <br>
+						company UEN: <input type='text' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> <br>
 						subscription plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
 						<br>
 							</td>
@@ -56,6 +57,7 @@ session_start();
 						<br>
 						company id: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
 						company name: <input type='text' name='companyName' value=" . $_SESSION['companyName'] . "><br>
+						company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
 						subscription plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
 						<input type='submit' name='submitChange' value='Update'>
 						</form>
@@ -75,6 +77,7 @@ session_start();
 				if(isset($_POST['submitChange'])){
 					$companyName = $_POST['companyName'];			
 					$companyID = $_POST['companyID'];
+					$newCompanyUEN = $_POST['newCompanyUEN'];
 					$planID = $_POST['planID'];
 					
 					if ($_POST['oldCompanyName'] != $_POST['companyName']){
@@ -112,6 +115,26 @@ session_start();
 						}
 						else{
 							$_SESSION['message2'] = "Subscription plan does not exists";
+						}
+					}else $_SESSION['message2'] = "";
+					
+					
+					if($_POST['oldCompanyUEN'] != $newCompanyUEN){
+						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+						//check if planID exists already.
+						$result3 = mysqli_query($db, "SELECT * FROM company WHERE CompanyUEN = '$newCompanyUEN' ") or die("Select Error");
+			
+						$num_rows=mysqli_num_rows($result3);
+						// dont exists
+						if($num_rows > 0){
+							$_SESSION['message2'] = "Company UEN already exists";
+						}
+						else{
+							$result2 = mysqli_query($db,"UPDATE company SET CompanyUEN = '$newCompanyUEN' WHERE company.CompanyID = '$companyID'") or die("update Error");
+							$_SESSION['message2'] = "<p style='color: green;'>Company UEN updated.</p>";
+							$_SESSION['companyUEN'] = $newCompanyUEN;
+							
 						}
 					}else $_SESSION['message2'] = "";
 					

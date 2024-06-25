@@ -44,8 +44,20 @@ if (isset($_POST['submitSpecialisation'])) {
 		
             <form action = "", method = "post">
 				<h2>Create Company Admin</h2>
-					<h4>Company ID: <input name = "companyID" type = "text" placeholder = "Company ID" required>
-					</h4>
+				<?php
+					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+					$sql = "SELECT * FROM company";
+					$qres = mysqli_query($db, $sql); 
+					$select = "<h4><label for='Company'>Company:</label>
+									<select name='companyID' id=''>";		
+					while ($Row = $qres->fetch_assoc()) {
+							$select .= "<option value ='".$Row['CompanyID']."'> ID:". $Row['CompanyID']. ", " . $Row['CompanyName']. " </option>";
+						}
+						$select .= "</select></h4>";
+						echo $select;
+					
+				?>
+					
 					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" required>
 					</h4>
 					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" required>

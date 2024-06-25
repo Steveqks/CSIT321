@@ -5,7 +5,7 @@ session_start();
 	{
 		$aprrove = new userAccount();
 
-		switch ($aprrove->approveAccount($_POST['fname'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID'])){
+		switch ($aprrove->approveAccount($_POST['fname'], $_POST['companyUEN'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID'])){
 			//company exists
 			case 1 : $_SESSION['message'] = "company already exists in system"; 
 			break;
@@ -83,10 +83,11 @@ session_start();
 							$accountsTable = "<table border = 1 class='center'>";
 							$accountsTable .= "	<tr>
 													<th>Email</th>
-													<th>FirstName</th>
-													<th>LastName</th>
-													<th>PlanID</th>
-													<th>CompanyName</th>
+													<th>First Name</th>
+													<th>Last Name</th>
+													<th>Plan ID</th>
+													<th>Company Name</th>
+													<th>Company UEN</th>
 													</tr>\n";
 							$accountsTable .= "<br/>";
 							}
@@ -97,6 +98,7 @@ session_start();
 							$accountsTable .= "<td>" . $Row['LastName'] . "</td>";
 							$accountsTable .= "<td>" . $Row['PlanID'] . "</td>";
 							$accountsTable .= "<td>" . $Row['CompanyName'] . "</td>";
+							$accountsTable .= "<td>" . $Row['CompanyUEN'] . "</td>";
 						
 							$accountsTable .= "<td><form action'' method='POST'>
 								<input type='hidden' name='approveID' value='" . $Row['ApplicationID'] . "'/>
@@ -105,6 +107,7 @@ session_start();
 								<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
 								<input type='hidden' name='password' value='" . $Row['Password'] . "'/>
 								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
+								<input type='hidden' name='companyUEN' value='" . $Row['CompanyUEN'] . "'/>
 								<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
 								<input type='submit' name='approveAccount' value='Approve'>
 								</form></td>";
