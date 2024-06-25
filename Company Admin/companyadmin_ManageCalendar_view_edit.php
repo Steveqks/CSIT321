@@ -118,6 +118,7 @@ session_start();
 							$_SESSION['message2'] = "<p>Calender date entry already exists </p>";
 						}
 					}
+					else $_SESSION['message2'] = "";
 					
 					header('Location: companyadmin_ManageCalendar_view_edit.php');
 					exit;
