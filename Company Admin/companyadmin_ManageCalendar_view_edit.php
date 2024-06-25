@@ -83,7 +83,7 @@ session_start();
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 						//check if email already exists
-						$result = mysqli_query($db,	"SELECT * FROM calendar WHERE DateName = '$newDateName' ") or die("Select Error");
+						$result = mysqli_query($db,	"SELECT * FROM calendar WHERE DateName = '$newDateName'  AND CompanyID = '$companyID' ") or die("Select Error");
 			
 						$num_rows=mysqli_num_rows($result);
 						// dont exists
@@ -104,7 +104,7 @@ session_start();
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 						//check if email already exists
-						$result = mysqli_query($db,	"SELECT * FROM calendar WHERE Date = '$newDate' ") or die("Select Error");
+						$result = mysqli_query($db,	"SELECT * FROM calendar WHERE Date = '$newDate' AND CompanyID = '$companyID' ") or die("Select Error");
 			
 						$num_rows=mysqli_num_rows($result);
 						// dont exists

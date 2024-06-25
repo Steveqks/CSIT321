@@ -44,90 +44,50 @@ session_start();
             <form action = "", method = "post">
 				<h2>Create Calendar Entry</h2>
 
-					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" required>
+					<h4>Date Name: <input name = "dateName" type = "text" placeholder = "date name" required>
 					</h4>
-					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" required>
-					</h4>
-					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address" required>
-					</h4>
-					<h4>Gender: <input name = "gender" type = "text" placeholder = "gender" required>
-					</h4>
-					<h4>Password: <input name = "password" type = "password" placeholder = "password" required>
-					</h4>
-					<h4>  <label for="Role">Role:</label>
-					  <select name="role" id="">
-						  <option value="Manager">Manager</option>
-						  <option value="FT">FT</option>
-						  <option value="PT">PT</option>
-					  </select>
-					</h4>
-					
-							<?php
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
-						$qres = mysqli_query($db, $sql); 
-						
-						$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
-									<select name='specialisationID' id=''>";		
-						while ($Row = $qres->fetch_assoc()) 
-						{
-							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> ID:" . $Row['SpecialisationID']. ", " 
-									. $Row['SpecialisationName'] . " </option>";
-						}
-						$select .= "</select> </h4>";
-						echo $select;
-						
-					?>
-					<h4>Status: <input name = "status" type = "text" placeholder = "status" required>
+					<h4>Date: <input name = "date" type = "date" placeholder = "date" required>
 					</h4>
 					<button id = "submitBtn" name = "submit">Create</button>
 			</form>
 			
 			<?php   
-			
+				echo $_SESSION['message5'];
 			
 				//create user
 				if(isset($_POST['submit'])){
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-
-					$fname = $_POST['fname'];
-					$lname = $_POST['lname'];
-					$emailadd = $_POST['emailadd'];
-					$gender = $_POST['gender'];
-					$password = $_POST['password'];
+					$dateName = $_POST['dateName'];
+					$date = $_POST['date'];
 					
-					$role = $_POST['role'];
-					$specialisation = $_POST['specialisationID'];
-					$status = $_POST['status'];
-					
-					//check if email exists in existinguser
-					if(isUserEmailExists($emailadd, $db)){
-						echo "<p style='color: red;'>Email Address\"".$emailadd."\" already in use.</p>";
-					}
-					//doesn't exist, add to db
-					else
-					{
-						$result = mysqli_query($db,"INSERT INTO existinguser 
-													(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
-											VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Select Error");
-						echo "<p style='color: green;'>User Account for \"".$fname." ".$lname."\" created.</p>";
-					}
-				}
-					
-				function isUserEmailExists(string $emailadd, mysqli $db):bool{
-					$sql = "SELECT * FROM existinguser WHERE Email = '$emailadd'";
-					$qres = mysqli_query($db, $sql); 
-
-					$num_rows=mysqli_num_rows($qres);
-
-					// exists
-					if($num_rows > 0){
-						return true; 
-					}
+					//check if an entry on date exists
+					$result = mysqli_query($db,	"SELECT * FROM calendar WHERE CompanyID = '$companyID' AND Date = '$date' ") or die("Select Error");
+			
+					$num_rows=mysqli_num_rows($result);
 					// dont exists
+					if($num_rows == 0){
+						
+						//check if entry on name exists
+						$result = mysqli_query($db,	"SELECT * FROM calendar WHERE CompanyID = '$companyID' AND DateName = '$dateName' ") or die("Select Error");
+						$num_rows=mysqli_num_rows($result);
+						
+						// dont exists
+						if($num_rows == 0){
+							//check if entry on name exists
+							$result2 = mysqli_query($db,"INSERT INTO calendar(CalendarID, CompanyID, DateName, Date) 
+														VALUES (NULL, '$companyID', '$dateName', '$date')") or die("update Error");
+							$_SESSION['message5'] = "<p >New Calendar entry created. Date: ". $date . ", Name: ". $dateName . " </p>";
+						}
+						// exists
+						else{
+							$_SESSION['message5'] = "<p >A Calendar entry with the entered Name already exists.</p>";
+						}
+					}
+					// exists
 					else{
-						return false; 
+						$_SESSION['message5'] = "<p >An Calendar entry with the selected date already exists.</p>";
+
 					}
 				}
 				
