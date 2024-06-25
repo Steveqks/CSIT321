@@ -55,14 +55,14 @@
 					else
 					{
 						echo "<div class='message'>
-							<p>Please Enter a 9 digit UEN of the format nnnnnnnnX!</p>
+							<p>Please Enter a 9 digit UEN of the format 8 digits from 0 -> 9 and 1 uppercase letter!</p>
 						</div> <br>";
 					}
 				}
 				//Check for 10 character UEN
 				else if(strlen($companyuen) == 10)
 				{
-					$charregex = "^(19|[2-9][0-9])\d{2}[0-9]{5}[A-Z]{1}";
+					$charregex = "/(19|[2-9][0-9])\d{2}[0-9]{5}[A-Z]{1}/";
 					
 					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
