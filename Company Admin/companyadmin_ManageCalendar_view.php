@@ -16,39 +16,14 @@ if(isset($_POST['deleteEntry']))
 
 if (isset($_POST['editAccount'])) 
 {
-	$_SESSION['userID'] = $_POST['userID'];
-	$_SESSION['fname'] = $_POST['fname'];
-	$_SESSION['lname']  = $_POST['lname'];
-	$_SESSION['gender'] = $_POST['gender'];
-	$_SESSION['email'] = $_POST['email'];
-	$_SESSION['specialisation'] = $_POST['specialisation'];
-	$_SESSION['role'] = $_POST['role'];
+	$_SESSION['date'] = $_POST['date'];
+	$_SESSION['dateName'] = $_POST['dateName'];
+	$_SESSION['calendarID'] = $_POST['calendarID'];
 	
-	
-	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
+	header('Location: companyadmin_ManageCalendar_view_edit.php');
 	exit;
 }
 
-if (isset($_POST['toggleStatus'])) 
-{
-	$userID = $_POST['userID'];
-	
-	if ($_POST['status'] == 0)
-	{
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
-	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
-	}
-	else
-	{
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
-	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
-	}
-	
-	header('Location: companyadmin_ManageUserAccounts_view.php');
-	exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,13 +96,13 @@ if (isset($_POST['toggleStatus']))
 					."<td>" . $Row['Date'] . "</td>";
 					
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='calendarID' value='" . $Row['CalendarID'] . "'/>
 						<input type='hidden' name='dateName' value='" . $Row['DateName'] . "'/>
 						<input type='hidden' name='date' value='" . $Row['Date'] . "'/>
 						<input type='submit' name='editAccount' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='calendarID' value='" . $Row['CalendarID'] . "'/>
 						<input type='hidden' name='dateName' value='" . $Row['DateName'] . "'/>
 						<input type='hidden' name='date' value='" . $Row['Date'] . "'/>
 						<input type='submit' name='deleteEntry' value='Delete'>
