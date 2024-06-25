@@ -1,27 +1,5 @@
 <?php    
-class viewAccountController{
-	public function viewAccount():bool|mysqli_result
-	{
-		$viewacc = new userAccount();
-		$qres = $viewacc->viewAccount();
-		
-		if($qres === false){
-			return false; 
-		}
-		else{
-			return $qres; 
-		}
-	}
-}
 
-class approveAccountController{
-	public function approveAccount():int
-	{
-		$approve = new userAccount();
-		$var = $approve->approveAccount($_POST['fname'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID']);
-			return $var;
-	}
-}
 
 class userAccount{
 	public $conn;
@@ -58,24 +36,15 @@ class userAccount{
 			// check company admin exists
 			while ($this->isCompanyAdminExists($email)){
 				// company admin don't exist yet
-				// proceed with creating company & company admin...
-				
+				// proceed with creating company & company admin...	
 				$this->createCompany($cname, $planID);
 				$companyID = $this->getCompanyID($cname);
 				$this->createCompanyAdmin($companyID, $fname, $lname, $email, $password);
-				return 3;
+				return 3; // created company & company admin
 			}
-			
-			
-			//while($this->createCompany($cname)){
-			//	while($this->createCompanyAdmin($fname, $lname, $email, $password )){
-	
-			return 2;
+			return 2; // error, company admin email already exists 
 		}
-		
-		
-		
-		return 1; //exists
+		return 1; // company already exists
     }
 	
 	public function isCompanyAdminExists(string $email):bool{

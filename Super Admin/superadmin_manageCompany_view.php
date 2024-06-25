@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-include_once('superadmin_manageCompany_view_functions.php');
-
-
 if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
@@ -19,7 +16,8 @@ if(isset($_POST['deleteCompany']))
 	$result = mysqli_query($db,	"DELETE FROM companyadmin WHERE CompanyID = '$companyID' ") or die("Select Error");
 	
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
+	
+	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error3");
 	
 	$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
 	header('Location: superadmin_manageCompany_view.php');
@@ -94,8 +92,9 @@ if (isset($_POST['editCompany'])) {
   
 			<?php     
 
-				$view = new userAccount();
-						$qres = $view->viewCompany();
+		
+					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+					$qres = mysqli_query($db,	"SELECT * FROM company ") or die("Select Error");
 						
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
