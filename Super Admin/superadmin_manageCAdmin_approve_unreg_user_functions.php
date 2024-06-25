@@ -24,7 +24,7 @@ class userAccount{
         }
     }
 	
-    public function approveAccount(string $fname, string $lname, string $email, string $password, string $cname, string $planID):int{
+    public function approveAccount(string $fname, string $companyUEN, string $lname, string $email, string $password, string $cname, string $planID):int{
 		//1.1	check company exist
 		//1.2	check company admin exists
 		//2.1 	create company
@@ -37,9 +37,9 @@ class userAccount{
 			while ($this->isCompanyAdminExists($email)){
 				// company admin don't exist yet
 				// proceed with creating company & company admin...	
-				$this->createCompany($cname, $planID);
+				$this->createCompany($cname, $companyUEN, $planID);
 				$companyID = $this->getCompanyID($cname);
-				$this->createCompanyAdmin($companyID, $fname, $lname, $email, $password);
+				$this->createCompanyAdmin($companyID,  $fname, $lname, $email, $password);
 				return 3; // created company & company admin
 			}
 			return 2; // error, company admin email already exists 
@@ -81,8 +81,8 @@ class userAccount{
         }
 	}
 	
-	public function createCompany(string $cname, string $planID):bool{
-		$sql = "INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$cname', '$planID', 1);";
+	public function createCompany(string $cname, string $companyUEN, string $planID):bool{
+		$sql = "INSERT INTO company (CompanyID, CompanyName, CompanyUEN, PlanID, Status) VALUES (NULL, '$cname', '$companyUEN', '$planID', 1);";
 		$qres = mysqli_query($this->conn, $sql); 
 		if($qres === false){
 		    return false; 
