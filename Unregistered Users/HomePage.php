@@ -43,7 +43,7 @@
 				//Check for 9 character UEN
 				if(strlen($companyuen) == 9)
 				{
-					$charregex = "/[0-9]{8}[A-Z]{1}/";
+					$charregex = '/^(?=.*\d{8})(?=.*[A-Z])[A-Z\d]{9}$/';
 					if(preg_match($charregex, $companyuen))
 					{
 						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
@@ -62,13 +62,21 @@
 				//Check for 10 character UEN
 				else if(strlen($companyuen) == 10)
 				{
-					$charregex = "/(19|[2-9][0-9])\d{2}[0-9]{5}[A-Z]{1}/";
-					
-					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
+					$charregex = '/^(?=.*((19|20)\d\d))(?=.*\d{5})(?=.*[A-Z]).*$/';
+					if(preg_match($charregex, $companyuen))
+					{
+						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
-					echo "<div class='message'>
-						  <p>Credentials entered successfully!</p>
-					  </div> <br>";
+						echo "<div class='message'>
+							<p>Credentials entered successfully!</p>
+						</div> <br>";
+					}
+					else
+					{
+						echo "<div class='message'>
+							<p>Please Enter a 10 digit UEN of the format 4 digits for year,  5digits from 0 -> 9 and 1 uppercase letter!</p>
+						</div> <br>";
+					}
 				}
 				
 				//Throw Error if UEN Doesnt match
