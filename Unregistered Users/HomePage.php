@@ -28,6 +28,7 @@
 			$companyname = $_POST['companyname'];
 			$planschoice = $_POST['plans'];
 			
+			//Check if Email Exists in unregistered users account
 			$verify_query = mysqli_query($db, "SELECT email FROM unregisteredusers where Email = '$email'");
 			
 			
@@ -42,21 +43,34 @@
 				//Check for 9 character UEN
 				if(strlen($companyuen) == 9)
 				{
-					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
+					$charregex = "/[0-9]{8}[A-Z]{1}/";
+					if(preg_match($charregex, $companyuen))
+					{
+						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
-					echo "<div class='message'>
-						  <p>Credentials entered successfully!</p>
-					  </div> <br>";
+						echo "<div class='message'>
+							<p>Credentials entered successfully!</p>
+						</div> <br>";
+					}
+					else
+					{
+						echo "<div class='message'>
+							<p>Please Enter a 9 digit UEN of the format nnnnnnnnX!</p>
+						</div> <br>";
+					}
 				}
 				//Check for 10 character UEN
 				else if(strlen($companyuen) == 10)
 				{
+					$charregex = "^(19|[2-9][0-9])\d{2}[0-9]{5}[A-Z]{1}";
+					
 					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
 					echo "<div class='message'>
 						  <p>Credentials entered successfully!</p>
 					  </div> <br>";
 				}
+				
 				//Throw Error if UEN Doesnt match
 				else
 				{
