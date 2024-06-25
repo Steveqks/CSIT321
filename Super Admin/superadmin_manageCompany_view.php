@@ -42,7 +42,9 @@ if(isset($_POST['activateSuspend']))
 if (isset($_POST['editCompany'])) {
 	$_SESSION['companyID'] = $_POST['companyID'];
 	$_SESSION['companyName'] = $_POST['companyName'];
+	$_SESSION['companyUEN'] = $_POST['companyUEN'];
 	$_SESSION['planID'] = $_POST['planID'];
+	
 	$_SESSION['message'] = '';
 	header('Location: superadmin_manageCompany_view-edit.php');
 	exit;
@@ -97,8 +99,10 @@ if (isset($_POST['editCompany'])) {
 						$accountsTable .= "	<tr>
 												<th>Company ID</th>
 												<th>Company Name</th>
+												<th>Company UEN</th>
 												<th>Subscription Plan</th>
 												<th>Status</th>
+												
 												</tr>\n";
 						$accountsTable .= "<br/>";
 						}
@@ -106,12 +110,14 @@ if (isset($_POST['editCompany'])) {
 						$accountsTable.= "<tr>\n"
 						."<td>" . $Row['CompanyID'] . "</td>" 
 						."<td>" . $Row['CompanyName'] . "</td>" 
+						."<td>" . $Row['CompanyUEN'] . "</td>" 
 						."<td>" . $Row['PlanID'] . "</td>" 
 						."<td>" . $Row['Status'] . "</td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
+							<input type='hidden' name='companyUEN' value='" . $Row['CompanyUEN'] . "'/>
 							<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
 							<input type='submit' name='editCompany' value='Edit'>
 							</form></td>";
