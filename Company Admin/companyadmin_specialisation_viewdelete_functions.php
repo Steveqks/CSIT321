@@ -12,17 +12,6 @@ class userAccount{
 		mysqli_select_db($this->conn,"TMS");
 	}
 	
-	public function viewSpecialisation(string $companyID):bool|mysqli_result{
-        $Sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID'";
-        $qres = mysqli_query($this->conn, $Sql); 
-        if($qres === false){
-            return false; 
-        }
-        else{
-            return $qres; 
-        }
-    }
-	
     public function approveAccount(string $fname, string $lname, string $email, string $password, string $cname, string $PlanID):int{
 		//1.1	check company exist
 		//1.2	check company admin exists
