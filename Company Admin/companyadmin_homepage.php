@@ -41,6 +41,8 @@ $_SESSION['message6'] = "";
 				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
 				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
 				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
+				<a href="companyadmin_ManageCalendar_create.php">Manage Calendar > Create Entry</a>
+				<a href="companyadmin_ManageCalendar_view.php">Manage Calendar > View Entries</a>
 				<a href="Logout.php">Logout</a>
 
 			</div>
