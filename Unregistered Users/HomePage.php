@@ -62,7 +62,7 @@
 				//Check for 10 character UEN
 				else if(strlen($companyuen) == 10)
 				{
-					$charregex = '/^(?=.*((19|20)\d\d))(?=.*\d{5})(?=.*[A-Z]).*$/';
+					$charregex = '/^(?=.*\b(18|19|20)\d\d\b)(?=.*\d{5})(?=.*[A-Z])[A-Z\d]{10,}$/';
 					if(preg_match($charregex, $companyuen))
 					{
 						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
