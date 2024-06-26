@@ -40,8 +40,8 @@ session_start();
 						FROM 
 						<br>
 						company id: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
-						first name: <input type='text' name='oldfname' value=" . $_SESSION['fname'] . " readonly> <br>
-						last name: <input type='text' name='oldlname' value=" . $_SESSION['lname'] . " readonly> <br>
+						first name: <input type='text' name='oldfname' value='" . $_SESSION['fname'] . "' readonly> <br>
+						last name: <input type='text' name='oldlname' value='" . $_SESSION['lname'] . "' readonly> <br>
 						email address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
 						<br>
 							</td>
@@ -49,8 +49,8 @@ session_start();
 						TO
 						<br>
 						company id: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
-						first name: <input type='text' name='newfname' value=" . $_SESSION['fname'] . "><br>
-						last name: <input type='text' name='newlname' value=" . $_SESSION['lname'] . "><br>
+						first name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . "'><br>
+						last name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "'><br>
 						email address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
 						<input type='submit' name='submitChanges' value='Update'>
 						</form>

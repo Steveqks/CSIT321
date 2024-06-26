@@ -32,7 +32,7 @@ session_start();
 
 			<?php   
 				
-				$companyID = $_SESSION['companyID'];;
+				$companyID = $_SESSION['companyID'];
 			
 				$form = "<form action'' method='POST'>
 						<br>
@@ -41,7 +41,7 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						<b>FROM: </b>
 						<br>
-							Date Name: <input type='text' name='oldDateName' value=" . $_SESSION['dateName'] . " readonly><br>
+							Date Name: <input type='text' name='oldDateName' value='" . $_SESSION['dateName']. "' readonly><br>
 							Date: <input type='date' name='oldDate' value=" . $_SESSION['date'] . " readonly> <br>
 						<br>
 							</td>
@@ -50,7 +50,7 @@ session_start();
 							
 						<b>TO:</b>
 						<br>
-							Date Name: <input type='text' name='newDateName' value=" . $_SESSION['dateName'] . " ><br>
+							Date Name: <input type='text' name='newDateName' value='" . $_SESSION['dateName'] . "' ><br>
 							Date: <input type='date' name='newDate' value=" . $_SESSION['date'] . " > <br>
 						<input type='submit' name='submitChanges' value='Update'>
 						</form>
@@ -59,7 +59,7 @@ session_start();
 						</table>
 							";
 				echo $form;
-				
+
 				echo $_SESSION['message1'];
 				echo $_SESSION['message2'];
 

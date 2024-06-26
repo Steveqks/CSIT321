@@ -38,7 +38,7 @@ session_start();
 						FROM 
 						<br>
 						company id: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
-						company name: <input type='text' name='oldCompanyName' value=" . $_SESSION['companyName'] . " readonly> <br>
+						company name: <input type='text' name='oldCompanyName' value='" . $_SESSION['companyName'] . "' readonly> <br>
 						company UEN: <input type='text' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> <br>
 						subscription plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
 						<br>
@@ -47,7 +47,7 @@ session_start();
 						TO
 						<br>
 						company id: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
-						company name: <input type='text' name='companyName' value=" . $_SESSION['companyName'] . "><br>
+						company name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "'><br>
 						company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
 						subscription plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
 						<input type='submit' name='submitChange' value='Update'>

@@ -35,10 +35,12 @@ session_start();
 			<?php   
 				echo "Change specialisation:<br>";
 				$form = "<form action'' method='POST'>
+				
 						FROM 
-						<input type='text' value=" . $_SESSION['specialisationName'] . " readonly>
+						<input type='text' value='" . $_SESSION['specialisationName'] . "' readonly>
+						
 						TO
-						<input type='text' name='specialisationName' value=" . $_SESSION['specialisationName'] . ">
+						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "'>
 						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . ">
 						<input type='submit' name='submitSpecialisation' value='Update'>
 						</form>";

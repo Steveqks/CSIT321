@@ -108,8 +108,8 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br>
-						Team Name: <input type='text' name='oldTeamName' value=" . $TeamName . " readonly><br>
-						Manager In Charge: <input type='text' name='' value=" . $ManagerName . " readonly> <br>
+						Team Name: <input type='text' name='oldTeamName' value='" . $TeamName . "' readonly><br>
+						Manager In Charge: <input type='text' name='' value='" . $ManagerName . "' readonly> <br>
 						
 						<input type='hidden' name='oldManagerID' value=" . $ManagerID. " readonly> <br>
 						<br></td>
@@ -118,7 +118,7 @@ session_start();
 						
 						TO
 						<br>
-						Team Name: <input type='text' name='newTeamName' value=" . $TeamName . " > <br>
+						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' > <br>
 						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
 						
 				

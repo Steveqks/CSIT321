@@ -74,8 +74,8 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br><br>
-						First Name: <input type='text' name='oldFirstName' value=" . $Row['FirstName'] . " readonly><br>
-						Last Name: <input type='text' name='oldLastName' value=" . $Row['LastName'] . " readonly> <br>							
+						First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
+						Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>							
 						Gender: <input type='text' name='oldGender' value=" . $Row['Gender'] . " readonly> <br>
 						Email: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
 						Specialisation: <input type='text' name='oldSName' value=" . $Row['SpecialisationName'] . " readonly> <br>
@@ -88,8 +88,8 @@ session_start();
 						
 						TO
 						<br><br>
-						First Name: <input type='text' name='newFirstName' value=" . $Row['FirstName'] . " ><br>
-						Last Name: <input type='text' name='newLastName' value=" . $Row['LastName'] . " > <br>							
+						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' ><br>
+						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' > <br>							
 						Gender: <input type='text' name='newGender' value=" . $Row['Gender'] . " > <br>
 						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " > <br>";
 				}
