@@ -17,13 +17,6 @@ if(isset($_POST['deleteUser']))
 if (isset($_POST['editAccount'])) 
 {
 	$_SESSION['userID'] = $_POST['userID'];
-	$_SESSION['fname'] = $_POST['fname'];
-	$_SESSION['lname']  = $_POST['lname'];
-	$_SESSION['gender'] = $_POST['gender'];
-	$_SESSION['email'] = $_POST['email'];
-	$_SESSION['specialisation'] = $_POST['specialisation'];
-	$_SESSION['role'] = $_POST['role'];
-	
 	
 	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
 	exit;
@@ -55,7 +48,7 @@ if (isset($_POST['toggleStatus']))
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -70,18 +63,7 @@ if (isset($_POST['toggleStatus']))
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<div class="vertical-menu" style="border-right: 1px solid black; padding: 0px;">
-				<a href="companyadmin_homepage.php">Home</a>
-				<a href="companyadmin_ManageAccount.php">Manage Account</a>
-				<a href="companyadmin_ManageUserAccounts_create.php">Manage User Accounts > Create</a>
-				<a href="companyadmin_ManageUserAccounts_view.php">Manage User Accounts > View</a>
-				<a href="companyadmin_specialisation_create.php">Manage Specialisation > Create </a>
-				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
-				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
-				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
-				<a href="Logout.php">Logout</a>
-
-			</div>
+		<?php include_once('navigation.php') ?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
@@ -136,12 +118,6 @@ if (isset($_POST['toggleStatus']))
 					
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
-						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-						<input type='hidden' name='gender' value='" . $Row['Gender'] . "'/>
-						<input type='hidden' name='email' value='" . $Row['EmailAddress'] . "'/>
-						<input type='hidden' name='specialisation' value='" . $Row['SpecialisationID'] . "'/>
-						<input type='hidden' name='role' value='" . $Row['Role'] . "'/>
 						<input type='submit' name='editAccount' value='Edit'>
 						</form></td>";
 

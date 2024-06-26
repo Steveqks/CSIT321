@@ -1,6 +1,21 @@
 <?php
 session_start();
 
+
+if (isset($_POST['viewTeam'])) {
+	$_SESSION['teamName'] = $_POST['teamName'];
+	$_SESSION['teamID'] = $_POST['teamID'];
+	header('Location: companyadmin_teamManagement_view_delete_view.php');
+	exit;
+}
+
+if (isset($_POST['editTeam'])) {
+	$_SESSION['mTeamID'] = $_POST['mTeamID'];
+	$_SESSION['managerID'] = $_POST['managerID'];
+	header('Location: companyadmin_teamManagement_view_delete_edit.php');
+	exit;
+}
+
 if(isset($_POST['deleteTeam']))
 {
 	$teamID = $_POST['teamID'];
@@ -24,12 +39,7 @@ if(isset($_POST['deleteTeam']))
 	$_SESSION['message2'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
 }
 
-if (isset($_POST['viewTeam'])) {
-	$_SESSION['teamName'] = $_POST['teamName'];
-	$_SESSION['teamID'] = $_POST['teamID'];
-	header('Location: companyadmin_teamManagement_view_delete_edit.php');
-	exit;
-}
+
 
 ?>
 <!DOCTYPE html>
@@ -37,7 +47,7 @@ if (isset($_POST['viewTeam'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -52,18 +62,7 @@ if (isset($_POST['viewTeam'])) {
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<div class="vertical-menu" style="border-right: 1px solid black; padding: 0px;">
-				<a href="companyadmin_homepage.php">Home</a>
-				<a href="companyadmin_ManageAccount.php">Manage Account</a>
-				<a href="companyadmin_ManageUserAccounts_create.php">Manage User Accounts > Create</a>
-				<a href="companyadmin_ManageUserAccounts_view.php">Manage User Accounts > View</a>
-				<a href="companyadmin_specialisation_create.php">Manage Specialisation > Create </a>
-				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
-				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
-				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
-				<a href="Logout.php">Logout</a>
-
-			</div>
+		<?php include_once('navigation.php') ?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
@@ -81,6 +80,7 @@ if (isset($_POST['viewTeam'])) {
 									ti.TeamName,
 									eu.FirstName,
 									eu.LastName,
+                                    eu.UserID,
 									COUNT(t.TeamID) AS TotalUsers
 								FROM 
 									teaminfo ti
@@ -89,7 +89,7 @@ if (isset($_POST['viewTeam'])) {
 								LEFT JOIN 
 									team t ON ti.MainTeamID = t.MainTeamID
 								WHERE 
-									ti.CompanyID = '$companyID'
+									ti.CompanyID = '82'
 								GROUP BY 
 									ti.MainTeamID, ti.TeamName, eu.FirstName, eu.LastName;
 								") 
@@ -107,7 +107,7 @@ if (isset($_POST['viewTeam'])) {
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
 					."<td>" . $Row['TeamName'] . "</td>" 
-					."<td>" . $Row['FirstName'] . " " . $Row['LastName'] . "</td>" 
+					."<td>" . $Row['FirstName'] . "_" . $Row['LastName'] . "</td>" 
 					."<td>" . $Row['TotalUsers'] . "</td>";
 
 					
@@ -115,6 +115,12 @@ if (isset($_POST['viewTeam'])) {
 						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
 						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
 						<input type='submit' name='viewTeam' value='View'>
+						</form></td>";
+						
+					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='managerID' value='" . $Row['UserID'] . "'/>
+						<input type='hidden' name='mTeamID' value='" . $Row['MainTeamID'] . "'/>
+						<input type='submit' name='editTeam' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>

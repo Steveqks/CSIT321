@@ -1,29 +1,46 @@
 <?php
 session_start();
 
-if (isset($_POST['addTeamMember'])) {
-	$_SESSION['teamID'] = $_POST['teamID'];
-	
-	header('Location: companyadmin_teamManagement_view_delete_edit_addMember.php');
-	exit;
-}
+	if(isset($_POST['submitChanges']))
+		{
+			$newManagerID = $_POST['newManagerID'];
+			$newTeamName = $_POST['newTeamName'];
+			$managerName = $_POST['managerName'];
+			$mTeamID= $_SESSION['mTeamID'];
 
-if (isset($_POST['removeMember'])) {
-	$teamID = $_SESSION['teamID'];
-	$userID = $_POST['userID'];
-	$fullname = $_POST['fullname'];
+
+			//check if there are changes in manager in charge
+			if ($_POST['oldManagerID'] != $_POST['newManagerID']){
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				
+				$result2 = mysqli_query($db,"UPDATE teaminfo SET ManagerID = '$newManagerID' WHERE MainTeamID = '$mTeamID'") or die("update Error");
+				$_SESSION['message1'] = "<p>Team manager has been changed to " . $managerName . "</p>";						
+			}
+			else $_SESSION['message1'] = "";
+			
+			// if team name changed
+			if(@$_POST['oldTeamName'] != $_POST['newTeamName']){
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+				//check if team name exists
+				$result = mysqli_query($db,	"SELECT * FROM teaminfo WHERE TeamName = '$newTeamName' AND CompanyID = '$companyID' ") or die("Select Error");
 	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = 	mysqli_query($db, "
-								DELETE FROM team
-								WHERE UserID = '$userID' AND MainTeamID = $teamID;
-								") or die("Select Error");
-	
-	$_SESSION['message'] = $fullname . " is removed from team";
-	$_SESSION['message1'] = " ";
-	header('Location: companyadmin_teamManagement_view_delete_edit.php');
-	exit;
-}
+				$num_rows=mysqli_num_rows($result);
+				// dont exists
+				if($num_rows == 0){
+					$result2 = mysqli_query($db,"UPDATE teaminfo SET TeamName = '$newTeamName' WHERE MainTeamID = '$mTeamID'") or die("update Error");
+					$_SESSION['message2'] = "<p>Team name has been changed to " . $newTeamName . "</p>";
+				}
+				// exists
+				else{
+					$_SESSION['message2'] = "<p>Team name already in use </p>";
+				}
+			}
+			else $_SESSION['message2'] = "";
+			
+			header('Location: companyadmin_teamManagement_view_delete_edit.php');
+			exit;
+		}
 
 ?>
 <!DOCTYPE html>
@@ -31,7 +48,7 @@ if (isset($_POST['removeMember'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -46,93 +63,89 @@ if (isset($_POST['removeMember'])) {
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<div class="vertical-menu" style="border-right: 1px solid black; padding: 0px;">
-				<a href="companyadmin_homepage.php">Home</a>
-				<a href="companyadmin_ManageAccount.php">Manage Account</a>
-				<a href="companyadmin_ManageUserAccounts_create.php">Manage User Accounts > Create</a>
-				<a href="companyadmin_ManageUserAccounts_view.php">Manage User Accounts > View</a>
-				<a href="companyadmin_specialisation_create.php">Manage Specialisation > Create </a>
-				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
-				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
-				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
-				<a href="Logout.php">Logout</a>
-
-			</div>
+		<?php include_once('navigation.php') ?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-			
-
-            <!-- Add more content as needed -->
-			<?php   
-
+			<h2>Edit Team</h2>
+								
+  
+			<?php     
+				
 				$companyID = $_SESSION['companyID'];;
-				$teamID = $_SESSION['teamID'];
-				$teamName = $_SESSION['teamName'];
+				$mTeamID= $_SESSION['mTeamID'];
 				
-				echo "<h2>View Team: ". $teamName . " </h2>";
+				$thisManagerID = $_SESSION['managerID'];
 				
+				$ManagerID = '';
+				$TeamName = '';
+				
+				//get selected team data
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = mysqli_query($db,	
-					"
-					SELECT 
-						(@row_number := @row_number + 1) AS RowNumber,
-						eu.UserID,
-						eu.FirstName,
-						eu.LastName,
-						s.SpecialisationName
-					FROM 
-						(SELECT @row_number := 0) AS init
-					JOIN 
-						team t ON 1=1 
-					JOIN 
-						existinguser eu ON t.UserID = eu.UserID
-					JOIN 
-						specialisation s ON eu.SpecialisationID = s.SpecialisationID
-					WHERE 
-						t.MainTeamID = '$teamID'
-					ORDER BY 
-						RowNumber;
-					") 
-				or die("Select Error");
-				
-				if($result){
-					$accountsTable = "<table border = 1 class='center'>";
-					$accountsTable .= "	<tr>
-											<th>S/N</th>
-											<th>First Name</th>
-											<th>Last Name</th>
-											<th>Specialisation Name</th>
-											</tr>\n";
-					$accountsTable .= "<br/>";
-					}
+				$result = mysqli_query($db,	"
+										SELECT 
+											teaminfo.TeamName, 
+											CONCAT(existinguser.FirstName, '_', existinguser.LastName) AS ManagerInCharge,
+											existinguser.UserID
+										FROM 
+											teaminfo
+										JOIN 
+											existinguser ON teaminfo.ManagerID = existinguser.UserID
+										WHERE 
+											teaminfo.MainTeamID = '$mTeamID'; ") or die("Select Error");
+
 				while ($Row = $result->fetch_assoc()) {
-					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['RowNumber'] . "</td>" 
-					."<td>" . $Row['FirstName'] . "</td>" 
-					."<td>" . $Row['LastName'] . "</td>" 
-					."<td>" . $Row['SpecialisationName'] . "</td>";
-
-	
-					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='fullname' value='" . $Row['FirstName'] .' '. $Row['LastName']  . "'/>
-						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
-						<input type='submit' name='removeMember' value='Remove'>
-						</form></td>";
-
-					$accountsTable.= "</tr>";
-
+					$ManagerID = $Row['UserID'];
+					$ManagerName =	$Row['ManagerInCharge'];
+					$TeamName =	$Row['TeamName'];
 				}
-				$accountsTable.= "</table> <br>";
+
+				// fill and get necessary fields
+				$form = "<form action'' method='POST'>
+						<br>
+						<table >
+						<tr>
+							<td style='border: 2px solid black; border-collapse: collapse;'>
+						FROM 
+						<br>
+						Team Name: <input type='text' name='oldTeamName' value='" . $TeamName . "' readonly><br>
+						Manager In Charge: <input type='text' name='' value='" . $ManagerName . "' readonly> <br>
+						
+						<input type='hidden' name='oldManagerID' value=" . $ManagerID. " readonly> <br>
+						<br></td>
+							
+						<td style='border: 2px solid black; border-collapse: collapse;'> 
+						
+						TO
+						<br>
+						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' > <br>
+						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
+						
 				
-				$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='teamID' value='" . $teamID . "'/>
-						<input type='submit' name='addTeamMember' value='ADD TEAM MEMBER'>
-						</form></td>";
-				echo  $accountsTable;
+				$result2 = 	mysqli_query($db, "SELECT CONCAT(FirstName, '_', LastName) AS Fullname, UserID
+											FROM existinguser
+											WHERE Role = 'Manager' AND CompanyID = $companyID;
+											") or die("Select Error");
+											
+				$form .= "<label for='Manager In Charge'>Manager In Charge:</label>
+							<select name='newManagerID' id=''>";		
+				while ($Row = $result2->fetch_assoc()) 
+				{
+					if($Row['UserID'] == $ManagerID)
+					{
+						$form .= "<option value='" . $Row['UserID'] . "' selected> " . $Row['Fullname'] . " </option>";
+					}
+			
+					else
+					{
+						$form .= "<option value='" . $Row['UserID'] . "'>" . $Row['Fullname'] . " </option>";
+					}
+				}
+				$form .= "</select> <br><br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+			
+				echo $form;
 				
-				if(@$_SESSION['message'])
-					echo $_SESSION['message'];
+			
 			?>
         </div>
     </div>
