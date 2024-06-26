@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-	include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
 	if(isset($_POST['submit'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

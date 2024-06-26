@@ -1,28 +1,28 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-if(isset($_POST['deleteEntry']))
-{
-	$calendarID = $_POST['calendarID'];
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM calendar WHERE CalendarID = '$calendarID' ") or die("Select Error");
-	
-	$_SESSION['message1'] = "Calendar entry for " .$_POST['date']. ", ". $_POST['dateName'] ." deleted successfully";
-	header('Location: companyadmin_ManageCalendar_view.php');
-	exit;
-}
+	if(isset($_POST['deleteEntry']))
+	{
+		$calendarID = $_POST['calendarID'];
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,	"DELETE FROM calendar WHERE CalendarID = '$calendarID' ") or die("Select Error");
+		
+		$_SESSION['message1'] = "Calendar entry for " .$_POST['date']. ", ". $_POST['dateName'] ." deleted successfully";
+		header('Location: companyadmin_ManageCalendar_view.php');
+		exit;
+	}
 
-if (isset($_POST['editAccount'])) 
-{
-	$_SESSION['date'] = $_POST['date'];
-	$_SESSION['dateName'] = $_POST['dateName'];
-	$_SESSION['calendarID'] = $_POST['calendarID'];
-	
-	header('Location: companyadmin_ManageCalendar_view_edit.php');
-	exit;
-}
+	if (isset($_POST['editAccount'])) 
+	{
+		$_SESSION['date'] = $_POST['date'];
+		$_SESSION['dateName'] = $_POST['dateName'];
+		$_SESSION['calendarID'] = $_POST['calendarID'];
+		
+		header('Location: companyadmin_ManageCalendar_view_edit.php');
+		exit;
+	}
 
 ?>
 <!DOCTYPE html>

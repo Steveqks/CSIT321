@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-include ('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-$_SESSION['message'] = "";
-$_SESSION['message0'] = "";
-$_SESSION['message1'] = "";
-$_SESSION['message2'] = "";
-$_SESSION['message3'] = "";
-$_SESSION['message4'] = "";
-$_SESSION['message5'] = "";
-$_SESSION['message6'] = "";
+	$_SESSION['message'] = "";
+	$_SESSION['message0'] = "";
+	$_SESSION['message1'] = "";
+	$_SESSION['message2'] = "";
+	$_SESSION['message3'] = "";
+	$_SESSION['message4'] = "";
+	$_SESSION['message5'] = "";
+	$_SESSION['message6'] = "";
 
 
 ?>

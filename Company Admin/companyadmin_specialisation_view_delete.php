@@ -1,27 +1,27 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-include_once('companyadmin_specialisation_viewdelete_functions.php');
+	include_once('companyadmin_specialisation_viewdelete_functions.php');
 
-if(isset($_POST['deleteSpecialisation']))
-{
-	$delete = new userAccount();
-	$delete->deleteSpecialisation($_POST['specialisationID']);
-	
-	$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";
-	header('Location: companyadmin_specialisation_view_delete.php');
-	exit();
-}
+	if(isset($_POST['deleteSpecialisation']))
+	{
+		$delete = new userAccount();
+		$delete->deleteSpecialisation($_POST['specialisationID']);
+		
+		$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";
+		header('Location: companyadmin_specialisation_view_delete.php');
+		exit();
+	}
 
-if (isset($_POST['editSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	$_SESSION['message'] = '';
-	header('Location: companyadmin_specialisation_edit.php');
-	exit();
-}
+	if (isset($_POST['editSpecialisation'])) {
+		$_SESSION['specialisationName'] = $_POST['specialisationName'];
+		$_SESSION['specialisationID'] = $_POST['specialisationID'];
+		$_SESSION['message'] = '';
+		header('Location: companyadmin_specialisation_edit.php');
+		exit();
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,44 +1,44 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-if (isset($_POST['viewTeam'])) {
-	$_SESSION['teamName'] = $_POST['teamName'];
-	$_SESSION['teamID'] = $_POST['teamID'];
-	header('Location: companyadmin_teamManagement_view_delete_view.php');
-	exit;
-}
+	if (isset($_POST['viewTeam'])) {
+		$_SESSION['teamName'] = $_POST['teamName'];
+		$_SESSION['teamID'] = $_POST['teamID'];
+		header('Location: companyadmin_teamManagement_view_delete_view.php');
+		exit;
+	}
 
-if (isset($_POST['editTeam'])) {
-	$_SESSION['mTeamID'] = $_POST['mTeamID'];
-	$_SESSION['managerID'] = $_POST['managerID'];
-	header('Location: companyadmin_teamManagement_view_delete_edit.php');
-	exit;
-}
+	if (isset($_POST['editTeam'])) {
+		$_SESSION['mTeamID'] = $_POST['mTeamID'];
+		$_SESSION['managerID'] = $_POST['managerID'];
+		header('Location: companyadmin_teamManagement_view_delete_edit.php');
+		exit;
+	}
 
-if(isset($_POST['deleteTeam']))
-{
-	$teamID = $_POST['teamID'];
-	$totalUser = $_POST['totalUser'];
-	$teamName = $_POST['teamName'];
-	
-	//remove team members from team first, then delete team
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = 	mysqli_query($db, "
-								DELETE FROM team
-								WHERE MainTeamID = '$teamID';
-								") or die("Select Error");
-								
-	$result2 = 	mysqli_query($db, "
-								DELETE FROM teaminfo
-								WHERE MainTeamID = '$teamID';
-								") or die("Select Error");
-	
-	$_SESSION['message'] = " ";
-	$_SESSION['message1'] = " ";
-	$_SESSION['message2'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
-}
+	if(isset($_POST['deleteTeam']))
+	{
+		$teamID = $_POST['teamID'];
+		$totalUser = $_POST['totalUser'];
+		$teamName = $_POST['teamName'];
+		
+		//remove team members from team first, then delete team
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = 	mysqli_query($db, "
+									DELETE FROM team
+									WHERE MainTeamID = '$teamID';
+									") or die("Select Error");
+									
+		$result2 = 	mysqli_query($db, "
+									DELETE FROM teaminfo
+									WHERE MainTeamID = '$teamID';
+									") or die("Select Error");
+		
+		$_SESSION['message'] = " ";
+		$_SESSION['message1'] = " ";
+		$_SESSION['message2'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
+	}
 
 
 
