@@ -80,6 +80,14 @@ footer ul li a {
   text-decoration: none;
 }
 
+.show {
+  background-color: #aaa;
+  color: black;
+  display: block;
+  padding: 3px;
+  text-decoration: none;
+}
+
 .vertical-menu a:hover {
   background-color: #ccc;
 }
@@ -87,4 +95,16 @@ footer ul li a {
 .vertical-menu a.active {
   background-color: #04AA6D;
   color: white;
+}
+
+#myButton1:hover , #myButton2:hover , #myButton3:hover , #myButton4:hover{
+    background-color: #ccc;
+}
+
+#myButton1.expanded , #myButton2.expanded , #myButton3.expanded , #myButton4.expanded{
+    background-color: #bbb;
+}
+
+#linkContainer1 , #linkContainer2 , #linkContainer3 , #linkContainer4{
+	display: none;
 }

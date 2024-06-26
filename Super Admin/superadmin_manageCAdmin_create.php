@@ -13,7 +13,7 @@ if (isset($_POST['submitSpecialisation'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>

@@ -43,7 +43,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -63,7 +63,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 
-			<h2>Approve Users</h2>
+			<h2>Approve Company</h2>
 
 				<?php   
 

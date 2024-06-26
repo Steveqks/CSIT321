@@ -17,7 +17,7 @@ $_SESSION['message6'] = "";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -67,7 +67,12 @@ $_SESSION['message6'] = "";
 			
         </div>
     </div>
+<?php
+// Some PHP code to generate the button
+echo "<button onclick='handleClick()'>Click me</button>";
+?>
 
+ 
 </body>
 </html>
 
