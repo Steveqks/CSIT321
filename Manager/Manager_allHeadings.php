@@ -18,9 +18,7 @@
             exit();
         }
 
-        $userID = $_SESSION['UserID'];
         $firstName = $_SESSION['FirstName'];
-        $employeeType = $_SESSION['Role'];
     ?>
 
 </head>
@@ -43,7 +41,8 @@
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                    <!--<li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>-->
+                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
                     <li><a href="Logout.php">Logout</a></li>
                 </ul>
@@ -53,32 +52,32 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <?php
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['manageaccount']) == "true")) {
+            if (isset($_GET['manageaccount']) == "true") {
             ?>
                 <h2 class="contentHeader">Manage Account</h2>
             <?php }
 
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['taskmanagenent']) == "true")) {
+            if (isset($_GET['taskmanagenent']) == "true") {
             ?>
                 <h2 class="contentHeader">Task Management</h2>
             <?php }
 
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['leavemanagenent']) == "true")) {
+            if (isset($_GET['leavemanagenent']) == "true") {
             ?>
                 <h2 class="contentHeader">Leave Management</h2>
             <?php }
 
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['attendancemanagenent']) == "true")) {
+            if (isset($_GET['attendancemanagenent']) == "true") {
             ?>
                 <h2 class="contentHeader">Time/Attendance Tracking</h2>
             <?php }
 
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['newsfeedmanagenent']) == "true")) {
+            if (isset($_GET['newsfeedmanagenent']) == "true") {
             ?>
                 <h2 class="contentHeader">News Feed Management</h2>
             <?php }
 
-            if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['projectmanagenent']) == "true")) {
+            if (isset($_GET['projectmanagenent']) == "true") {
             ?>
                 <h2 class="contentHeader">Project Management</h2>
             <?php } ?>
@@ -86,38 +85,33 @@
 
             <div class="innerContent">
                 <?php
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['manageaccount']) == "true")) {
+                if (isset($_GET['manageaccount']) == "true") {
                 ?>
 
                 <a href="Manager_createUserAccount.php"><button>Create User Account</button></a>
                 <a href="Manager_editAccount.php"><button>Edit Account</button></a>
 
                 <?php }
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['taskmanagenent']) == "true")) {
+                if (isset($_GET['taskmanagenent']) == "true") {
                 ?>
 
                 <a href="Manager_viewTasks.php"><button>View Tasks</button></a>
                 <a href="Manager_addTask.php"><button>Allocate Task</button></a>
 
                 <?php }
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['leavemanagenent']) == "true")) {
+                if (isset($_GET['leavemanagenent']) == "true") {
                 ?>
 
                 <a href="#"><button>Leave History</button></a>
 
                 <?php }
 
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['attendancemanagenent']) == "true")) {
+                if (isset($_GET['attendancemanagenent']) == "true") {
                 ?>
                     <a href="#"><button>View Time Management</button></a>
                 <?php }
 
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['newsfeedmanagenent']) == "true")) {
-                ?>
-                    <a href="Manager_viewNewsFeed.php"><button>News Feed Management</button></a>
-                <?php }
-
-                if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['projectmanagenent']) == "true")) {
+                if (isset($_GET['projectmanagenent']) == "true") {
                 ?>
                     <a href="Manager_addProject.php"><button>Create Project</button></a>
                     <a href="Manager_viewProject.php"><button>View Projects</button></a>
