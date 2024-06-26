@@ -142,7 +142,7 @@ if(isset($_POST['submitChanges'])){
 						$form .= "<option value='" . $Row['UserID'] . "'>" . $Row['Fullname'] . " </option>";
 					}
 				}
-				$form .= "</select> </td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+				$form .= "</select> <br><br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
 			
 				
 				
