@@ -17,13 +17,6 @@ if(isset($_POST['deleteUser']))
 if (isset($_POST['editAccount'])) 
 {
 	$_SESSION['userID'] = $_POST['userID'];
-	$_SESSION['fname'] = $_POST['fname'];
-	$_SESSION['lname']  = $_POST['lname'];
-	$_SESSION['gender'] = $_POST['gender'];
-	$_SESSION['email'] = $_POST['email'];
-	$_SESSION['specialisation'] = $_POST['specialisation'];
-	$_SESSION['role'] = $_POST['role'];
-	
 	
 	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
 	exit;
@@ -125,12 +118,6 @@ if (isset($_POST['toggleStatus']))
 					
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
-						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
-						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-						<input type='hidden' name='gender' value='" . $Row['Gender'] . "'/>
-						<input type='hidden' name='email' value='" . $Row['EmailAddress'] . "'/>
-						<input type='hidden' name='specialisation' value='" . $Row['SpecialisationID'] . "'/>
-						<input type='hidden' name='role' value='" . $Row['Role'] . "'/>
 						<input type='submit' name='editAccount' value='Edit'>
 						</form></td>";
 

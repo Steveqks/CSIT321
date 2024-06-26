@@ -1,45 +1,46 @@
 <?php
 session_start();
 
-if(isset($_POST['submitChanges'])){
-					$newManagerID = $_POST['newManagerID'];
-					$newTeamName = $_POST['newTeamName'];
-					$managerName = $_POST['managerName'];
-					$mTeamID= $_SESSION['mTeamID'];
+	if(isset($_POST['submitChanges']))
+		{
+			$newManagerID = $_POST['newManagerID'];
+			$newTeamName = $_POST['newTeamName'];
+			$managerName = $_POST['managerName'];
+			$mTeamID= $_SESSION['mTeamID'];
 
 
-					//check if there are changes in manager in charge
-					if ($_POST['oldManagerID'] != $_POST['newManagerID']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						
-						$result2 = mysqli_query($db,"UPDATE teaminfo SET ManagerID = '$newManagerID' WHERE MainTeamID = '$mTeamID'") or die("update Error");
-						$_SESSION['message1'] = "<p>Team manager has been changed to " . $managerName . "</p>";						
-					}
-					else $_SESSION['message1'] = "";
-					
-					// if team name changed
-					if(@$_POST['oldTeamName'] != $_POST['newTeamName']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-						//check if team name exists
-						$result = mysqli_query($db,	"SELECT * FROM teaminfo WHERE TeamName = '$newTeamName' AND CompanyID = '$companyID' ") or die("Select Error");
+			//check if there are changes in manager in charge
+			if ($_POST['oldManagerID'] != $_POST['newManagerID']){
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				
+				$result2 = mysqli_query($db,"UPDATE teaminfo SET ManagerID = '$newManagerID' WHERE MainTeamID = '$mTeamID'") or die("update Error");
+				$_SESSION['message1'] = "<p>Team manager has been changed to " . $managerName . "</p>";						
+			}
+			else $_SESSION['message1'] = "";
 			
-						$num_rows=mysqli_num_rows($result);
-						// dont exists
-						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE teaminfo SET TeamName = '$newTeamName' WHERE MainTeamID = '$mTeamID'") or die("update Error");
-							$_SESSION['message2'] = "<p>Team name has been changed to " . $newTeamName . "</p>";
-						}
-						// exists
-						else{
-							$_SESSION['message2'] = "<p>Team name already in use </p>";
-						}
-					}
-					else $_SESSION['message2'] = "";
-					
-					header('Location: companyadmin_teamManagement_view_delete_edit.php');
-					exit;
+			// if team name changed
+			if(@$_POST['oldTeamName'] != $_POST['newTeamName']){
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+				//check if team name exists
+				$result = mysqli_query($db,	"SELECT * FROM teaminfo WHERE TeamName = '$newTeamName' AND CompanyID = '$companyID' ") or die("Select Error");
+	
+				$num_rows=mysqli_num_rows($result);
+				// dont exists
+				if($num_rows == 0){
+					$result2 = mysqli_query($db,"UPDATE teaminfo SET TeamName = '$newTeamName' WHERE MainTeamID = '$mTeamID'") or die("update Error");
+					$_SESSION['message2'] = "<p>Team name has been changed to " . $newTeamName . "</p>";
 				}
+				// exists
+				else{
+					$_SESSION['message2'] = "<p>Team name already in use </p>";
+				}
+			}
+			else $_SESSION['message2'] = "";
+			
+			header('Location: companyadmin_teamManagement_view_delete_edit.php');
+			exit;
+		}
 
 ?>
 <!DOCTYPE html>
@@ -92,9 +93,7 @@ if(isset($_POST['submitChanges'])){
 											existinguser ON teaminfo.ManagerID = existinguser.UserID
 										WHERE 
 											teaminfo.MainTeamID = '$mTeamID'; ") or die("Select Error");
-				
-				if($result){
-				}	
+
 				while ($Row = $result->fetch_assoc()) {
 					$ManagerID = $Row['UserID'];
 					$ManagerName =	$Row['ManagerInCharge'];
@@ -115,8 +114,8 @@ if(isset($_POST['submitChanges'])){
 						<input type='hidden' name='oldManagerID' value=" . $ManagerID. " readonly> <br>
 						<br></td>
 							
-							
 						<td style='border: 2px solid black; border-collapse: collapse;'> 
+						
 						TO
 						<br>
 						Team Name: <input type='text' name='newTeamName' value=" . $TeamName . " > <br>
@@ -144,61 +143,9 @@ if(isset($_POST['submitChanges'])){
 				}
 				$form .= "</select> <br><br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
 			
-				
-				
-				/* echo "><br>
-				
-				 <input type='submit' name='submitChanges' value='Update'>
-				</form>
-					</td>
-				</tr>
-				</table>
-					";
-					*/
-				
 				echo $form;
 				
-				
-				
-				
-				
-				
-				
-				
-				/*
-				
-				$result2 = 	mysqli_query($db, "SELECT CONCAT(FirstName, ' ', LastName) AS Fullname, UserID
-											FROM existinguser
-											WHERE Role = 'Manager' AND CompanyID = 1;
-											") or die("Select Error");
 			
-				if($result2){
-					$accountsTable = "<table border = 1 class='center'>";
-					$accountsTable .= "	<tr>
-											<th>Team Name</th>
-											<th>Manager In Charge</th>
-											<th>Total Staff In Team</th>
-											</tr>\n";
-					$accountsTable .= "<br/>";
-					}
-				while ($Row = $result->fetch_assoc()) {
-					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['TeamName'] . "</td>" 
-					."<td>" . $Row['FirstName'] . " " . $Row['LastName'] . "</td>" 
-					."<td>" . $Row['TotalUsers'] . "</td>";
-					
-				
-				}
-				echo $form;
-				
-				
-				// to get manager ID, full name and last name for company xml_error_string
-				
-	
-
-				
-				*/
-				
 			?>
         </div>
     </div>

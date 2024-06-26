@@ -46,6 +46,8 @@ session_start();
 						<br>
 							</td>
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
+							
+							
 						<b>TO:</b>
 						<br>
 							Date Name: <input type='text' name='newDateName' value=" . $_SESSION['dateName'] . " ><br>
