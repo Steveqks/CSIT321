@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 $_SESSION['message'] = "";
 $_SESSION['message0'] = "";
 $_SESSION['message1'] = "";
@@ -17,7 +19,7 @@ $_SESSION['message6'] = "";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -67,7 +69,7 @@ $_SESSION['message6'] = "";
 			
         </div>
     </div>
-
+ 
 </body>
 </html>
 

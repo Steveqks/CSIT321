@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-//include_once('superadmin_manageCAdmin_view_functions.php');
+include_once('../Session/session_check_companyadmin.php');
 
 if(isset($_POST['deleteEntry']))
 {
@@ -30,7 +30,7 @@ if (isset($_POST['editAccount']))
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>

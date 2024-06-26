@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 	if(isset($_POST['submitChanges']))
 		{
 			$newManagerID = $_POST['newManagerID'];
@@ -48,7 +50,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -107,18 +109,18 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
-						Team Name: <input type='text' name='oldTeamName' value=" . $TeamName . " readonly><br>
-						Manager In Charge: <input type='text' name='' value=" . $ManagerName . " readonly> <br>
+						<br><br>
+						Team Name: <input type='text' name='oldTeamName' value='" . $TeamName . "' readonly><br>
+						Manager In Charge: <input type='text' name='' value='" . $ManagerName . "' readonly> <br>
 						
 						<input type='hidden' name='oldManagerID' value=" . $ManagerID. " readonly> <br>
-						<br></td>
+						</td>
 							
 						<td style='border: 2px solid black; border-collapse: collapse;'> 
 						
 						TO
-						<br>
-						Team Name: <input type='text' name='newTeamName' value=" . $TeamName . " > <br>
+						<br><br>
+						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' > <br>
 						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
 						
 				
@@ -141,7 +143,7 @@ session_start();
 						$form .= "<option value='" . $Row['UserID'] . "'>" . $Row['Fullname'] . " </option>";
 					}
 				}
-				$form .= "</select> <br><br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+				$form .= "</select> <br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
 			
 				echo $form;
 				

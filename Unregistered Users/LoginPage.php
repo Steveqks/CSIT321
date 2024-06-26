@@ -27,6 +27,7 @@
 			{
 				//Session Related to Exisitng user
 				$_SESSION['UserID'] = $row['UserID'];
+				$_SESSION['CompanyID'] = $row['CompanyID'];
 				$_SESSION['Email'] = $row['Email'];
 				$_SESSION['FirstName'] = $row['FirstName'];
 				$_SESSION['Role']= $row['Role'];

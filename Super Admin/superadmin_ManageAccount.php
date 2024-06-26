@@ -8,7 +8,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -43,18 +43,18 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
+						<br><br>
 						
-						First Name: <input type='text' name='oldFirstName' value=" . $Row['FirstName'] . " readonly><br>
-						Last Name: <input type='text' name='oldLastName' value=" . $Row['LastName'] . " readonly> <br>
+						First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
+						Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
 						Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
 						<br></td>
 							
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
-						<br>
-						First Name: <input type='text' name='newFirstName' value=" . $Row['FirstName'] . " > <br>
-						Last Name: <input type='text' name='newLastName' value=" . $Row['LastName'] . "><br>
+						<br><br>
+						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
+						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
 						Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
 						
 						<input type='submit' name='submitChanges' value='Update'>

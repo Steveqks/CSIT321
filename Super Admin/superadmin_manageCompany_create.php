@@ -1,19 +1,50 @@
 <?php
 session_start();
 
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_edit_specialisation.php');
-	exit;
-}
+	//create company
+	if(isset($_POST['submit'])){
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+		$companyName = $_POST['companyName'];
+		$planType = $_POST['planType'];
+		
+		//check if company exists
+		if(isCompanyExists($companyName, $db)){
+			$_SESSION['message'] = "<p>Company \"".$companyName."\" already exists in database</p>";
+		}
+		//doesn't exist, add to db
+		else
+		{
+			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$planType', '1')") or die("Select Error");
+			$_SESSION['message'] = "<p>Company \"".$companyName."\" added to database.</p>";
+		}
+		
+	}
+		
+		
+	function isCompanyExists(string $cname, mysqli $db):bool{
+		$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
+		$qres = mysqli_query($db, $sql); 
+
+		$num_rows=mysqli_num_rows($qres);
+
+		// dont exists
+		if($num_rows > 0){
+			return true; 
+		}
+		// exists
+		else{
+			return false; 
+		}
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -41,42 +72,10 @@ if (isset($_POST['submitSpecialisation'])) {
 			</form>
 			
 			<?php   
-				//create company
-				if(isset($_POST['submit'])){
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-					$companyName = $_POST['companyName'];
-					$planType = $_POST['planType'];
-					
-					//check if company exists
-					if(isCompanyExists($companyName, $db)){
-						echo "<p style='color: red;'>Company \"".$companyName."\" already exists in database</p>";
-					}
-					//doesn't exist, add to db
-					else
+					if(@$_SESSION['message'])
 					{
-						$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$planType', '1')") or die("Select Error");
-						echo "<p style='color: green;'>Company \"".$companyName."\" added to database.</p>";
+						echo $_SESSION['message'];
 					}
-					
-				}
-					
-					
-				function isCompanyExists(string $cname, mysqli $db):bool{
-					$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
-					$qres = mysqli_query($db, $sql); 
-
-					$num_rows=mysqli_num_rows($qres);
-
-					// dont exists
-					if($num_rows > 0){
-						return true; 
-					}
-					// exists
-					else{
-						return false; 
-					}
-				}
 			?>
         </div>
     </div>

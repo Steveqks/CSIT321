@@ -1,9 +1,10 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 if (isset($_POST['AddMember'])) {
-	//$_SESSION['message'] = $_POST['userID'];
-	//$_SESSION['message'] = $_SESSION['teamID'];
+
 	$userID = $_POST['userID'];
 	$teamID = $_SESSION['teamID'];
 	$fullname = $_POST['fullname'];
@@ -26,7 +27,7 @@ if (isset($_POST['AddMember'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>

@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 include_once('companyadmin_specialisation_viewdelete_functions.php');
 
 if(isset($_POST['deleteSpecialisation']))
@@ -26,7 +28,7 @@ if (isset($_POST['editSpecialisation'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
