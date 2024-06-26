@@ -67,11 +67,6 @@ $_SESSION['message6'] = "";
 			
         </div>
     </div>
-<?php
-// Some PHP code to generate the button
-echo "<button onclick='handleClick()'>Click me</button>";
-?>
-
  
 </body>
 </html>
