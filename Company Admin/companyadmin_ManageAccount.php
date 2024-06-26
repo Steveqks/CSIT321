@@ -44,7 +44,7 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
+						<br><br>
 						
 						First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
 						Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
@@ -53,7 +53,7 @@ session_start();
 							
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
-						<br>
+						<br><br>
 						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
 						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
 						Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>

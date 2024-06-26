@@ -107,17 +107,17 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
+						<br><br>
 						Team Name: <input type='text' name='oldTeamName' value='" . $TeamName . "' readonly><br>
 						Manager In Charge: <input type='text' name='' value='" . $ManagerName . "' readonly> <br>
 						
 						<input type='hidden' name='oldManagerID' value=" . $ManagerID. " readonly> <br>
-						<br></td>
+						</td>
 							
 						<td style='border: 2px solid black; border-collapse: collapse;'> 
 						
 						TO
-						<br>
+						<br><br>
 						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' > <br>
 						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
 						
@@ -141,7 +141,7 @@ session_start();
 						$form .= "<option value='" . $Row['UserID'] . "'>" . $Row['Fullname'] . " </option>";
 					}
 				}
-				$form .= "</select> <br><br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+				$form .= "</select> <br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
 			
 				echo $form;
 				
