@@ -45,7 +45,7 @@ session_start();
 						$select = 	"<label for='Manager'>Manager:</label>
 									<select name='managerID' id=''>";		
 						while ($Row = $qres->fetch_assoc()) {
-							$select .= "<option value ='".$Row['UserID']."'> ID:" . $Row['UserID']. ", ". $Row['FirstName'] . " " . $Row['LastName']  ." </option>";
+							$select .= "<option value ='".$Row['UserID']."'> ". $Row['FirstName'] . " " . $Row['LastName']  ." </option>";
 						}
 						$select .= "</select>";
 						echo $select;
