@@ -1,7 +1,71 @@
 <?php
 session_start();
 
+	if(isset($_POST['submitChanges'])){
+		
+		$newFirstName = $_POST['newFirstName'];
+		$newLastName = $_POST['newLastName'];
+		$newGender = $_POST['newGender'];
+		$newEmail = $_POST['newEmail'];
+		$newSID = $_POST['newSID'];
+		$newRole = $_POST['newRole'];
+		
+		//check if there are changes in first name
+		if ($_POST['newFirstName'] != $_POST['oldFirstName']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			
+			$result = mysqli_query($db,"UPDATE existinguser SET FirstName = '$newFirstName' WHERE UserID = '$userID'") or die("update Error");
+			$_SESSION['message1'] = "<p>First Name has been changed";
+		}
+		else $_SESSION['message1'] = "";
+		
+		// check if there are changes in last name
+		if ($_POST['newLastName'] != $_POST['oldLastName']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			
+			$result = mysqli_query($db,"UPDATE existinguser SET LastName = '$newLastName' WHERE UserID = '$userID'") or die("update Error");
+			$_SESSION['message2'] = "<p>Last Name has been changed";
+		}
+		else $_SESSION['message2'] = "";
+		
+		// check if there are changes in gender
+		if(@$_POST['newGender'] != $_POST['oldGender']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE existinguser SET Gender = '$newGender' WHERE UserID = '$userID' ") or die("update Error");
+			$_SESSION['message3'] = "<p>Gender has been changed.</p>";
+		}
+		else $_SESSION['message3'] = "";
+							
+		// check if there are changes in email
+		if(@$_POST['newEmail'] != $_POST['oldEmail']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE existinguser SET Email = '$newEmail' WHERE UserID = '$userID' ") or die("update Error");
+			$_SESSION['message4'] = "<p>Email has been changed.</p>";
 
+		}
+		else $_SESSION['message4'] = "";
+		
+		// check if there are changes in specialisation
+		if(@$_POST['newSID'] != $_POST['oldSID']){
+			
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE existinguser SET SpecialisationID = '$newSID' WHERE UserID = '$userID' ") or die("update Error");
+			$_SESSION['message5'] = "<p >Specialisation has been changed.</p>";
+			
+		}
+		else $_SESSION['message5'] = "";
+		
+		// check if there are changes in role
+		if(@$_POST['newRole'] != $_POST['oldRole']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE existinguser SET Role = '$newRole' WHERE UserID = '$userID' ") or die("update Error");
+			$_SESSION['message6'] = "<p>Role has been changed.</p>" ;
+		}
+		else $_SESSION['message6'] = '';
+		
+		header('Location: companyadmin_ManageUserAccounts_view_edit.php');
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -142,71 +206,7 @@ session_start();
 				echo $_SESSION['message5'];
 				echo $_SESSION['message6'];
 				
-				if(isset($_POST['submitChanges'])){
-					
-					$newFirstName = $_POST['newFirstName'];
-					$newLastName = $_POST['newLastName'];
-					$newGender = $_POST['newGender'];
-					$newEmail = $_POST['newEmail'];
-					$newSID = $_POST['newSID'];
-					$newRole = $_POST['newRole'];
-					
-					//check if there are changes in first name
-					if ($_POST['newFirstName'] != $_POST['oldFirstName']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						
-						$result = mysqli_query($db,"UPDATE existinguser SET FirstName = '$newFirstName' WHERE UserID = '$userID'") or die("update Error");
-						$_SESSION['message1'] = "<p>First Name has been changed";
-					}
-					else $_SESSION['message1'] = "";
-					
-					// check if there are changes in last name
-					if ($_POST['newLastName'] != $_POST['oldLastName']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						
-						$result = mysqli_query($db,"UPDATE existinguser SET LastName = '$newLastName' WHERE UserID = '$userID'") or die("update Error");
-						$_SESSION['message2'] = "<p>Last Name has been changed";
-					}
-					else $_SESSION['message2'] = "";
-					
-					// check if there are changes in gender
-					if(@$_POST['newGender'] != $_POST['oldGender']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE existinguser SET Gender = '$newGender' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message3'] = "<p>Gender has been changed.</p>";
-					}
-					else $_SESSION['message3'] = "";
-										
-					// check if there are changes in email
-					if(@$_POST['newEmail'] != $_POST['oldEmail']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE existinguser SET Email = '$newEmail' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message4'] = "<p>Email has been changed.</p>";
-
-					}
-					else $_SESSION['message4'] = "";
-					
-					// check if there are changes in specialisation
-					if(@$_POST['newSID'] != $_POST['oldSID']){
-						
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE existinguser SET SpecialisationID = '$newSID' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message5'] = "<p >Specialisation has been changed.</p>";
-						
-					}
-					else $_SESSION['message5'] = "";
-					
-					// check if there are changes in role
-					if(@$_POST['newRole'] != $_POST['oldRole']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE existinguser SET Role = '$newRole' WHERE UserID = '$userID' ") or die("update Error");
-						$_SESSION['message6'] = "<p>Role has been changed.</p>" ;
-					}
-					else $_SESSION['message6'] = '';
-					
-					header('Location: companyadmin_ManageUserAccounts_view_edit.php');
-					exit;
-				}
+				
 			?>
         </div>
     </div>

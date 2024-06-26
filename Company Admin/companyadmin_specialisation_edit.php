@@ -1,7 +1,32 @@
 <?php
 session_start();
 
+	if(isset($_POST['submitSpecialisation'])){
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
+		$specialisationName = $_POST['specialisationName'];
+		$specialisationID = $_POST['specialisationID'];
+		
+		//check if exists already.
+		$result = mysqli_query($db,	"SELECT SpecialisationName FROM specialisation WHERE specialisation.SpecialisationName = '$specialisationName'; ") or die("Select Error");
+
+		$num_rows=mysqli_num_rows($result);
+		// dont exists
+		if($num_rows == 0){
+			$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
+			$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
+			$_SESSION['specialisationName'] = $specialisationName;
+			$_SESSION['specialisationID'] = $specialisationID;
+				header('Location: companyadmin_specialisation_edit.php');
+				exit;
+		}
+		// exists
+		else{
+			$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
+			header('Location: companyadmin_specialisation_edit.php');
+				exit;
+		}
+	}
 
 
 ?>
@@ -50,32 +75,7 @@ session_start();
 				echo $_SESSION['message'];
 				}
 				
-				if(isset($_POST['submitSpecialisation'])){
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-					$specialisationName = $_POST['specialisationName'];
-					$specialisationID = $_POST['specialisationID'];
-					
-					//check if exists already.
-					$result = mysqli_query($db,	"SELECT SpecialisationName FROM specialisation WHERE specialisation.SpecialisationName = '$specialisationName'; ") or die("Select Error");
-		
-					$num_rows=mysqli_num_rows($result);
-					// dont exists
-					if($num_rows == 0){
-						$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
-						$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
-						$_SESSION['specialisationName'] = $specialisationName;
-						$_SESSION['specialisationID'] = $specialisationID;
-							header('Location: companyadmin_specialisation_edit.php');
-							exit;
-					}
-					// exists
-					else{
-						$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
-						header('Location: companyadmin_specialisation_edit.php');
-							exit;
-					}
-				}
 				
 			?>
         </div>

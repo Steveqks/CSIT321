@@ -3,6 +3,50 @@ session_start();
 				
 	$companyID = $_SESSION['companyID'];
 
+	//create user
+	if(isset($_POST['submit'])){
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+
+		$fname = $_POST['fname'];
+		$lname = $_POST['lname'];
+		$emailadd = $_POST['emailadd'];
+		$gender = $_POST['gender'];
+		$password = $_POST['password'];
+		
+		$role = $_POST['role'];
+		$specialisation = $_POST['specialisationID'];
+		$status = $_POST['status'];
+		
+		//check if email exists in existinguser
+		if(isUserEmailExists($emailadd, $db)){
+			echo "<p style='color: red;'>Email Address\"".$emailadd."\" already in use.</p>";
+		}
+		//doesn't exist, add to db
+		else
+		{
+			$result = mysqli_query($db,"INSERT INTO existinguser 
+										(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
+								VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Select Error");
+			echo "<p style='color: green;'>User Account for \"".$fname." ".$lname."\" created.</p>";
+		}
+	}
+		
+	function isUserEmailExists(string $emailadd, mysqli $db):bool{
+		$sql = "SELECT * FROM existinguser WHERE Email = '$emailadd'";
+		$qres = mysqli_query($db, $sql); 
+
+		$num_rows=mysqli_num_rows($qres);
+
+		// exists
+		if($num_rows > 0){
+			return true; 
+		}
+		// dont exists
+		else{
+			return false; 
+		}
+	}
 
 ?>
 <!DOCTYPE html>
@@ -75,50 +119,7 @@ session_start();
 			<?php   
 			
 			
-				//create user
-				if(isset($_POST['submit'])){
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-
-					$fname = $_POST['fname'];
-					$lname = $_POST['lname'];
-					$emailadd = $_POST['emailadd'];
-					$gender = $_POST['gender'];
-					$password = $_POST['password'];
-					
-					$role = $_POST['role'];
-					$specialisation = $_POST['specialisationID'];
-					$status = $_POST['status'];
-					
-					//check if email exists in existinguser
-					if(isUserEmailExists($emailadd, $db)){
-						echo "<p style='color: red;'>Email Address\"".$emailadd."\" already in use.</p>";
-					}
-					//doesn't exist, add to db
-					else
-					{
-						$result = mysqli_query($db,"INSERT INTO existinguser 
-													(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
-											VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Select Error");
-						echo "<p style='color: green;'>User Account for \"".$fname." ".$lname."\" created.</p>";
-					}
-				}
-					
-				function isUserEmailExists(string $emailadd, mysqli $db):bool{
-					$sql = "SELECT * FROM existinguser WHERE Email = '$emailadd'";
-					$qres = mysqli_query($db, $sql); 
-
-					$num_rows=mysqli_num_rows($qres);
-
-					// exists
-					if($num_rows > 0){
-						return true; 
-					}
-					// dont exists
-					else{
-						return false; 
-					}
-				}
+				
 				
 			?>
         </div>

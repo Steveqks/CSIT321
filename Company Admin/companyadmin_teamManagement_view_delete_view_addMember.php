@@ -2,8 +2,7 @@
 session_start();
 
 if (isset($_POST['AddMember'])) {
-	//$_SESSION['message'] = $_POST['userID'];
-	//$_SESSION['message'] = $_SESSION['teamID'];
+
 	$userID = $_POST['userID'];
 	$teamID = $_SESSION['teamID'];
 	$fullname = $_POST['fullname'];

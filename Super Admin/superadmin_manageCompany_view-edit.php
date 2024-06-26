@@ -37,19 +37,19 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br><br>
-						company id: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
-						company name: <input type='text' name='oldCompanyName' value='" . $_SESSION['companyName'] . "' readonly> <br>
-						company UEN: <input type='text' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> <br>
-						subscription plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
+						Company ID: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
+						Company Name: <input type='text' name='oldCompanyName' value='" . $_SESSION['companyName'] . "' readonly> <br>
+						Company UEN: <input type='text' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> <br>
+						Subscription Plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
 						<br>
 							</td>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						TO
 						<br><br>
-						company id: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
-						company name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "'><br>
-						company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
-						subscription plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
+						Company ID: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
+						Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "'><br>
+						Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
+						Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
 						<input type='submit' name='submitChange' value='Update'>
 						</form>
 							</td>

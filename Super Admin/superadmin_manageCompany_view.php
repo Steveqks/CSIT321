@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-if (isset($_POST['submitSpecialisation'])) {
-	$_SESSION['specialisationName'] = $_POST['specialisationName'];
-	$_SESSION['specialisationID'] = $_POST['specialisationID'];
-	header('Location: companyadmin_edit_specialisation.php');
-	exit;
-}
-
 if(isset($_POST['deleteCompany']))
 {
 	$companyID = $_POST['companyID'];

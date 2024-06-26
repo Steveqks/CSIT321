@@ -1,47 +1,46 @@
 <?php
 session_start();
 
-//include_once('superadmin_manageCAdmin_view_functions.php');
 
-if(isset($_POST['deleteUser']))
-{
-	$userID = $_POST['userID'];
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
-	
-	$_SESSION['message1'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
-	header('Location: companyadmin_ManageUserAccounts_view.php');
-	exit;
-}
-
-if (isset($_POST['editAccount'])) 
-{
-	$_SESSION['userID'] = $_POST['userID'];
-	
-	header('Location: companyadmin_ManageUserAccounts_view_edit.php');
-	exit;
-}
-
-if (isset($_POST['toggleStatus'])) 
-{
-	$userID = $_POST['userID'];
-	
-	if ($_POST['status'] == 0)
+	if(isset($_POST['deleteUser']))
 	{
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
-	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
+		$userID = $_POST['userID'];
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
+		
+		$_SESSION['message1'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
+		header('Location: companyadmin_ManageUserAccounts_view.php');
+		exit;
 	}
-	else
+
+	if (isset($_POST['editAccount'])) 
 	{
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
-	$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
+		$_SESSION['userID'] = $_POST['userID'];
+		
+		header('Location: companyadmin_ManageUserAccounts_view_edit.php');
+		exit;
 	}
-	
-	header('Location: companyadmin_ManageUserAccounts_view.php');
-	exit;
-}
+
+	if (isset($_POST['toggleStatus'])) 
+	{
+		$userID = $_POST['userID'];
+		
+		if ($_POST['status'] == 0)
+		{
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
+		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
+		}
+		else
+		{
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
+		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
+		}
+		
+		header('Location: companyadmin_ManageUserAccounts_view.php');
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
