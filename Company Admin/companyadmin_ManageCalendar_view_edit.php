@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	include_once('../Session/session_check_companyadmin.php');
+
 	if(isset($_POST['submitChanges'])){
 		$newDate = $_POST['newDate'];
 		$newDateName = $_POST['newDateName'];

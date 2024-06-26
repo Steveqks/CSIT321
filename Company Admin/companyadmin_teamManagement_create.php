@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 	//create company
 	if(isset($_POST['submit'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

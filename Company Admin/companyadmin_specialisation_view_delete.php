@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once('../Session/session_check_companyadmin.php');
+
 include_once('companyadmin_specialisation_viewdelete_functions.php');
 
 if(isset($_POST['deleteSpecialisation']))

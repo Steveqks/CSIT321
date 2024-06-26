@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	include_once('../Session/session_check_companyadmin.php');
+
 	if(isset($_POST['submitSpecialisation'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 

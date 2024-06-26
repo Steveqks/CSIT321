@@ -1,6 +1,8 @@
 <?php
 session_start();
 				
+	include_once('../Session/session_check_companyadmin.php');
+				
 	$companyID = $_SESSION['companyID'];
 	
 	//create user
