@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+include ('../Session/session_check_companyadmin.php');
 
 $_SESSION['message'] = "";
 $_SESSION['message0'] = "";
