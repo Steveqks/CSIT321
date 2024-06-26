@@ -1,6 +1,42 @@
 <?php
 session_start();
+	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
+	if(isset($_POST['approveAccount']))
+	{
+		$aprrove = new userAccount();
 
+		switch ($aprrove->approveAccount($_POST['fname'], $_POST['companyUEN'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID'])){
+			//company exists
+			case 1 : $_SESSION['message'] = "company already exists in system"; 
+			break;
+			
+			//company admin exists
+			case 2 : $_SESSION['message'] = "company admin email already exists in system"; 
+			break;
+			
+			//create both
+			case 3 : $_SESSION['message'] = "company and company admin created."; 
+			break;
+			
+			default : $_SESSION['message'] = "nothing happened"; 
+			break;
+			
+		}
+			header('Location: superadmin_manageCAdmin_approve_unreg_user.php');
+			exit;
+	}
+
+	if(isset($_POST['deleteEntry']))
+	{
+		$applicationID = $_POST['applicationID'];
+
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,	"DELETE FROM unregisteredusers  WHERE ApplicationID = '$applicationID' ") or die("Select Error");
+		
+		$_SESSION['message'] = "Application  for \"" .$_POST['cname']. "\" deleted successfully";
+		header('Location: superadmin_manageCAdmin_approve_unreg_user.php');
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,19 +74,20 @@ session_start();
 
 			<h2>Approve Users</h2>
 
-				<?php   include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
+				<?php   
 
-						$view = new viewAccountController();
+						$view = new userAccount();
 						$qres = $view->viewAccount();
 						
 						if($qres){
 							$accountsTable = "<table border = 1 class='center'>";
 							$accountsTable .= "	<tr>
 													<th>Email</th>
-													<th>FirstName</th>
-													<th>LastName</th>
-													<th>PlanID</th>
-													<th>CompanyName</th>
+													<th>First Name</th>
+													<th>Last Name</th>
+													<th>Plan ID</th>
+													<th>Company Name</th>
+													<th>Company UEN</th>
 													</tr>\n";
 							$accountsTable .= "<br/>";
 							}
@@ -61,6 +98,7 @@ session_start();
 							$accountsTable .= "<td>" . $Row['LastName'] . "</td>";
 							$accountsTable .= "<td>" . $Row['PlanID'] . "</td>";
 							$accountsTable .= "<td>" . $Row['CompanyName'] . "</td>";
+							$accountsTable .= "<td>" . $Row['CompanyUEN'] . "</td>";
 						
 							$accountsTable .= "<td><form action'' method='POST'>
 								<input type='hidden' name='approveID' value='" . $Row['ApplicationID'] . "'/>
@@ -69,31 +107,23 @@ session_start();
 								<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
 								<input type='hidden' name='password' value='" . $Row['Password'] . "'/>
 								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
+								<input type='hidden' name='companyUEN' value='" . $Row['CompanyUEN'] . "'/>
 								<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
 								<input type='submit' name='approveAccount' value='Approve'>
+								</form></td>";
+								
+							$accountsTable .= "<td><form action'' method='POST'>
+								<input type='hidden' name='applicationID' value='" . $Row['ApplicationID'] . "'/>
+								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
+								<input type='submit' name='deleteEntry' value='Delete'>
 								</form></td>";
 							$accountsTable.= "</tr>";
 						}
 						$accountsTable.= "</table>";
-						echo  $accountsTable;
+						echo $accountsTable;
+						echo $_SESSION['message'];
 						
-						if(isset($_POST['approveAccount']))
-						{
-							$aprrove = new approveAccountController();
-							
-							switch ($aprrove->approveAccount()){
-								//company exists
-								case 1 : echo "company already exists in system"; break;
-								
-								//company admin exists
-								case 2 : echo "company admin already exists in system"; break;
-								
-								//create both
-								case 3 : echo "company and company admin created."; break;
-								default : echo "nothing happened"; break;
-							}
-
-						}
+						
 				?>
         </div>
     </div>

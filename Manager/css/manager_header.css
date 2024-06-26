@@ -16,7 +16,7 @@ body {
 .contentNav {
     display: flex;
     border: 1px solid black;
-    height: 95vh;
+    height: auto;
 }
 .navBar {
     border: 1px solid black;
@@ -57,10 +57,7 @@ body {
 .content {
     border-radius: 5px;
     width: 80%;
-    padding: 10px;
-}
-.contentHeader {
-    text-decoration: underline;
+    padding: 10px 20px 10px 20px;
 }
 .innerContent {
     background-color:#f2f2f2;

@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-include_once('superadmin_manageCompany_view_functions.php');
-
-
 if (isset($_POST['submitSpecialisation'])) {
 	$_SESSION['specialisationName'] = $_POST['specialisationName'];
 	$_SESSION['specialisationID'] = $_POST['specialisationID'];
@@ -14,12 +11,9 @@ if (isset($_POST['submitSpecialisation'])) {
 if(isset($_POST['deleteCompany']))
 {
 	$companyID = $_POST['companyID'];
-	
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM companyadmin WHERE CompanyID = '$companyID' ") or die("Select Error");
 	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error");
+	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error3");
 	
 	$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
 	header('Location: superadmin_manageCompany_view.php');
@@ -48,7 +42,9 @@ if(isset($_POST['activateSuspend']))
 if (isset($_POST['editCompany'])) {
 	$_SESSION['companyID'] = $_POST['companyID'];
 	$_SESSION['companyName'] = $_POST['companyName'];
+	$_SESSION['companyUEN'] = $_POST['companyUEN'];
 	$_SESSION['planID'] = $_POST['planID'];
+	
 	$_SESSION['message'] = '';
 	header('Location: superadmin_manageCompany_view-edit.php');
 	exit;
@@ -94,16 +90,19 @@ if (isset($_POST['editCompany'])) {
   
 			<?php     
 
-				$view = new userAccount();
-						$qres = $view->viewCompany();
+		
+					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+					$qres = mysqli_query($db,	"SELECT * FROM company ") or die("Select Error");
 						
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
 												<th>Company ID</th>
 												<th>Company Name</th>
+												<th>Company UEN</th>
 												<th>Subscription Plan</th>
 												<th>Status</th>
+												
 												</tr>\n";
 						$accountsTable .= "<br/>";
 						}
@@ -111,12 +110,14 @@ if (isset($_POST['editCompany'])) {
 						$accountsTable.= "<tr>\n"
 						."<td>" . $Row['CompanyID'] . "</td>" 
 						."<td>" . $Row['CompanyName'] . "</td>" 
+						."<td>" . $Row['CompanyUEN'] . "</td>" 
 						."<td>" . $Row['PlanID'] . "</td>" 
 						."<td>" . $Row['Status'] . "</td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
+							<input type='hidden' name='companyUEN' value='" . $Row['CompanyUEN'] . "'/>
 							<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
 							<input type='submit' name='editCompany' value='Edit'>
 							</form></td>";

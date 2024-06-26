@@ -111,3 +111,45 @@ hr {
 .checkbox-team {
     margin-bottom: 5px;
 }
+
+
+/* View News Feed */
+.categories button {
+    margin-left: 30px;
+    background-color: white;
+    border: 0.5px solid black;
+    padding: 7px 15px;
+}
+.categories button:hover {
+    background-color: rgb(229, 229, 229);
+}
+.nameDateNewsFeed {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    padding-top: 30px;
+}
+.teamNameNewsFeed, .teamDateNewsFeed {
+    display: flex;
+    align-items: baseline;
+    padding-bottom: 15px;
+}
+.teamDateNewsFeed a {
+    padding-left: 20px;
+}
+.teamDateNewsFeed {
+    padding-left: 69%;
+}
+.companyNameNewsFeed, .companyDateNewsFeed {
+    display: flex;
+    align-items: baseline;
+    padding-bottom: 15px;
+}
+.companyDateNewsFeed {
+    padding-left: 80%;
+}
+.newsFeedContents {
+    background-color:#f2f2f2;
+    border: 1px solid lightgrey;
+    padding: 3%;
+}

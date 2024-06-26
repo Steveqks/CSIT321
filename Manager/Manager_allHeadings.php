@@ -114,7 +114,7 @@
 
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['newsfeedmanagenent']) == "true")) {
                 ?>
-                    <a href="#"><button>News Feed Management</button></a>
+                    <a href="Manager_viewNewsFeed.php"><button>News Feed Management</button></a>
                 <?php }
 
                 if ((isset($_GET['employeetype']) == "Manager") && (isset($_GET['projectmanagenent']) == "true")) {

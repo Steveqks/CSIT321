@@ -29,18 +29,16 @@
         $userStatusID = 1;
         $taskStatusID = 1;
 
-        if ($employeeType == "Manager") {
-
-            $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
-                    (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-                    CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
-                    FROM task t
-                    JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-                    JOIN existinguser eu ON t.UserID = eu.UserID
-                    JOIN team te ON eu.UserID = te.UserID
-                    JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
-                    WHERE tei.ManagerID = ".$userID."
-                    ORDER BY ti.MainTaskID;";
+        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
+                FROM task t
+                JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+                JOIN existinguser eu ON t.UserID = eu.UserID
+                JOIN team te ON eu.UserID = te.UserID
+                JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
+                WHERE tei.ManagerID = ".$userID."
+                ORDER BY ti.MainTaskID;";
 /*
             // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("
@@ -59,9 +57,6 @@
                 . " GROUP BY e.TaskName, e.NumStaff,a.totalNumStaff, e.StartDate, e.DueDate, e.MainTaskID, fullName;";
 */
                 //echo $sql;
-        } else {
-            $sql = "SELECT a.TaskName, a.StartDate, a.DueDate FROM taskinfo a inner join task b on a.MainTaskID = b.MainTaskID WHERE b.UserID = 4";
-        }
 
         $stmt = $conn->prepare($sql);
         
@@ -110,15 +105,8 @@
                         <th>Task Name</th>
                         <th>Assigned Date</th>
                         <th>Due Date</th>
-                    <?php
-                        if ($employeeType == "Manager") {
-                    ?>
                         <th>Assigned To</th>
                         <th>Avail / Req Number of Staff</th>
-                    <?php
-                        }
-                    ?>
-
                     </tr>
 
                     <?php if (count($tasks) > 0): ?>
@@ -143,7 +131,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="3">No tasks assigned.</td>
+                            <td colspan="5">No tasks assigned.</td>
                         </tr>
                     <?php endif; ?>
                 </table>
