@@ -38,20 +38,20 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
-						company id: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
-						first name: <input type='text' name='oldfname' value='" . $_SESSION['fname'] . "' readonly> <br>
-						last name: <input type='text' name='oldlname' value='" . $_SESSION['lname'] . "' readonly> <br>
-						email address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
+						<br><br>
+						Company ID: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
+						First Name: <input type='text' name='oldfname' value='" . $_SESSION['fname'] . "' readonly> <br>
+						Last Name: <input type='text' name='oldlname' value='" . $_SESSION['lname'] . "' readonly> <br>
+						Email Address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
 						<br>
 							</td>
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
-						<br>
-						company id: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
-						first name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . "'><br>
-						last name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "'><br>
-						email address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
+						<br><br>
+						Company ID: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
+						First Name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . "'><br>
+						Last Name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "'><br>
+						Email Address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
 						<input type='submit' name='submitChanges' value='Update'>
 						</form>
 							</td>

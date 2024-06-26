@@ -28,7 +28,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-			<h2>Edit User Account</h2>
+			<h2>Edit Calendar Entry</h2>
 
 			<?php   
 				

@@ -33,7 +33,7 @@ session_start();
 			<h2>Edit Specialisation</h2>
 
 			<?php   
-				echo "Change specialisation:<br>";
+				
 				$form = "<form action'' method='POST'>
 				
 						FROM 

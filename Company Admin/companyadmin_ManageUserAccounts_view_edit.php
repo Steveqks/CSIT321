@@ -128,9 +128,9 @@ session_start();
 
 				$form .= "</select>
 						<br>
-							Status: <input type='text' name='' value=" . $Status . " readonly> <br><br>";
+							Status: <input type='text' name='' value=" . $Status . " readonly><br>";
 						
-				$form .= "</select> </td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+				$form .= "</select><input type='submit' name='submitChanges' value='Update'> </td></tr> </table></form>";
 			
 				echo $form;
 				
