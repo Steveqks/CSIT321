@@ -24,24 +24,68 @@
 			$lastname = $_POST['lastname'];
 			$email = $_POST['email'];
 			$password = $_POST['password'];
+			$companyuen = $_POST['companyuen'];
 			$companyname = $_POST['companyname'];
 			$planschoice = $_POST['plans'];
 			
+			//Check if Email Exists in unregistered users account
 			$verify_query = mysqli_query($db, "SELECT email FROM unregisteredusers where Email = '$email'");
+			
 			
 			if(mysqli_num_rows($verify_query) != 0)
 			{
 				echo "<div class='message'>
-                      <p>This email is used, Try another One Please!</p>
-                  </div> <br>";
+					  <p>This email is used, Try another One Please!</p>
+				  </div> <br>";
 			}
 			else
 			{
-				mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$firstname','$lastname','$planschoice')") or die("Error Occured");
+				//Check for 9 character UEN
+				if(strlen($companyuen) == 9)
+				{
+					$charregex = '/^(?=.*\d{8})(?=.*[A-Z])[A-Z\d]{9}$/';
+					if(preg_match($charregex, $companyuen))
+					{
+						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
 
-				echo "<div class='message'>
-                      <p>Registration successfully!</p>
-                  </div> <br>";
+						echo "<div class='message'>
+							<p>Credentials entered successfully!</p>
+						</div> <br>";
+					}
+					else
+					{
+						echo "<div class='message'>
+							<p>Please Enter a 9 digit UEN of the format 8 digits from 0 -> 9 and 1 uppercase letter!</p>
+						</div> <br>";
+					}
+				}
+				//Check for 10 character UEN
+				else if(strlen($companyuen) == 10)
+				{
+					$charregex = '/^(?=.*\b(18|19|20)\d\d\b)(?=.*\d{5})(?=.*[A-Z])[A-Z\d]{10,}$/';
+					if(preg_match($charregex, $companyuen))
+					{
+						mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
+
+						echo "<div class='message'>
+							<p>Credentials entered successfully!</p>
+						</div> <br>";
+					}
+					else
+					{
+						echo "<div class='message'>
+							<p>Please Enter a 10 digit UEN of the format 4 digits for year,  5digits from 0 -> 9 and 1 uppercase letter!</p>
+						</div> <br>";
+					}
+				}
+				
+				//Throw Error if UEN Doesnt match
+				else
+				{
+					echo "<div class='message'>
+							  <p>Invalid UEN Length, Please enter a UEN which is 9 or 10 characters!</p>
+						  </div> <br>";
+				}
 			}
 			
 		}
@@ -65,12 +109,13 @@
                <div id = "RegisterForm">
                     <h2>Empower Your Team, Simplify Your Schedule</h2>
 					<form action = "" method = "post">
-						<input id = "firstname" name = "firstname" type = "text" placeholder = "First Name">
-						<input id = "lastname" name = "lastname" type = "text" placeholder = "Last Name">
-						<input id = "email" name = "email" type = "text" placeholder = "Email Address">
-						<input id = "password" name = "password" type = "password" placeholder = "Password">
-						<input id = "companyname" name = "companyname" type = "text" placeholder = "Company Name">
-						<select id = "planschoice" name = "plans">
+						<input id = "firstname" name = "firstname" type = "text" placeholder = "First Name" required>
+						<input id = "lastname" name = "lastname" type = "text" placeholder = "Last Name" required>
+						<input id = "email" name = "email" type = "text" placeholder = "Email Address" required>
+						<input id = "password" name = "password" type = "password" placeholder = "Password" required>
+						<input id = "companyname" name = "companyname" type = "text" placeholder = "Company Name" required>
+						<input id = "companyuen" name = "companyuen" type = "text" placeholder = "Company UEN(Unique Entity Number)" required>
+						<select id = "planschoice" name = "plans" required>
 							<option value = "1">Tier 1($9.99/month)</option>
 							<option value = "2">Tier 2($29.99/month)</option>
 							<option value = "3">Tier 3($59.99/month)</option>
