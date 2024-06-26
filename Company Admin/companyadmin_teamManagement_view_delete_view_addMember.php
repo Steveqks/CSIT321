@@ -17,7 +17,7 @@ if (isset($_POST['AddMember'])) {
 							
 	$_SESSION['message'] = " ";
 	$_SESSION['message1'] = $fullname . " is added to team";
-	header('Location: companyadmin_teamManagement_view_delete_edit_addMember.php');
+	header('Location: companyadmin_teamManagement_view_delete_view_addMember.php');
 	exit;
 }
 ?>
