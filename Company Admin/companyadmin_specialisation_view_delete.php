@@ -51,20 +51,26 @@ if (isset($_POST['editSpecialisation'])) {
 					$companyID = $_SESSION['companyID'];;
 				
 
-					$view = new userAccount();
-					$qres = $view->viewSpecialisation($companyID);
+					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				
+					mysqli_query($db, "SET @row_number = 0;") or die("Error setting row number");
+
+					$qres = mysqli_query($db,	"SELECT @row_number := @row_number + 1 AS `S/n`, specialisation.*
+												FROM specialisation
+												WHERE CompanyID = '$companyID';
+												") or die("Select Error");
 					
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>SpecialisationID</th>
+												<th>S/n</th>
 												<th>Specialisation Name</th>
 												</tr>\n";
 						$accountsTable .= "<br/>";
 						}
 					while ($Row = $qres->fetch_assoc()) {
 						$accountsTable.= "<tr>\n";
-						$accountsTable .= "<td>" . $Row['SpecialisationID'] . "</td>";
+						$accountsTable .= "<td>" . $Row['S/n'] . "</td>";
 						$accountsTable .= "<td>" . $Row['SpecialisationName'] . "</td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>

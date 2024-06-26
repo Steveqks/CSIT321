@@ -60,7 +60,7 @@ session_start();
 									<select name='specialisationID' id=''>";		
 						while ($Row = $qres->fetch_assoc()) 
 						{
-							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> ID:" . $Row['SpecialisationID']. ", " 
+							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> " 
 									. $Row['SpecialisationName'] . " </option>";
 						}
 						$select .= "</select> </h4>";
