@@ -145,12 +145,11 @@
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="#"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="#">Manage Account</a></li>
-                <li><a href="#">Attendance Management</a></li>
+                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
+                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
-                <li><a href="#">View News Feed</a></li>
+                <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
                 <li><a href="#">Swap Shifts</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
