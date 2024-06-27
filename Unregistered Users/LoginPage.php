@@ -27,25 +27,25 @@
 			{
 				//Session Related to Exisitng user
 				$_SESSION['UserID'] = $row['UserID'];
+				$_SESSION['CompanyID'] = $row['CompanyID'];
 				$_SESSION['Email'] = $row['Email'];
 				$_SESSION['FirstName'] = $row['FirstName'];
 				$_SESSION['Role']= $row['Role'];
-				$_SESSION['CompanyID']= $row['CompanyID'];
 				
 				if($row['Role'] == "FT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../FullTimers/FT_Homepage.php");
+					header("Location:../Existing Users/FT_Homepage.php");
 				}
 				if($row['Role'] == "PT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Part Time/PT_HomePage.php");
+					header("Location:PartTimers.php");
 				}
 				if($row['Role'] == "Manager")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Manager/Manager_viewTasks.php");
+					header("Location:Managers.php");
 				}
 				
 			}

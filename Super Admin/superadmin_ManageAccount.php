@@ -8,7 +8,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -23,16 +23,7 @@ session_start();
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<div class="vertical-menu" style="border-right: 1px solid black; padding: 0px;">
-			  <a href="superadmin_homepage.php">Home</a>
-			  <a href="superadmin_ManageAccount.php">Manage Account</a>
-			  <a href="superadmin_manageCompany_create.php">Manage Company > Create Company </a>
-			  <a href="superadmin_manageCompany_view.php">Manage Company > View Company </a>
-			  <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve New Company (Create New Company & Company Admin)</a>
-			  <a href="superadmin_manageCAdmin_create.php">Manage Company Admin > Create Company Admin</a>
-			  <a href="superadmin_manageCAdmin_view_delete.php">Manage Company Admin > View Company Admin</a>
-			  <a href="Logout.php">Logout</a>
-			</div>
+			<?php include_once('navigation.php');?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
@@ -52,18 +43,18 @@ session_start();
 						<tr>
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
-						<br>
+						<br><br>
 						
-						First Name: <input type='text' name='oldFirstName' value=" . $Row['FirstName'] . " readonly><br>
-						Last Name: <input type='text' name='oldLastName' value=" . $Row['LastName'] . " readonly> <br>
+						First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
+						Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
 						Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
 						<br></td>
 							
 							<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
-						<br>
-						First Name: <input type='text' name='newFirstName' value=" . $Row['FirstName'] . " > <br>
-						Last Name: <input type='text' name='newLastName' value=" . $Row['LastName'] . "><br>
+						<br><br>
+						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
+						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
 						Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
 						
 						<input type='submit' name='submitChanges' value='Update'>

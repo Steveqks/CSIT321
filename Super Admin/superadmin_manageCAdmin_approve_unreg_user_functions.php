@@ -1,6 +1,5 @@
 <?php    
 
-
 class userAccount{
 	public $conn;
 	function __construct(){

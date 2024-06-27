@@ -1,7 +1,34 @@
 <?php
 session_start();
 
+	include_once('../Session/session_check_companyadmin.php');
 
+	if(isset($_POST['submitSpecialisation'])){
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+		$specialisationName = $_POST['specialisationName'];
+		$specialisationID = $_POST['specialisationID'];
+		
+		//check if exists already.
+		$result = mysqli_query($db,	"SELECT SpecialisationName FROM specialisation WHERE specialisation.SpecialisationName = '$specialisationName'; ") or die("Select Error");
+
+		$num_rows=mysqli_num_rows($result);
+		// dont exists
+		if($num_rows == 0){
+			$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
+			$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
+			$_SESSION['specialisationName'] = $specialisationName;
+			$_SESSION['specialisationID'] = $specialisationID;
+				header('Location: companyadmin_specialisation_edit.php');
+				exit;
+		}
+		// exists
+		else{
+			$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
+			header('Location: companyadmin_specialisation_edit.php');
+				exit;
+		}
+	}
 
 
 ?>
@@ -10,7 +37,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a.css">
+	<link rel="stylesheet" href="style.css">
 
     <title>TrackMySchedule</title>
 </head>
@@ -25,18 +52,7 @@ session_start();
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<div class="vertical-menu" style="border-right: 1px solid black; padding: 0px;">
-				<a href="companyadmin_homepage.php">Home</a>
-				<a href="companyadmin_ManageAccount.php">Manage Account</a>
-				<a href="companyadmin_ManageUserAccounts_create.php">Manage User Accounts > Create</a>
-				<a href="companyadmin_ManageUserAccounts_view.php">Manage User Accounts > View</a>
-				<a href="companyadmin_specialisation_create.php">Manage Specialisation > Create </a>
-				<a href="companyadmin_specialisation_view_delete.php">Manage Specialisation > View</a>
-				<a href="companyadmin_teamManagement_create.php">Manage Team > Create </a>
-				<a href="companyadmin_teamManagement_view_delete.php">Manage Team > View</a>
-				<a href="Logout.php">Logout</a>
-
-			</div>
+		<?php include_once('navigation.php') ?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
@@ -44,12 +60,14 @@ session_start();
 			<h2>Edit Specialisation</h2>
 
 			<?php   
-				echo "Change specialisation:<br>";
+				
 				$form = "<form action'' method='POST'>
+				
 						FROM 
-						<input type='text' value=" . $_SESSION['specialisationName'] . " readonly>
+						<input type='text' value='" . $_SESSION['specialisationName'] . "' readonly>
+						
 						TO
-						<input type='text' name='specialisationName' value=" . $_SESSION['specialisationName'] . ">
+						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "'>
 						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . ">
 						<input type='submit' name='submitSpecialisation' value='Update'>
 						</form>";
@@ -59,32 +77,7 @@ session_start();
 				echo $_SESSION['message'];
 				}
 				
-				if(isset($_POST['submitSpecialisation'])){
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-					$specialisationName = $_POST['specialisationName'];
-					$specialisationID = $_POST['specialisationID'];
-					
-					//check if exists already.
-					$result = mysqli_query($db,	"SELECT SpecialisationName FROM specialisation WHERE specialisation.SpecialisationName = '$specialisationName'; ") or die("Select Error");
-		
-					$num_rows=mysqli_num_rows($result);
-					// dont exists
-					if($num_rows == 0){
-						$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
-						$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
-						$_SESSION['specialisationName'] = $specialisationName;
-						$_SESSION['specialisationID'] = $specialisationID;
-							header('Location: companyadmin_specialisation_edit.php');
-							exit;
-					}
-					// exists
-					else{
-						$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
-						header('Location: companyadmin_specialisation_edit.php');
-							exit;
-					}
-				}
 				
 			?>
         </div>
