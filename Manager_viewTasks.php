@@ -4,31 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrackMySchedule</title>
-    <link rel="stylesheet" href="./css/header.css" />
-    <link rel="stylesheet" href="./css/all.css" />
+    <link rel="stylesheet" href="./css/manager_header.css" />
+    <link rel="stylesheet" href="./css/manager.css" />
 
     <?php
+        session_start();
         include 'db_connection.php';
 
+        // Check if user is logged in
+        if (!isset($_SESSION['Email']))
+        {
+            header("Location: ../Unregistered Users/LoginPage.php");
+            exit();
+        }
+
+        $userID = $_SESSION['UserID'];
+        $firstName = $_SESSION['FirstName'];
+        $companyID = $_SESSION['CompanyID'];
+        $employeeType = $_SESSION['Role'];
+
+        // Connect to the database
         $conn = OpenCon();
 
-        $userID = 2;
         $userStatusID = 1;
         $taskStatusID = 1;
-        $employeeType = "Manager";
 
-        if ($employeeType == "Manager") {
-
-            $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
-                    (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-                    CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
-                    FROM task t
-                    JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-                    JOIN existinguser eu ON t.UserID = eu.UserID
-                    JOIN team te ON eu.UserID = te.UserID
-                    JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
-                    WHERE tei.ManagerID = ".$userID."
-                    ORDER BY ti.MainTaskID;";
+        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
+                FROM task t
+                JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+                JOIN existinguser eu ON t.UserID = eu.UserID
+                JOIN team te ON eu.UserID = te.UserID
+                JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
+                WHERE tei.ManagerID = ".$userID."
+                ORDER BY ti.MainTaskID;";
 /*
             // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("
@@ -46,10 +56,7 @@
                 . " AND c.Status = ".$userStatusID
                 . " GROUP BY e.TaskName, e.NumStaff,a.totalNumStaff, e.StartDate, e.DueDate, e.MainTaskID, fullName;";
 */
-                echo $sql;
-        } else {
-            $sql = "SELECT a.TaskName, a.StartDate, a.DueDate FROM taskinfo a inner join task b on a.MainTaskID = b.MainTaskID WHERE b.UserID = 4";
-        }
+                //echo $sql;
 
         $stmt = $conn->prepare($sql);
         
@@ -63,7 +70,7 @@
 
     <!-- Top Section -->
     <div class="topSection">
-        <img class="logo" src="tms.png">
+        <img class="logo" src="./Images/tms.png">
     </div>
 
     <!-- Middle Section -->
@@ -73,16 +80,15 @@
         <div class="navBar">
             <nav>
                 <ul>
-                    <?php if ($employeeType == "Manager") { ?>
-                        <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                        <li><a href="#">Logout</a></li>
-                        <?php } ?>
+                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                    <li><a href="Logout.php">Logout</a></li>
+                    
                 </ul>
             </nav>
         </div>
@@ -99,15 +105,8 @@
                         <th>Task Name</th>
                         <th>Assigned Date</th>
                         <th>Due Date</th>
-                    <?php
-                        if ($employeeType == "Manager") {
-                    ?>
                         <th>Assigned To</th>
                         <th>Avail / Req Number of Staff</th>
-                    <?php
-                        }
-                    ?>
-
                     </tr>
 
                     <?php if (count($tasks) > 0): ?>
@@ -132,7 +131,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="3">No tasks assigned.</td>
+                            <td colspan="5">No tasks assigned.</td>
                         </tr>
                     <?php endif; ?>
                 </table>

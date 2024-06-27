@@ -4,16 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrackMySchedule</title>
-    <link rel="stylesheet" href="./css/header.css" />
-    <link rel="stylesheet" href="./css/all.css" />
+    <link rel="stylesheet" href="./css/manager_header.css" />
+    <link rel="stylesheet" href="./css/manager.css" />
 
     <?php
+        session_start();
         include 'db_connection.php';
 
-        $conn = OpenCon();
+        // Check if user is logged in
+        if (!isset($_SESSION['Email']))
+        {
+            header("Location: ../Unregistered Users/LoginPage.php");
+            exit();
+        }
 
-        $employeeType = "Manager";
-        $userID = 2;
+        $userID = $_SESSION['UserID'];
+        $firstName = $_SESSION['FirstName'];
+        $companyID = $_SESSION['CompanyID'];
+        $employeeType = $_SESSION['Role'];
+
+        // Connect to the database
+        $conn = OpenCon();
 
         // get teams for the team option in form
         $sql = "SELECT a.MainProjectID, a.ProjectName, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
@@ -59,7 +70,7 @@
 <body>
     <!-- Top Section -->
     <div class="topSection">
-        <img class="logo" src="tms.png">
+        <img class="logo" src="./Images/tms.png">
     </div>
 
     <!-- Middle Section -->
@@ -69,16 +80,15 @@
         <div class="navBar">
             <nav>
                 <ul>
-                    <?php if ($employeeType == "Manager") { ?>
-                        <li><a> &lt;name&gt;, Manager</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
-                        <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                        <li><a href="#">Logout</a></li>
-                        <?php } ?>
+                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
+                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
+                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
+                    <li><a href="Logout.php">Logout</a></li>
+                    
                 </ul>
             </nav>
         </div>
