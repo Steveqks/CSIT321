@@ -134,11 +134,17 @@ hr {
     align-items: baseline;
     padding-bottom: 15px;
 }
+.companyNameNewsFeed a {
+    padding-left: 20px;
+}
 .teamDateNewsFeed a {
     padding-left: 20px;
 }
 .teamDateNewsFeed {
-    padding-left: 69%;
+    padding-left: 61%;
+}
+.teamNameNewsFeed a {
+    padding-left: 20px;
 }
 .companyNameNewsFeed, .companyDateNewsFeed {
     display: flex;

@@ -57,9 +57,9 @@
             $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
         }
 
-        if (isset($_GET['newsfeedid'])) {
+        if (isset($_GET['deletenewsfeedid'])) {
 
-            $newsFeedID = $_GET['newsfeedid'];
+            $newsFeedID = $_GET['deletenewsfeedid'];
 
             // Delete project
             $stmt = $conn->prepare("DELETE FROM newsfeed WHERE NewsFeedID = ?");
@@ -93,7 +93,7 @@
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&newsfeedmanagenent=true">News Feed Management</a></li>
+                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
                     <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
                     <li><a href="Logout.php">Logout</a></li>
                 </ul>
@@ -125,11 +125,12 @@
 
                         <div class="teamNameNewsFeed">
                             <?php echo $team['fullName']; ?>
+                            <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $team['NewsFeedID']; ?>">Edit Post</a>
                         </div>
 
                         <div class="teamDateNewsFeed">
                             <?php echo date('F j, Y',strtotime($team['DatePosted'])); ?>
-                            <a href="Manager_viewNewsFeed.php?newsfeedid=<?php echo $team['NewsFeedID']; ?>">Delete Post</a>
+                            <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $team['NewsFeedID']; ?>">Delete Post</a>
                         </div>
 
                     </div>
@@ -149,14 +150,18 @@
                         <div class="nameDateNewsFeed">
                             
                             <div class="companyNameNewsFeed">
-                                <?php echo $company['fullName']; ?>
+                                <label for="fullname"><?php echo $company['fullName']; ?></label>
+
+                                <?php if($company['ManagerID'] == $userID) { ?>
+                                    <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $company['NewsFeedID']; ?>">Edit Post</a>
+                                <?php } ?>
                             </div>
 
                             
                             <?php if($company['ManagerID'] == $userID) { ?>
                                 <div class="teamDateNewsFeed">
                                     <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
-                                    <a href="Manager_viewNewsFeed.php?newsfeedid=<?php echo $company['NewsFeedID']; ?>">Delete Post</a>
+                                    <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $company['NewsFeedID']; ?>">Delete Post</a>
                                 </div>
                             <?php } else { ?>
                                 <div class="companyDateNewsFeed">

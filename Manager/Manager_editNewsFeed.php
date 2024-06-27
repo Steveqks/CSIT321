@@ -27,19 +27,36 @@
         $conn = OpenCon();
 
 
-        if (isset($_POST['addNewsFeed'])) {
+        if (isset($_GET['editnewsfeedid'])) {
+
+            $newsFeedID = $_GET['editnewsfeedid'];
+
+            $sql = "SELECT * FROM newsfeed WHERE NewsFeedID = ".$newsFeedID;
+            
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $editNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+        }
+
+
+
+        if (isset($_POST['editNewsFeed'])) {
 
             $title = $_POST['title'];
             $desc = $_POST['desc'];
+            $newsFeedID = $_POST['newsfeedid'];
 
-            $stmt = $conn->prepare("INSERT INTO newsfeed (ManagerID,NewsTitle,NewsDesc,DatePosted) VALUES (?,?,?,CURRENT_TIMESTAMP)");
+            $stmt = $conn->prepare("UPDATE newsfeed SET NewsTitle=?,NewsDesc=?,DatePosted=CURRENT_TIMESTAMP WHERE NewsFeedID=?");
 
-            $stmt->bind_param("iss",$userID,$title,$desc);
+            $stmt->bind_param("ssi",$title,$desc,$newsFeedID);
 
             if ($stmt->execute()) {
                                 
                 echo "<script type='text/javascript'>";
-                echo "alert('News Feed has been posted.');";
+                echo "alert('News Feed has been updated.');";
                 echo "window.location = 'Manager_viewNewsFeed.php';";
                 echo "</script>";
             }
@@ -84,20 +101,23 @@
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="addNewsFeed" action="Manager_addNewsFeed.php" method="POST">
+                            <form name="editNewsFeed" action="Manager_editNewsFeed.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
+                                    <?php if (isset($_GET['editnewsfeedid'])) { ?>
+                                        <input type="hidden" name="newsfeedid" value="<?php echo $newsFeedID; ?>">
+
                                         <label for="title">Title</label>
-                                        <input type="text" id="title" name="title" required>
+                                        <input type="text" id="title" name="title" value="<?php foreach ($editNewsFeed as $editPost): echo $editPost['NewsTitle']; endforeach; ?>">
                                         
                                         <label for="desc">Description</label>
-                                        <textarea id="desc" name="desc" rows="6" required></textarea>
-                                        
+                                        <textarea id="desc" name="desc" rows="6"><?php foreach ($editNewsFeed as $editPost): echo $editPost['NewsDesc']; endforeach; ?></textarea>
+                                    <?php } ?>
                                     </div>
                                 </div>
 
-                                <button name="addNewsFeed" type="submit" class="btn">Save</button>
+                                <button name="editNewsFeed" type="submit" class="btn">Save</button>
                                 
                             </form>
                         </div>
