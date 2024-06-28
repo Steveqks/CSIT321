@@ -30,28 +30,44 @@
             $mainProjectID = $_GET['mainprojectid'];
 
             // get the project's details - ProjectID, ProjectName, TeamID, TeamName, StartDate, EndDate
-            $sql = "SELECT a.MainProjectID, a.ProjectName, c.MainTeamID, b.TeamName, a.StartDate, a.EndDate
-                    FROM projectinfo a
-                    INNER JOIN project c ON a.MainProjectID = c.MainProjectID
-                    INNER JOIN teaminfo b ON c.MainTeamID = b.MainTeamID
-                    WHERE a.MainProjectID = ".$mainProjectID;
+            $sql = "SELECT MainProjectID, ProjectName, StartDate, EndDate
+                    FROM projectinfo
+                    WHERE MainProjectID = ".$mainProjectID;
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $result = $stmt->get_result();
             $projectDetails = $result->fetch_all(MYSQLI_ASSOC);
+        
+            // get teams of the project
+            $sql = "SELECT a.MainTeamID, b.TeamName FROM project a
+                    INNER JOIN teaminfo b ON a.MainTeamID = b.MainTeamID
+                    WHERE a.MainProjectID = ".$mainProjectID;
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $projectTeams = $result->fetch_all(MYSQLI_ASSOC);
+        
+            // get teams for the team option in form
+            $sql = "SELECT MainTeamID, TeamName FROM teaminfo
+                    WHERE MainTeamID NOT IN (".$projectTeams[0]['MainTeamID'];
+
+            if (count($projectTeams) > 1) {
+                for ($i = 1; $i < count($projectTeams); $i++) {
+                    $sql .= ", ".$projectTeams[$i]['MainTeamID'];
+                }
+            }
+
+            $sql .= ");";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $teams = $result->fetch_all(MYSQLI_ASSOC);
+
+            $stmt->close();
         }
-
-
-        // get teams for the team option in form
-        $sql = "SELECT MainTeamID, TeamName FROM teaminfo WHERE ManagerID = ".$userID;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $teams = $result->fetch_all(MYSQLI_ASSOC);
-
-        $stmt->close();
 
         if (isset($_POST['editProject'])) {
 
@@ -77,9 +93,9 @@
 
                         $stmt = $conn->prepare("INSERT INTO project (MainProjectID,MainTeamID) VALUES (?,?)");
 
-                        foreach ($teams as $team) {
+                        foreach ($mainTeamID as $team) {
 
-                            $stmt->bind_param("ii",$mainProjectID,$mainTeamID);
+                            $stmt->bind_param("ii",$mainProjectID,$team);
 
                             $stmt->execute();
 
@@ -87,7 +103,7 @@
 
                         echo "<script type='text/javascript'>";
                         echo "alert('Project has been updated successfully.');";
-                        echo "window.location = 'Manager_viewProject.php';";
+                        echo "window.location = 'Manager_viewProjectList.php';";
                         echo "</script>";
                     }
                 }
@@ -110,23 +126,7 @@
     <div class="contentNav">
             
         <!-- Left Section (Navigation) -->
-        <div class="navBar">
-            <nav>
-                <ul>
-                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                    <li><a href="Logout.php">Logout</a></li>
-                    
-                </ul>
-            </nav>
-        </div>
-
-            
+        <?php include_once('navigation.php');?>
             
         <!-- Right Section (Activity) -->
         <div class="content">
@@ -151,17 +151,17 @@
                                         <input type="text" id="projectname" name="projectname" value="<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?>">
 
                                         <label for="mainteamid">Team</label>
-                                        <select id="mainteamid" name="mainteamid">
+                                        <div class="checkbox-container">
+                                            <?php
+                                            foreach ($projectTeams as $projectTeam):
+                                                echo "<div class='checkbox-team'><input type='checkbox' name='teams[]' value='". $projectTeam['MainTeamID']."' checked>". $projectTeam['TeamName']."</div>";
+                                            endforeach;
 
-                                            <?php foreach ($projectDetails as $projectDetail):
-                                                echo "<option value='". $projectDetail['MainTeamID']."'>-- " . $projectDetail['TeamName']." --</option>";
-                                            endforeach; ?>
-
-                                            <?php foreach ($teams as $team):
-                                                echo "<option value='". $team['MainTeamID']."'>" . $team['TeamName']."</option>";
-                                            endforeach; ?>
-                                            
-                                        </select>
+                                            foreach ($teams as $team):
+                                                echo "<div class='checkbox-team'><input type='checkbox' name='teams[]' value='". $team['MainTeamID']."'>". $team['TeamName']."</div>";
+                                            endforeach;
+                                            ?>
+                                        </div>
                                             
                                         <label for="startdate">Start Date</label>
                                         <input type="date" id="startdate" name="startdate" value="<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['StartDate']; endforeach; ?>">

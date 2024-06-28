@@ -42,7 +42,7 @@
             if ($_POST['startdate'] < $_POST['enddate']) {
 
                 $projectName = $_POST['projectname'];
-                $teamID = $_POST['teams'];
+                $mainTeamID = $_POST['teams'];
                 $startDate = $_POST['startdate'];
                 $endDate = $_POST['enddate'];
 
@@ -53,6 +53,7 @@
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $result = $stmt->get_result();
+
 
                 if ($result->num_rows > 0) {
 
@@ -72,15 +73,15 @@
 
                         $stmt = $conn->prepare("INSERT INTO project (MainProjectID,MainTeamID) VALUES (?,?)");
 
-                        foreach ($teams as $team) {
+                        foreach ($mainTeamID as $team) {
 
-                            $stmt->bind_param("ii",$newMainProjectID,$team['MainTeamID']);
+                            $stmt->bind_param("ii",$newMainProjectID,$team);
 
                             $stmt->execute();
                                 
                             echo "<script type='text/javascript'>";
                             echo "alert('Project has been created successfully.');";
-                            echo "window.location = 'Manager_viewProject.php';";
+                            echo "window.location = 'Manager_viewProjectList.php';";
                             echo "</script>";
                         }
                     }
@@ -107,22 +108,7 @@
     <div class="contentNav">
             
         <!-- Left Section (Navigation) -->
-        <div class="navBar">
-            <nav>
-                <ul>
-                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                    <li><a href="Logout.php">Logout</a></li>
-                </ul>
-            </nav>
-        </div>
-
-            
+        <?php include_once('navigation.php');?>
             
         <!-- Right Section (Activity) -->
         <div class="content">
@@ -146,7 +132,7 @@
                                         <div class="checkbox-container">
                                             <?php
                                             foreach ($teams as $team):
-                                                echo "<div class='checkbox-team'><input type='checkbox' name='teams[]' values='". $team['MainTeamID']."'>". $team['TeamName']."</div>";
+                                                echo "<div class='checkbox-team'><input type='checkbox' name='teams[]' value='". $team['MainTeamID']."'>". $team['TeamName']."</div>";
                                             endforeach;
                                             ?>
                                         </div>
