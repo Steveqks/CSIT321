@@ -16,7 +16,16 @@ $FirstName = $_SESSION['FirstName'];
 // Connect to the database
 $conn = OpenCon();
 
+// Fetch user details
+$sql = "SELECT FirstName, LastName, Email FROM existinguser WHERE UserID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
 // Close the database connection
+$stmt->close();
 CloseCon($conn);
 ?>
 
@@ -25,7 +34,7 @@ CloseCon($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Management (PT)</title>
+    <title>Your Account Details (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -89,12 +98,12 @@ CloseCon($conn);
             border: 0.5px solid black;
         }
 
-        .management-section {
+        .details-section {
             padding: 20px;
             flex-grow: 1;
         }
 
-        .management-header {
+        .details-header {
             display: inline-flex;
             align-items: center;
             border-bottom: 1px solid black;
@@ -102,34 +111,46 @@ CloseCon($conn);
             margin-bottom: 20px;
         }
 
-        .management-header i {
+        .details-header i {
             margin-right: 10px;
         }
 
-        .management-header h2 {
+        .details-header h2 {
             margin: 0;
         }
 
-        .management-buttons {
-            display: flex;
-            flex-direction: column;
+        .message {
+            color: green;
+			margin-top: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
-        .management-button {
+        .details {
+            font-size: 1.2em;
+        }
+
+        .details p {
+            margin: 10px 0;
+        }
+
+        .details span {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .edit-button {
             display: inline-block;
-            width: 200px;
-            padding: 15px 20px;
-            margin-bottom: 10px;
+            margin-top: 20px;
+            padding: 10px 20px;
             background-color: #d3d3d3;
             color: black;
             text-decoration: none;
-            text-align: center;
             transition: background-color 0.3s, color 0.3s;
             border: none;
-            border-radius: 0;
         }
 
-        .management-button:hover {
+        .edit-button:hover {
             background-color: #bbb;
             color: black;
         }
@@ -149,7 +170,7 @@ CloseCon($conn);
                 <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
                 <li><a href="PT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
-                <li><a href="#">Leave Management</a></li>
+                <li><a href="PT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="#">Time Management</a></li>
                 <li><a href="#">View News Feed</a></li>
                 <li><a href="#">Swap Shifts</a></li>
@@ -158,17 +179,23 @@ CloseCon($conn);
             </ul>
         </div>
         
-        <!-- RIGHT SECTION (ATTENDANCE MANAGEMENT) -->
-        <div class="management-section">
-            <div class="management-header">
-                <i class="fas fa-calendar-check"></i>
-                <h2>Attendance Management</h2>
+        <!-- RIGHT SECTION (USER DETAILS) -->
+        <div class="details-section">
+            <div class="details-header">
+                <i class="fas fa-user"></i>
+                <h2>Your Account Details</h2>
             </div>
-            <div class="management-buttons">
-                <a href="PT_ViewAttendance.php" class="management-button">View Attendance</a>
-                <a href="PT_TakeAttendance.php" class="management-button">Take Attendance</a>
-                <a href="PT_Break.php" class="management-button">Start / End Break</a>
+
+            <div class="details">
+                <p>Full Name: <span><?php echo htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']); ?></span></p>
+                <p>Email: <span><?php echo htmlspecialchars($user['Email']); ?></span></p>
+                <a href="PT_EditAccountDetails.php" class="edit-button">Edit Account Details</a>
             </div>
+			
+			<!-- Display success message if exists -->
+            <?php if (isset($_GET['message'])): ?>
+                <div class="message"><?php echo htmlspecialchars($_GET['message']); ?></div>
+            <?php endif; ?>
         </div>
     </div>
 </body>
