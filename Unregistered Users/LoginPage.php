@@ -45,7 +45,7 @@
 				if($row['Role'] == "Manager")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Managers_viewTasks.php");
+					header("Location:../Manager/Manager_viewTasks.php");
 				}
 				
 			}
