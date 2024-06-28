@@ -86,7 +86,7 @@
             <li><a id='myButton3' class='myButton3' onClick='showLinks3()'>Project Management ➕</a>
                 <div id='linkContainer3'>
 					<div class='show'>
-                        <a href='Manager_viewProject.php'> - View Projects </a>
+                        <a href='Manager_viewProjectList.php'> - View Projects </a>
                         <a href='Manager_addProject.php'> - Add Project </a>
                     </div>
 				</div>
