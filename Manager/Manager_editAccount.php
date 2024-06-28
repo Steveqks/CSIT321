@@ -84,23 +84,7 @@
     <div class="contentNav">
             
         <!-- Left Section (Navigation) -->
-        <div class="navBar">
-            <nav>
-                <ul>
-                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                    <li><a href="Logout.php">Logout</a></li>
-                    
-                </ul>
-            </nav>
-        </div>
-
-            
+        <?php include_once('navigation.php');?>
             
         <!-- Right Section (Activity) -->
         <div class="content">
