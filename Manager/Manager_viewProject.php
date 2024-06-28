@@ -26,43 +26,36 @@
         // Connect to the database
         $conn = OpenCon();
 
-        // get teams for the team option in form
-        $sql = "SELECT a.MainProjectID, a.ProjectName, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
-                INNER JOIN project d ON d.MainProjectID = a.MainProjectID
-                LEFT JOIN teaminfo b ON d.MainTeamID = b.MainTeamID
-                LEFT JOIN existinguser c ON b.ManagerID = c.UserID
-                WHERE a.ProjectManagerID = ".$userID."
-                GROUP BY a.MainProjectID, a.ProjectName;";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $projects = $result->fetch_all(MYSQLI_ASSOC);
-
-        $stmt->close();
-
         if (isset($_GET['mainprojectid'])) {
+
             $mainProjectID = $_GET['mainprojectid'];
+        
+            // get project details
+            $sql = "SELECT a.MainProjectID, a.ProjectName, a.StartDate, a.EndDate, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
+                    INNER JOIN project d ON d.MainProjectID = a.MainProjectID
+                    LEFT JOIN teaminfo b ON d.MainTeamID = b.MainTeamID
+                    LEFT JOIN existinguser c ON b.ManagerID = c.UserID
+                    WHERE a.MainProjectID = ".$mainProjectID."
+                    GROUP BY a.MainProjectID, a.ProjectName, a.StartDate, a.EndDate;";
 
-            // Delete project
-            $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $projectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
-            $stmt->bind_param("i",$mainProjectID);
 
-            if ($stmt->execute()) {
+        
+            // get team project details
+            $sql = "SELECT a.TeamName FROM teaminfo a
+                    INNER JOIN project d ON d.MainTeamID = a.MainTeamID
+                    WHERE d.MainProjectID = ".$mainProjectID.";";
 
-                // Delete project
-                $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
-    
-                $stmt->bind_param("i",$mainProjectID);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $teamProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
-                if ($stmt->execute()) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Project has been deleted.');";
-                    echo "window.location = 'Manager_viewProject.php';";
-                    echo "</script>";
-                }
-            }
+            $stmt->close();
         }
         
     ?>
@@ -77,56 +70,29 @@
     <div class="contentNav">
             
         <!-- Left Section (Navigation) -->
-        <div class="navBar">
-            <nav>
-                <ul>
-                    <li><a href="Manager_viewTasks.php"><?php echo "$firstName, Staff(Manager)"?></a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&manageaccount=true">Manage Account</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&taskmanagenent=true">Task Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&leavemanagenent=true">Leave Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&attendancemanagenent=true">Time/Attendance Tracking</a></li>
-                    <li><a href="Manager_viewNewsFeed.php">News Feed Management</a></li>
-                    <li><a href="Manager_allHeadings.php?employeetype=Manager&projectmanagenent=true">Project Management</a></li>
-                    <li><a href="Logout.php">Logout</a></li>
-                    
-                </ul>
-            </nav>
-        </div>
-
-            
+        <?php include_once('navigation.php');?>
             
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
                 <i class="fas fa-user"></i>
-                    <h2>View Projects</h2>
+                    <h2>View Project Details</h2>
             </div>
 
             <div class="innerContent">
-                <table class="tasks">
+                <div class="details">
+                    <p>Project Name: <span><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?></span></p>
 
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Project Manager</th>
-                        <th>Delete</th>
-                    </tr>
+                    <p>Project Manager's Name: <span><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['fullName']; endforeach; ?></span></p>
 
-                    <?php if (count($projects) > 0): ?>
-                        <?php foreach ($projects as $project): ?>
-                            <tr>
-                                <td>
-                                    <a href="Manager_editProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>"><?php echo $project['ProjectName']; ?></a>
-                                </td>
-                                <td><?php echo $project['fullName']; ?></td>
-                                <td><a href="Manager_viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="3">No projects created.</td>
-                        </tr>
-                    <?php endif; ?>
-                </table>
+                    <p>Start Date: <span><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['StartDate'])); endforeach; ?></span></p>
+
+                    <p>End Date: <span><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['EndDate'])); endforeach; ?></span></p>
+
+                    <p>Team(s): <?php foreach ($teamProjectDetails as $teamProjectDetail): ?> <span> <?php echo $teamProjectDetail['TeamName'];?></span><?php endforeach; ?></p>
+
+                    <a href="Manager_editProject.php?mainprojectid=<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['MainProjectID']; endforeach; ?>" class="edit-button">Edit Project</a>
+                </div>
             </div>
         </div>
     </div>

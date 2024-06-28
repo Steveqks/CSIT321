@@ -160,7 +160,7 @@ hr {
     padding: 3%;
 }
 
-/* Account Details */
+/* Account / Project Details */
 .edit-button {
     display: inline-block;
     margin-top: 20px;
@@ -175,4 +175,13 @@ hr {
 .edit-button:hover {
     background-color: #bbb;
     color: black;
+}
+
+.details p {
+    margin: 10px 0;
+}
+
+.details span {
+    font-weight: bold;
+    text-decoration: underline;
 }

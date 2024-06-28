@@ -51,21 +51,21 @@
             $mainProjectID = $_GET['mainprojectid'];
 
             // Delete project
-            $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
+            $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
 
             $stmt->bind_param("i",$mainProjectID);
 
             if ($stmt->execute()) {
 
                 // Delete project
-                $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
+                $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
     
                 $stmt->bind_param("i",$mainProjectID);
 
                 if ($stmt->execute()) {
                     echo "<script type='text/javascript'>";
                     echo "alert('Project has been deleted.');";
-                    echo "window.location = 'Manager_viewProject.php';";
+                    echo "window.location = 'Manager_viewProjectList.php';";
                     echo "</script>";
                 }
             }
@@ -110,12 +110,12 @@
                                 </td>
                                 <td><?php echo date('F j, Y',strtotime($project['StartDate'])); ?></td>
                                 <td><?php echo date('F j, Y',strtotime($project['EndDate'])); ?></td>
-                                <td><a href="Manager_viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
+                                <td><a href="Manager_viewProjectList.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="3">No projects created.</td>
+                            <td colspan="4">No projects created.</td>
                         </tr>
                     <?php endif; ?>
                 </table>

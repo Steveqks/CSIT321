@@ -54,7 +54,7 @@
             if ($result->num_rows > 0) {
 
                 echo "<script type='text/javascript'>";
-                echo "alert('User exist.');";
+                echo "alert('Email exist in system.');";
                 echo "window.location = 'Manager_editAccount.php';";
                 echo "</script>";
 
@@ -67,7 +67,7 @@
                 if ($stmt->execute()) {
                     echo "<script type='text/javascript'>";
                     echo "alert('Account has been updated successfully.');";
-                    echo "window.location = 'Manager_editAccount.php';";
+                    echo "window.location = 'Manager_viewAccount.php';";
                     echo "</script>";
                 }
             }
@@ -90,7 +90,7 @@
         <div class="content">
             <div class="task-header">
                 <i class="fas fa-user"></i>
-                    <h2>Create User Account</h2>
+                    <h2>Edit User Account</h2>
             </div>
 
             <div class="innerContent">
