@@ -109,7 +109,7 @@
                <div id = "LoginForm">
 					<form action = "", method = "post">
 						<h2>Login for Existing Users</h2>
-						<input id = "email" name = "email" type = "text" placeholder = "Email Address" required>
+						<input id = "email" name = "email" type = "email" placeholder = "Email Address" required>
 						<input id = "password" name = "password" type = "password" placeholder = "Password" required>  
 						<button id = "submitBtn" name = "submit">Login</button>
 					</form>

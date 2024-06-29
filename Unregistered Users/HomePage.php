@@ -111,7 +111,7 @@
 					<form action = "" method = "post">
 						<input id = "firstname" name = "firstname" type = "text" placeholder = "First Name" required>
 						<input id = "lastname" name = "lastname" type = "text" placeholder = "Last Name" required>
-						<input id = "email" name = "email" type = "text" placeholder = "Email Address" required>
+						<input id = "email" name = "email" type = "email" placeholder = "Email Address" required>
 						<input id = "password" name = "password" type = "password" placeholder = "Password" required>
 						<input id = "companyname" name = "companyname" type = "text" placeholder = "Company Name" required>
 						<input id = "companyuen" name = "companyuen" type = "text" placeholder = "Company UEN(Unique Entity Number)" required>
