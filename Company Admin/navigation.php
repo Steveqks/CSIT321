@@ -1,7 +1,7 @@
 
 <?php
 	$navigation =	"<div  class='vertical-menu' style='border-right: 1px solid black; padding: 0px;'>
-					<a href='companyadmin_homepage.php'>Home</a>
+					<a href='companyadmin_homepage.php'>" . $_SESSION['FirstName'] . " (" . $_SESSION['Role'] . ")</a>
 					<a href='companyadmin_ManageAccount.php'>Manage Account</a>";
 					
 	// first group link

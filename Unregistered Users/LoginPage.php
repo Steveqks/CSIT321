@@ -63,6 +63,7 @@
 					$_SESSION['companyID'] = $row1['CompanyID'];
 					$_SESSION['Email'] = $row1['Email'];
 					$_SESSION['FirstName'] = $row1['FirstName'];
+					$_SESSION['Role']= 'Company Admin';
 					
 					echo "<script> alert('Login For Company Admin Successful')</script>";
 					//Route to Company Admin HomePage Here
@@ -81,6 +82,7 @@
 						$_SESSION['SAdminID'] = $row2['SAdminID'];
 						$_SESSION['Email'] = $row2['Email'];
 						$_SESSION['FirstName'] = $row2['FirstName'];
+						$_SESSION['Role']= 'Super Admin';
 						
 						//Route to Super Admin HomePage Here
 						header("Location:../Super Admin/superadmin_homepage.php");

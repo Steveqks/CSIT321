@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-include ('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-$_SESSION['message'] = "";
-$_SESSION['message0'] = "";
-$_SESSION['message1'] = "";
-$_SESSION['message2'] = "";
-$_SESSION['message3'] = "";
-$_SESSION['message4'] = "";
-$_SESSION['message5'] = "";
-$_SESSION['message6'] = "";
+	$_SESSION['message'] = "";
+	$_SESSION['message0'] = "";
+	$_SESSION['message1'] = "";
+	$_SESSION['message2'] = "";
+	$_SESSION['message3'] = "";
+	$_SESSION['message4'] = "";
+	$_SESSION['message5'] = "";
+	$_SESSION['message6'] = "";
 
 
 ?>
@@ -39,33 +39,10 @@ $_SESSION['message6'] = "";
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 
-            <!-- Add more content as needed -->
-			<h2>Company Admin Homepage</h2>
-			
-			<br>
-			1.  <a href="companyadmin_ManageAccount.php">Manage Account</a>
-			<br>
-			<br>
-			
-			2.  <a href="companyadmin_ManageUserAccounts_create.php">Create User Accounts</a>
-			<br>
-			
-			3.  <a href="companyadmin_ManageUserAccounts_view.php">View/Edit/Delete User Accounts</a>
-			<br>
-			<br>
-			
-			4.  <a href="companyadmin_specialisation_create.php">Create Specialisation</a>
-			<br>
-			
-			5.  <a href="companyadmin_specialisation_view_delete.php">View/Edit/Delete/Activate/Suspend Specialisation</a>
-			<br>
-			<br>
-			
-			6. 	<a href="companyadmin_teamManagement_create.php">Create Team</a>
-			<br>
-			
-			7. 	<a href="companyadmin_teamManagement_view_delete.php">View/Edit/Delete Team</a>
-			
+            <!-- Add more content as needed -->			
+			<?php
+			echo "<b>Welcome, </b><br>" . $_SESSION['FirstName'] . "(" . $_SESSION['Role']  .  ")";
+			?>
 			
         </div>
     </div>

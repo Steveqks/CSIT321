@@ -1,6 +1,6 @@
 <?php
 	$navigation =	"<div class='vertical-menu' style='border-right: 1px solid black; padding: 0px;'>
-					<a href='superadmin_homepage.php'>Home</a>
+					<a href='superadmin_homepage.php'>" . $_SESSION['FirstName'] . " (" . $_SESSION['Role'] . ")</a>
 					<a href='superadmin_ManageAccount.php'>Manage Account</a>";
 					
 	// first group link

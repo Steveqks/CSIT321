@@ -1,26 +1,26 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-if (isset($_POST['AddMember'])) {
+	if (isset($_POST['AddMember'])) {
 
-	$userID = $_POST['userID'];
-	$teamID = $_SESSION['teamID'];
-	$fullname = $_POST['fullname'];
+		$userID = $_POST['userID'];
+		$teamID = $_SESSION['teamID'];
+		$fullname = $_POST['fullname'];
 
-	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = 	mysqli_query($db, "
-		INSERT INTO team(TeamID, MainTeamID, UserID)
-		VALUES (Null, '$teamID', '$userID');
-			") or die("Select Error");
-							
-	$_SESSION['message'] = " ";
-	$_SESSION['message1'] = $fullname . " is added to team";
-	header('Location: companyadmin_teamManagement_view_delete_view_addMember.php');
-	exit;
-}
+		
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = 	mysqli_query($db, "
+			INSERT INTO team(TeamID, MainTeamID, UserID)
+			VALUES (Null, '$teamID', '$userID');
+				") or die("Select Error");
+								
+		$_SESSION['message'] = " ";
+		$_SESSION['message1'] = $fullname . " is added to team";
+		header('Location: companyadmin_teamManagement_view_delete_view_addMember.php');
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,31 +1,31 @@
 <?php
 session_start();
 
-include_once('../Session/session_check_companyadmin.php');
+	include '../Session/session_check_companyadmin.php';
 
-if (isset($_POST['addTeamMember'])) {
-	$_SESSION['teamID'] = $_POST['teamID'];
-	
-	header('Location: companyadmin_teamManagement_view_delete_view_addMember.php');
-	exit;
-}
+	if (isset($_POST['addTeamMember'])) {
+		$_SESSION['teamID'] = $_POST['teamID'];
+		
+		header('Location: companyadmin_teamManagement_view_delete_view_addMember.php');
+		exit;
+	}
 
-if (isset($_POST['removeMember'])) {
-	$teamID = $_SESSION['teamID'];
-	$userID = $_POST['userID'];
-	$fullname = $_POST['fullname'];
-	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = 	mysqli_query($db, "
-								DELETE FROM team
-								WHERE UserID = '$userID' AND MainTeamID = $teamID;
-								") or die("Select Error");
-	
-	$_SESSION['message'] = $fullname . " is removed from team";
-	$_SESSION['message1'] = " ";
-	header('Location: companyadmin_teamManagement_view_delete_view.php');
-	exit;
-}
+	if (isset($_POST['removeMember'])) {
+		$teamID = $_SESSION['teamID'];
+		$userID = $_POST['userID'];
+		$fullname = $_POST['fullname'];
+		
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = 	mysqli_query($db, "
+									DELETE FROM team
+									WHERE UserID = '$userID' AND MainTeamID = $teamID;
+									") or die("Select Error");
+		
+		$_SESSION['message'] = $fullname . " is removed from team";
+		$_SESSION['message1'] = " ";
+		header('Location: companyadmin_teamManagement_view_delete_view.php');
+		exit;
+	}
 
 ?>
 <!DOCTYPE html>
