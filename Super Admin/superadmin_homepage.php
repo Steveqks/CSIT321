@@ -6,7 +6,8 @@ $_SESSION['message1'] = "";
 $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";
 $_SESSION['message4'] = "";
-
+//$currentDateTime = date('Y-m-d H:i:s');
+//echo $currentDateTime;
 
 ?>
 <!DOCTYPE html>
@@ -36,27 +37,10 @@ $_SESSION['message4'] = "";
 
             <!-- Add more content as needed -->
 			
-			<h2>Super Admin Homepage</h2>
-			<br>
-			1. <a href="superadmin_ManageAccount.php">Manage Account</a>
-			<br>
-			<br>
+			<?php
+			echo "<b>Welcome, </b><br>" . $_SESSION['FirstName'] . "(" . $_SESSION['Role']  .  ")";
+			?>
 			
-			2. <a href="superadmin_manageCompany_create.php">Create Company </a>
-			<br>
-			
-			3. <a href="superadmin_manageCompany_view.php">Edit/Delete/View Company </a>
-			<br>
-			
-			4. <a href="superadmin_manageCAdmin_approve_unreg_user.php">Approve unregistered users (Create New Company & Company Admin)</a>
-			<br>
-			<br>
-			
-			5. <a href="superadmin_manageCAdmin_create.php">Create Company Admin</a>
-			<br>
-			
-			6. <a href="superadmin_manageCAdmin_view_delete.php">Edit/Delete/View/Activate/Suspend Company Admin</a>
-			<br>
         </div>
     </div>
 
