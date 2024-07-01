@@ -58,7 +58,7 @@ session_start();
 										Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
 										Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
 										
-										<input type='button' name='submit2' value='Update' onclick='confirmDiag();'>
+										<input type='button' value='Update' onclick='confirmDiag();'>
 									</td>
 								</tr>
 							</table>
@@ -162,9 +162,6 @@ session_start();
 					}else console.log('result = neg');
 					console.log('confirmDiag() executed');
 				}
-				
-				
-				
 			</script>
 </body>
 
