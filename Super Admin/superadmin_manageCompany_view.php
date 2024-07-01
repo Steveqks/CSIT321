@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(isset($_POST['deleteCompany']))
+if(isset($_POST['delete']) == 'yes')
 {
 	$companyID = $_POST['companyID'];
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -114,7 +114,8 @@ if (isset($_POST['editCompany'])) {
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyName' value='" . $Row['CompanyName'] . "'/>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
-							<input type='submit' name='deleteCompany' value='Delete'>
+							<input type='hidden' name='delete' value='yes'/>
+							<input type='button' value='Delete' onclick='confirmDiag(event,  this.form);'>
 							</form></td>";
 							
 
@@ -132,7 +133,18 @@ if (isset($_POST['editCompany'])) {
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Company?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
