@@ -2,7 +2,7 @@
 session_start();
 
 	//create company
-	if(isset($_POST['submit'])){
+	if(isset($_POST['fname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$companyID = $_POST['companyID'];
@@ -87,7 +87,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "", method = "post">
+            <form action = "" id='create' method = "post">
 				<h2>Create Company Admin</h2>
 				<?php
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -111,7 +111,7 @@ session_start();
 					</h4>
 					<h4>Password: <input name = "password" type = "text" placeholder = "password" required>
 					</h4>
-					<button id = "submitBtn" name = "submit">Create</button>
+					<input type = "button" value='Create' onclick='confirmDiag();' >
 			</form>
 			
 			<?php   
@@ -119,7 +119,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Create Company Admin?");
+					if (result)
+					{
+						document.getElementById('create').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
