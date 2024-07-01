@@ -6,7 +6,7 @@ session_start();
 	$companyID = $_SESSION['companyID'];
 
 	//create user
-	if(isset($_POST['submit'])){
+	if(isset($_POST['fname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 
@@ -22,7 +22,7 @@ session_start();
 		
 		//check if email exists in existinguser
 		if(isUserEmailExists($emailadd, $db)){
-			echo "<p style='color: red;'>Email Address\"".$emailadd."\" already in use.</p>";
+			$_SESSION['message1'] = "<p>Email Address\"".$emailadd."\" already in use.</p>";
 		}
 		//doesn't exist, add to db
 		else
@@ -30,7 +30,7 @@ session_start();
 			$result = mysqli_query($db,"INSERT INTO existinguser 
 										(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
 								VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Select Error");
-			echo "<p style='color: green;'>User Account for \"".$fname." ".$lname."\" created.</p>";
+			$_SESSION['message1'] = "<p>User Account for \"".$fname." ".$lname."\" created.</p>";
 		}
 	}
 		
@@ -76,7 +76,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "", method = "post">
+            <form action = "" id='create' method = "post">
 				<h2>Create User Account</h2>
 
 					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" required>
@@ -115,18 +115,29 @@ session_start();
 					?>
 					<h4>Status: <input name = "status" type = "text" placeholder = "status" required>
 					</h4>
-					<button id = "submitBtn" name = "submit">Create</button>
+					<input type='button' value='Create' onclick='confirmDiag()'>
 			</form>
 			
 			<?php   
-			
+			echo $_SESSION['message1'];
 			
 				
 				
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('create').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
