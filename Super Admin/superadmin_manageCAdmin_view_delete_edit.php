@@ -32,7 +32,7 @@ session_start();
 		
 			<h2>Edit Company Admin</h2>
 			<?php   
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifyAccount' method='POST'>
 						<br>
 						<table >
 						<tr>
@@ -52,7 +52,7 @@ session_start();
 						First Name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . "'><br>
 						Last Name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "'><br>
 						Email Address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
-						<input type='submit' name='submitChanges' value='Update'>
+						<input type='button' value='Update'onclick='confirmDiag();'>
 						</form>
 							</td>
 						</tr>
@@ -66,7 +66,7 @@ session_start();
 				
 				
 				
-				if(isset($_POST['submitChanges'])){
+				if(isset($_POST['newlname'])){
 					$newfname = $_POST['newfname'];			
 					$newlname = $_POST['newlname'];
 					$cAdminID = $_POST['cAdminID'];
@@ -88,7 +88,6 @@ session_start();
 						// exists
 						else{
 							$_SESSION['message1'] = "Email address already exists";
-							$_SESSION['code1'] = "namenochange";			
 						}
 					}
 					else $_SESSION['message1'] = "";
@@ -97,7 +96,7 @@ session_start();
 					if(@$_POST['oldfname'] != @$newfname){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newfname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message2'] = "<p style='color: green;'>First Name updated.</p>";
+						$_SESSION['message2'] = "<p>First Name updated.</p>";
 						$_SESSION['fname'] = $newfname;
 					}
 					else $_SESSION['message2'] = "";
@@ -106,7 +105,7 @@ session_start();
 					if(@$_POST['oldlname'] != @$newlname){
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 						$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newlname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message3'] = "<p style='color: green;'>Last Name updated.</p>";
+						$_SESSION['message3'] = "<p>Last Name updated.</p>";
 						$_SESSION['lname'] = $newlname;
 					}
 					else $_SESSION['message3'] = "";
@@ -118,7 +117,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyAccount').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
