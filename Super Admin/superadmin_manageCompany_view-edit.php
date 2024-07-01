@@ -30,7 +30,7 @@ session_start();
 			<h2>Edit Company</h2>
 
 			<?php   
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifyAccount' method='POST'>
 						<br>
 						<table>
 						<tr>
@@ -50,7 +50,7 @@ session_start();
 						Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "'><br>
 						Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
 						Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
-						<input type='submit' name='submitChange' value='Update'>
+						<input type='button' value='Update' onclick='confirmDiag();'>
 						</form>
 							</td>
 						</tr>
@@ -64,8 +64,11 @@ session_start();
 				if (@$_SESSION['message2']){
 				echo @$_SESSION['message2'];
 				}
+				if (@$_SESSION['message3']){
+				echo @$_SESSION['message3'];
+				}
 				
-				if(isset($_POST['submitChange'])){
+				if(isset($_POST['newCompanyUEN'])){
 					$companyName = $_POST['companyName'];			
 					$companyID = $_POST['companyID'];
 					$newCompanyUEN = $_POST['newCompanyUEN'];
@@ -119,15 +122,15 @@ session_start();
 						$num_rows=mysqli_num_rows($result3);
 						// dont exists
 						if($num_rows > 0){
-							$_SESSION['message2'] = "Company UEN already exists";
+							$_SESSION['message3'] = "Company UEN already exists";
 						}
 						else{
 							$result2 = mysqli_query($db,"UPDATE company SET CompanyUEN = '$newCompanyUEN' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message2'] = "<p style='color: green;'>Company UEN updated.</p>";
+							$_SESSION['message3'] = "<p style='color: green;'>Company UEN updated.</p>";
 							$_SESSION['companyUEN'] = $newCompanyUEN;
 							
 						}
-					}else $_SESSION['message2'] = "";
+					}else $_SESSION['message3'] = "";
 					
 					header('Location: superadmin_manageCompany_view-edit.php');
 					exit;
@@ -136,7 +139,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyAccount').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
