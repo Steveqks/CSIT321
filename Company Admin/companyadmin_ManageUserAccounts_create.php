@@ -129,7 +129,7 @@ session_start();
 			<script>
 				function confirmDiag(){
 					console.log('confirmDiag() executing');
-					let result = confirm("Submit Changes?");
+					let result = confirm("Create User?");
 					if (result)
 					{
 						document.getElementById('create').submit();

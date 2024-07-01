@@ -3,7 +3,7 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['deleteUser']))
+	if(isset($_POST['delete'])=='yes')
 	{
 		$userID = $_POST['userID'];
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -131,7 +131,8 @@ session_start();
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
 						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-						<input type='submit' name='deleteUser' value='Delete'>
+						<input type='hidden' name='delete' value='yes'/>
+						<input type='button' value='Delete' onclick='confirmDiag(event, this.form)'>
 						</form></td>";
 					$accountsTable.= "</tr>";
 				}
@@ -143,7 +144,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete User?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
