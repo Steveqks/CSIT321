@@ -10,11 +10,11 @@
 
 		if (show1 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Manage Company ➖';
+			myButton.innerHTML = 'Manage Account ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Manage Company ➕';
+			myButton.innerHTML = 'Manage Account ➕';
 			linkContainer.style.display = 'none';
 		}
 		show1 = !show1;
@@ -78,7 +78,7 @@
 				</div>
             </li>
 
-            <li><a href="Manager_leaveHistory.php">Leave Management</a></li>
+            <li><a href="Manager_viewLeaveHistory.php">Leave Management</a></li>
 
             <li><a href="Manager_attendanceTracking.php">Time/Attendance Tracking</a></li>
 
