@@ -3,7 +3,7 @@ session_start();
 
 include '../Session/session_check_companyadmin.php';
 	
-	if(isset($_POST['submitChanges'])){
+	if(isset($_POST['newLastName'])){
 		$newFirstName = $_POST['newFirstName'];			
 		$newLastName = $_POST['newLastName'];			
 		$newEmail = $_POST['newEmail'];			
@@ -12,7 +12,7 @@ include '../Session/session_check_companyadmin.php';
 		if ($_POST['oldFirstName'] != $_POST['newFirstName']){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newFirstName' WHERE CAdminID = '$cadminID' ") or die("update Error");
-				$_SESSION['message1'] = "<p style='color: green;'>First name has been changed.</p>";
+				$_SESSION['message1'] = "<p>First name has been changed.</p>";
 			
 		}
 		else $_SESSION['message1'] = "";
@@ -21,7 +21,7 @@ include '../Session/session_check_companyadmin.php';
 		if(@$_POST['oldLastName'] != $newLastName){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newLastName' WHERE CAdminID = '$cadminID'") or die("update Error");
-			$_SESSION['message2'] = "<p style='color: green;'>Last name has been changed.</p>";
+			$_SESSION['message2'] = "<p>Last name has been changed.</p>";
 		}
 		else $_SESSION['message2'] = "";
 		
@@ -36,7 +36,7 @@ include '../Session/session_check_companyadmin.php';
 			// exists
 			if($num_rows > 0){
 				//return error
-				$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+				$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
 			}
 			// dont exists
 			else{
@@ -47,14 +47,14 @@ include '../Session/session_check_companyadmin.php';
 				// exists
 				if($num_rows > 0){
 					//return error
-					$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+					$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
 				}
 				// dont exists
 				else{
 					// exists
 					if($num_rows > 0){
 						//return error
-						$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+						$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
 					}
 					// dont exists
 					else{
@@ -64,13 +64,13 @@ include '../Session/session_check_companyadmin.php';
 					
 						if($num_rows > 0){
 						//return error
-						$_SESSION['message3'] = "<p style='color: red;'>Email Address is already in use.</p>";
+						$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
 						}
 						// dont exists
 						else{
 							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 							$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newEmail' WHERE CAdminID = '$cadminID'") or die("update Error");
-							$_SESSION['message3'] = "<p style='color: green;'>Email Address has been changed.</p>";
+							$_SESSION['message3'] = "<p>Email Address has been changed.</p>";
 						}
 					}
 				}
@@ -105,56 +105,67 @@ include '../Session/session_check_companyadmin.php';
 <!-- Left Section (Navigation) -->
 <?php include_once('navigation.php') ?>
 
-<!-- Right Section (Activity) -->
-<div style="width: 80%; padding: 10px;">
+	<!-- Right Section (Activity) -->
+	<div style="width: 80%; padding: 10px;">
 
-<h2>Manage Account</h2>
-<?php   
-	$cadminID = $_SESSION['cadminID'];
-	
-	//get Company Admin data
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE CAdminID = '$cadminID'") or die("Select Error");
+	<h2>Manage Account</h2>
+	<?php   
+		$cadminID = $_SESSION['cadminID'];
+		
+		//get Company Admin data
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE CAdminID = '$cadminID'") or die("Select Error");
 
-	while($Row = $result->fetch_assoc()){
-	$form = "<form action'' method='POST'>
-			<br>
-			<table >
-			<tr>
-				<td style='border: 2px solid black; border-collapse: collapse;'>
-			FROM 
-			<br><br>
-			
-			First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
-			Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
-			Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
-			<br></td>
+		while($Row = $result->fetch_assoc()){
+		$form = "<form action'' id='ModifyAccount' method='POST'>
+				<br>
+				<table >
+				<tr>
+					<td style='border: 2px solid black; border-collapse: collapse;'>
+				FROM 
+				<br><br>
 				
-				<td style='border: 2px solid black; border-collapse: collapse;'> 
-			TO
-			<br><br>
-			First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
-			Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
-			Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
-			
-			<input type='submit' name='submitChanges' value='Update'>
-			</form>
-				</td>
-			</tr>
-			</table>
-				";
-	}
-	echo $form;
-	
-	echo @$_SESSION['message1'];
-	echo @$_SESSION['message2'];
-	echo @$_SESSION['message3'];
-	
-	
-?>
+				First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
+				Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
+				Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
+				<br></td>
+					
+					<td style='border: 2px solid black; border-collapse: collapse;'> 
+				TO
+				<br><br>
+				First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
+				Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
+				Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
+				
+				<input type='button' value='Update' onclick='confirmDiag();'>
+				</form>
+					</td>
+				</tr>
+				</table>
+					";
+		}
+		echo $form;
+		
+		echo @$_SESSION['message1'];
+		echo @$_SESSION['message2'];
+		echo @$_SESSION['message3'];
+		
+		
+	?>
+	</div>
 </div>
-</div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyAccount').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
