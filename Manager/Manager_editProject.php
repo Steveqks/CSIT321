@@ -74,7 +74,7 @@
             if ($_POST['startdate'] < $_POST['enddate']) {
 
                 $projectName = $_POST['projectname'];
-                $mainTeamID = $_POST['mainteamid'];
+                $mainTeamID = $_POST['teams'];
                 $startDate = $_POST['startdate'];
                 $endDate = $_POST['enddate'];
                 $mainProjectID = $_POST['mainprojectid'];
@@ -150,7 +150,7 @@
                                         <label for="projectname">Project Name</label>
                                         <input type="text" id="projectname" name="projectname" value="<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?>">
 
-                                        <label for="mainteamid">Team</label>
+                                        <label for="teams">Team</label>
                                         <div class="checkbox-container">
                                             <?php
                                             foreach ($projectTeams as $projectTeam):

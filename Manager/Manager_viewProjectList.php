@@ -27,13 +27,18 @@
         $conn = OpenCon();
 
         // get teams for the team option in form
-        $sql = "SELECT a.MainProjectID, a.ProjectName, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
+/*        $sql = "SELECT a.MainProjectID, a.ProjectName, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
                 INNER JOIN project d ON d.MainProjectID = a.MainProjectID
                 LEFT JOIN teaminfo b ON d.MainTeamID = b.MainTeamID
                 LEFT JOIN existinguser c ON b.ManagerID = c.UserID
                 WHERE a.ProjectManagerID = ".$userID."
                 AND a.EndDate > CURRENT_TIMESTAMP
                 GROUP BY a.MainProjectID, a.ProjectName;";
+*/
+
+        $sql = "SELECT *FROM projectinfo
+                WHERE ProjectManagerID = ".$userID."
+                AND EndDate > CURRENT_TIMESTAMP;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -46,21 +51,21 @@
             $mainProjectID = $_GET['mainprojectid'];
 
             // Delete project
-            $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
+            $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
 
             $stmt->bind_param("i",$mainProjectID);
 
             if ($stmt->execute()) {
 
                 // Delete project
-                $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
+                $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
     
                 $stmt->bind_param("i",$mainProjectID);
 
                 if ($stmt->execute()) {
                     echo "<script type='text/javascript'>";
                     echo "alert('Project has been deleted.');";
-                    echo "window.location = 'Manager_viewProject.php';";
+                    echo "window.location = 'Manager_viewProjectList.php';";
                     echo "</script>";
                 }
             }
@@ -92,7 +97,8 @@
 
                     <tr>
                         <th>Project Name</th>
-                        <th>Project Manager</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                         <th>Delete</th>
                     </tr>
 
@@ -100,15 +106,16 @@
                         <?php foreach ($projects as $project): ?>
                             <tr>
                                 <td>
-                                    <a href="Manager_editProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>"><?php echo $project['ProjectName']; ?></a>
+                                    <a href="Manager_viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>"><?php echo $project['ProjectName']; ?></a>
                                 </td>
-                                <td><?php echo $project['fullName']; ?></td>
-                                <td><a href="Manager_viewProject.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
+                                <td><?php echo date('F j, Y',strtotime($project['StartDate'])); ?></td>
+                                <td><?php echo date('F j, Y',strtotime($project['EndDate'])); ?></td>
+                                <td><a href="Manager_viewProjectList.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="3">No projects created.</td>
+                            <td colspan="4">No projects created.</td>
                         </tr>
                     <?php endif; ?>
                 </table>
