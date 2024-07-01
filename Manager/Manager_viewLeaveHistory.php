@@ -27,18 +27,15 @@
         $conn = OpenCon();
 
         $userStatusID = 1;
-        $taskStatusID = 1;
 
-        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
-                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-                CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
-                FROM task t
-                JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-                JOIN existinguser eu ON t.UserID = eu.UserID
-                JOIN team te ON eu.UserID = te.UserID
-                JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
-                WHERE tei.ManagerID = ".$userID."
-                ORDER BY ti.MainTaskID;";
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN team c ON a.UserID = c.UserID
+                INNER JOIN teaminfo d ON c.MainTeamID = d.MainTeamID
+                LEFT JOIN existinguser b ON c.UserID = b.UserID
+                WHERE d.ManagerID = ".$userID."
+                AND b.Status = ".$userStatusID."
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status;";
 
 
         //echo $sql;
@@ -47,7 +44,30 @@
         
         $stmt->execute();
         $result = $stmt->get_result();
-        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+        
+        if (isset($_GET['approve'])) {
+
+            $leaveID = $_GET['leaveid'];
+
+            if ($_GET['approve'] == "yes") {
+
+                $leaveStatus = 1;
+
+            } else if ($_GET['approve'] == "no") {
+
+                $leaveStatus = 0;
+
+            }
+
+            $stmt = $conn->prepare("UPDATE leaves SET Status=? WHERE LeaveID=?");
+
+            $stmt->bind_param("ii",$leaveStatus,$leaveID);
+
+            if ($stmt->execute()) {
+                header('Location: Manager_viewLeaveHistory.php');
+            }
+        }
     ?>
 
 </head>
@@ -66,43 +86,68 @@
         
         <!-- Right Section (Activity) -->
         <div class="content">
-            <h2 class="contentHeader">View Tasks</h2>
+            <h2 class="contentHeader">View Leave History</h2>
 
             <div class="innerContent">
 
                 <table class="tasks">
 
                     <tr>
-                        <th>Task Name</th>
-                        <th>Assigned Date</th>
-                        <th>Due Date</th>
-                        <th>Assigned To</th>
-                        <th>Avail / Req Number of Staff</th>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Half Day</th>
+                        <th>Leave Type</th>
+                        <th>Status</th>
                     </tr>
 
-                    <?php if (count($tasks) > 0): ?>
-                        <?php foreach ($tasks as $task): ?>
+                    <?php if (count($leaves) > 0): ?>
+                        <?php foreach ($leaves as $leave): ?>
                             <tr>
                                 <td>
-                                <?php if ($employeeType == "Manager") { ?>
-                                    <a href="Manager_editTask.php?maintaskid=<?php echo htmlspecialchars($task['MainTaskID']); ?>"><?php echo htmlspecialchars($task['TaskName']); ?></a>
-                                <?php } else { ?>
-                                    <?php echo htmlspecialchars($task['TaskName']); ?>
-                                <?php } ?>
+                                    <?php echo $leave['fullName']; ?>
                                 </td>
-                                <td><?php echo htmlspecialchars($task['StartDate']); ?></td>
-                                <td><?php echo htmlspecialchars($task['DueDate']); ?></td>
+                                <td>
+                                    <?php echo $leave['StartDate']; ?>
+                                </td>
+                                <td>
+                                    <?php echo $leave['EndDate']; ?>
+                                </td>
+                                <td>
+                                    <?php
+                                        if ($leave['HalfDay'] == 1) {
+                                            echo "Yes";
+                                        } else {
+                                            echo "No";
+                                        }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php echo $leave['LeaveType']; ?>
+                                </td>
+                                <td>
+                                    <?php
+                                        if ($leave['Status'] === NULL) {
 
-                                <?php if ($employeeType == "Manager") { ?>
-                                    <td><?php echo htmlspecialchars($task['fullName']); ?></td>
-                                    <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
-                                <?php } ?>
+                                            echo "<a href='Manager_viewLeaveHistory.php?approve=yes&leaveid=".$leave['LeaveID']."'>Approve</a>&emsp;";
+                                            echo "<a href='Manager_viewLeaveHistory.php?approve=no&leaveid=".$leave['LeaveID']."'>Decline</a>";
+
+                                        } else if ($leave['Status'] !== NULL) {
+
+                                            if ($leave['Status'] == 1) {
+                                                echo "Approved";
+                                            } else {
+                                                echo "Declined";
+                                            }
+                                        }
+                                    ?>
+                                </td>
 
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">No tasks assigned.</td>
+                            <td colspan="6">No leave history or applications.</td>
                         </tr>
                     <?php endif; ?>
                 </table>

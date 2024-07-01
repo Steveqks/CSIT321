@@ -85,7 +85,7 @@ hr {
 
 .tasks tr:nth-child(even){background-color: #E5E4E2;}
 
-.tasks tr:hover {background-color: #B2BEB5;}
+.tasks tr:hover {background-color: #DCDCDC;}
 
 .tasks th {
     padding-top: 12px;
