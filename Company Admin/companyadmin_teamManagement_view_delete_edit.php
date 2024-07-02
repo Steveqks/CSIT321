@@ -3,7 +3,7 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['submitChanges']))
+	if(isset($_POST['newTeamName']))
 		{
 			$newManagerID = $_POST['newManagerID'];
 			$newTeamName = $_POST['newTeamName'];
@@ -103,7 +103,7 @@ session_start();
 				}
 
 				// fill and get necessary fields
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifyAccount' method='POST'>
 						<br>
 						<table >
 						<tr>
@@ -143,7 +143,7 @@ session_start();
 						$form .= "<option value='" . $Row['UserID'] . "'>" . $Row['Fullname'] . " </option>";
 					}
 				}
-				$form .= "</select> <br><br></td></tr> </table><input type='submit' name='submitChanges' value='Update'></form>";
+				$form .= "</select> <br><br></td></tr> </table><input type='button' value='Update' onclick='confirmDiag()'></form>";
 			
 				echo $form;
 				
@@ -151,7 +151,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyAccount').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
