@@ -67,8 +67,8 @@ session_start();
 						<input type='text' value='" . $_SESSION['specialisationName'] . "' readonly>
 						
 						TO
-						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "'>
-						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . ">
+						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "' maxlength='32'>
+						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . " >
 						<input type='button' value='Update' onclick='confirmDiag()' >
 						</form>";
 				echo $form;

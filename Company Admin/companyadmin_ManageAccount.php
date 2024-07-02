@@ -133,9 +133,9 @@ include '../Session/session_check_companyadmin.php';
 					<td style='border: 2px solid black; border-collapse: collapse;'> 
 				TO
 				<br><br>
-				First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
-				Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
-				Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
+				First Name: <input type='text' name='newFirstName' maxlength='16'  value='" . $Row['FirstName'] . "' > <br>
+				Last Name: <input type='text' name='newLastName' maxlength='16'  value='" . $Row['LastName'] . "'><br>
+				Email Address: <input type='text' name='newEmail' maxlength='32'  value=" . $Row['Email'] . "><br>
 				
 				<input type='button' value='Update' onclick='confirmDiag();'>
 				</form>

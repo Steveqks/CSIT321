@@ -79,15 +79,15 @@ session_start();
             <form action = "" id='create' method = "post">
 				<h2>Create User Account</h2>
 
-					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" required>
+					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" maxlength='16' required>
 					</h4>
-					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" required>
+					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" maxlength='16'  required>
 					</h4>
-					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address" required>
+					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address" maxlength='32'  required>
 					</h4>
-					<h4>Gender: <input name = "gender" type = "text" placeholder = "gender" required>
+					<h4>Gender: <input name = "gender" type = "text" placeholder = "gender" maxlength='5'  required>
 					</h4>
-					<h4>Password: <input name = "password" type = "password" placeholder = "password" required>
+					<h4>Password: <input name = "password" type = "password" placeholder = "password" maxlength='16'  required>
 					</h4>
 					<h4>  <label for="Role">Role:</label>
 					  <select name="role" id="">
@@ -113,7 +113,7 @@ session_start();
 						echo $select;
 						
 					?>
-					<h4>Status: <input name = "status" type = "text" placeholder = "status" required>
+					<h4>Status: <input name = "status" type = "text" placeholder = "status"  maxlength='1' required>
 					</h4>
 					<input type='button' value='Create' onclick='confirmDiag()'>
 			</form>
