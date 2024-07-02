@@ -155,11 +155,11 @@ session_start();
 						
 						TO
 						<br><br>
-						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' ><br>
-						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' > <br>							
-						Gender: <input type='text' name='newGender' value=" . $Row['Gender'] . " > <br>
+						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' maxlength='16'><br>
+						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' maxlength='16'> <br>							
+						Gender: <input type='text' name='newGender' value=" . $Row['Gender'] . " maxlength='5'> <br>
 						<input type='hidden' name='userID' value=" . $Row['UserID'] . " >
-						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " > <br>";
+						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'> <br>";
 				}
 				
 				$result2 = 	mysqli_query($db, "SELECT * FROM `specialisation` WHERE CompanyID = '82';

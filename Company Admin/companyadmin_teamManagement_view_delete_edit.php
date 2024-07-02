@@ -120,7 +120,7 @@ session_start();
 						
 						TO
 						<br><br>
-						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' > <br>
+						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' maxlength='32' > <br>
 						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
 						
 				

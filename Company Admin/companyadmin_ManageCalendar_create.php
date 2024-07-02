@@ -71,7 +71,7 @@ session_start();
             <form action = "" id='CalenderEntry' method = "post">
 				<h2>Create Calendar Entry</h2>
 
-					<h4>Date Name: <input name = "dateName" type = "text" placeholder = "date name" required>
+					<h4>Date Name: <input name = "dateName" type = "text" placeholder = "date name"  maxlength='32'  required>
 					</h4>
 					<h4>Date: <input name = "date" type = "date" placeholder = "date" required>
 					</h4>

@@ -63,7 +63,7 @@ session_start();
 			
 			<form action = "" id='submitSpecialisation'  method = "post">
 				<h2>Create Specialisation</h2>
-				<input id = "specialisation" name = "specialisation" type = "text" placeholder = "Specialisation Name" required>
+				<input id = "specialisation" name = "specialisation" type = "text" placeholder = "Specialisation Name" maxlength='32' required>
 				<input type='button' value='Create' onclick='confirmDiag()'>
 			</form>
 			

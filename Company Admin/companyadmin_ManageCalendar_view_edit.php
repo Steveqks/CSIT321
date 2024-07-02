@@ -101,7 +101,7 @@ session_start();
 							
 						<b>TO:</b>
 						<br>
-							Date Name: <input type='text' name='newDateName' value='" . $_SESSION['dateName'] . "' ><br>
+							Date Name: <input type='text' name='newDateName' maxlength='32' value='" . $_SESSION['dateName'] . "' ><br>
 							Date: <input type='date' name='newDate' value=" . $_SESSION['date'] . " > <br>
 						<input type='button' value='Update' onclick='confirmDiag()'>
 						</form>
