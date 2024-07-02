@@ -103,13 +103,13 @@ session_start();
 					
 				?>
 					
-					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" required>
+					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name"  maxlength='16' required>
 					</h4>
-					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" required>
+					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name"  maxlength='16' required>
 					</h4>
-					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address" required>
+					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address"  maxlength='32' required>
 					</h4>
-					<h4>Password: <input name = "password" type = "text" placeholder = "password" required>
+					<h4>Password: <input name = "password" type = "text" placeholder = "password" maxlength='16' required>
 					</h4>
 					<input type = "button" value='Create' onclick='confirmDiag();' >
 			</form>

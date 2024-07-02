@@ -66,8 +66,8 @@ session_start();
 		
             <form action = "" id = "CreateCompany" method = "post">
 				<h2>Create Company</h2>
-				<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" required>
-				<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" required>
+				<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" maxlength='16'required>
+				<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" maxlength='1' required>
 				<input type = 'button' value='Create' onclick='confirmDiag();'>
 			</form>
 			

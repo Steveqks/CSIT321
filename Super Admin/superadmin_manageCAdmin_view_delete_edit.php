@@ -49,9 +49,9 @@ session_start();
 						TO
 						<br><br>
 						Company ID: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
-						First Name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . "'><br>
-						Last Name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "'><br>
-						Email Address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . "><br>
+						First Name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . " ' maxlength='16'><br>
+						Last Name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "' maxlength='16'><br>
+						Email Address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . " maxlength='32'><br>
 						<input type='button' value='Update'onclick='confirmDiag();'>
 						</form>
 							</td>

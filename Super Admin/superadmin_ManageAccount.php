@@ -54,9 +54,9 @@ session_start();
 									<td style='border: 2px solid black; border-collapse: collapse;'> 
 										TO
 										<br><br>
-										First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' > <br>
-										Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "'><br>
-										Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . "><br>
+										First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' maxlength='16'> <br>
+										Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' maxlength='16'><br>
+										Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'><br>
 										
 										<input type='button' value='Update' onclick='confirmDiag();'>
 									</td>

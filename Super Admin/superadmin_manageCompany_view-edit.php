@@ -47,9 +47,9 @@ session_start();
 						TO
 						<br><br>
 						Company ID: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
-						Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "'><br>
-						Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . " > <br>
-						Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . "><br>
+						Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "' maxlength='16'><br>
+						Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . "  maxlength='10'> <br>
+						Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . " maxlength='1'><br>
 						<input type='button' value='Update' onclick='confirmDiag();'>
 						</form>
 							</td>
