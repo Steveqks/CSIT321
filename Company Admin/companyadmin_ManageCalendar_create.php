@@ -6,7 +6,7 @@ session_start();
 	$companyID = $_SESSION['companyID'];
 	
 	//create user
-	if(isset($_POST['submit'])){
+	if(isset($_POST['date'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$dateName = $_POST['dateName'];
@@ -68,14 +68,14 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "", method = "post">
+            <form action = "" id='CalenderEntry' method = "post">
 				<h2>Create Calendar Entry</h2>
 
 					<h4>Date Name: <input name = "dateName" type = "text" placeholder = "date name" required>
 					</h4>
 					<h4>Date: <input name = "date" type = "date" placeholder = "date" required>
 					</h4>
-					<button id = "submitBtn" name = "submit">Create</button>
+					<input type='button' value='Create' onclick='confirmDiag()'>
 			</form>
 			
 			<?php   
@@ -86,7 +86,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Create Calender Entry?");
+					if (result)
+					{
+						document.getElementById('CalenderEntry').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
