@@ -6,14 +6,12 @@ include 'db_connection.php';
 date_default_timezone_set('Asia/Singapore');
 
 // Check if user is logged in
-if (!isset($_SESSION['Email'])) 
-{
-	header("Location: ../Unregistered Users/LoginPage.php");
-	exit();
+if (!isset($_SESSION['Email'])) {
+    header("Location: ../Unregistered Users/LoginPage.php");
+    exit();
 }
 
 $user_id = $_SESSION['UserID'];
-$Email = $_SESSION['Email'];
 $FirstName = $_SESSION['FirstName'];
 
 // Connect to the database
@@ -47,7 +45,7 @@ if ($hasWorkToday) {
 
     if ($attendance) {
         $clockInExists = true;
-        if ($attendance['ClockOut'] != null) {
+        if (!is_null($attendance['ClockOut'])) {
             $clockOutExists = true;
         }
     }
@@ -166,14 +164,34 @@ CloseCon($conn);
         .clock-button:hover {
             background-color: #004d00;
         }
-        
+
+        .clock-out-button {
+            background-color: red;
+        }
+
+        .clock-out-button:hover {
+            background-color: darkred;
+        }
+
         .underline {
             text-decoration: underline;
         }
-		
-		.button-container {
-			margin-top: 20px;
-		}
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -181,13 +199,13 @@ CloseCon($conn);
     <div class="top-section">
         <img src="Images/tms.png" alt="TrackMySchedule Logo">
     </div>
-    
+
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
+                <li><a href="PT_HomePage.php"><?php echo htmlspecialchars("$FirstName, Staff(PT)"); ?></a></li>
                 <li><a href="PT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
                 <li><a href="PT_LeaveManagement.php">Leave Management</a></li>
@@ -198,14 +216,21 @@ CloseCon($conn);
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </div>
-        
+
         <!-- RIGHT SECTION (TAKE ATTENDANCE) -->
         <div class="attendance-section">
             <div class="attendance-header">
                 <i class="fas fa-clock"></i>
                 <h2>Take Attendance</h2>
             </div>
-            
+
+            <!-- Display feedback messages -->
+            <?php if (isset($_GET['message'])): ?>
+                <div class="message"><?php echo htmlspecialchars($_GET['message']); ?></div>
+            <?php elseif (isset($_GET['error'])): ?>
+                <div class="error"><?php echo htmlspecialchars($_GET['error']); ?></div>
+            <?php endif; ?>
+
             <?php if ($hasWorkToday): ?>
                 <?php if (!$clockInExists): ?>
                     <!-- Clock In Page -->
@@ -213,22 +238,22 @@ CloseCon($conn);
                         Your shift today starts at <span class="underline"><?php echo date("H:i", strtotime($schedule['StartWork'])); ?>h</span> and ends at <span class="underline"><?php echo date("H:i", strtotime($schedule['EndWork'])); ?>h</span>.
                     </div>
                     <div>
-						The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
-					</div>
-					<div class="button-container">
-						<a href="PT_ClockIn.php" class="clock-button">Clock In</a>
-					</div>
+                        The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
+                    </div>
+                    <div class="button-container">
+                        <a href="PT_ClockIn.php" class="clock-button">Clock In</a>
+                    </div>
                 <?php elseif ($clockInExists && !$clockOutExists): ?>
                     <!-- Clock Out Page -->
                     <div class="info-text">
                         You have already clocked in today.
                     </div>
                     <div>
-						The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
-					</div>
-					<div class="button-container">
-						<a href="PT_ClockOut.php" class="clock-button">Clock Out</a>
-					</div>
+                        The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
+                    </div>
+                    <div class="button-container">
+                        <a href="PT_ClockOut.php" class="clock-button clock-out-button">Clock Out</a>
+                    </div>
                 <?php else: ?>
                     <!-- Already Clocked Out -->
                     <div class="info-text">
