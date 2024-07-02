@@ -3,7 +3,7 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['deleteEntry']))
+	if(isset($_POST['delete'])=='yes')
 	{
 		$calendarID = $_POST['calendarID'];
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -53,7 +53,6 @@ session_start();
 
   
 			<?php     
-				echo @$_SESSION['message0'];
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -92,9 +91,11 @@ session_start();
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='calendarID' value='" . $Row['CalendarID'] . "'/>
 						<input type='hidden' name='dateName' value='" . $Row['DateName'] . "'/>
 						<input type='hidden' name='date' value='" . $Row['Date'] . "'/>
-						<input type='submit' name='deleteEntry' value='Delete'>
+						<input type='hidden' name='delete' value='yes'/>
+						<input type='button' value='Delete' onclick='confirmDiag(this.form)'>
 						</form></td>";
 						
 					$accountsTable.= "</tr>";
@@ -107,7 +108,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Entry?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

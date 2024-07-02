@@ -10,7 +10,7 @@ session_start();
 		exit;
 	}
 
-	if (isset($_POST['removeMember'])) {
+	if (isset($_POST['removemember']) == 'yes') {
 		$teamID = $_SESSION['teamID'];
 		$userID = $_POST['userID'];
 		$fullname = $_POST['fullname'];
@@ -108,7 +108,8 @@ session_start();
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='fullname' value='" . $Row['FirstName'] .' '. $Row['LastName']  . "'/>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
-						<input type='submit' name='removeMember' value='Remove'>
+						<input type='hidden' name='removemember' value='yes'/>
+						<input type='button' value='Remove' onclick='confirmDiag(this.form)'>
 						</form></td>";
 
 					$accountsTable.= "</tr>";
@@ -127,7 +128,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Remove Member?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

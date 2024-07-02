@@ -5,7 +5,7 @@ session_start();
 
 	include_once('companyadmin_specialisation_viewdelete_functions.php');
 
-	if(isset($_POST['deleteSpecialisation']))
+	if(isset($_POST['delete'])=='yes')
 	{
 		$delete = new userAccount();
 		$delete->deleteSpecialisation($_POST['specialisationID']);
@@ -83,7 +83,8 @@ session_start();
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='specialisationID' value='" . $Row['SpecialisationID'] . "'/>
 							<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
-							<input type='submit' name='deleteSpecialisation' value='Delete'>
+							<input type='hidden' name='delete' value='yes'/>
+							<input type='button' value='Delete' onclick='confirmDiag(this.form)'>
 							</form></td>";
 							
 
@@ -100,7 +101,18 @@ session_start();
 
         </div>
     </div>
-
+			<script>
+				function confirmDiag(form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Specialisation?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

@@ -3,16 +3,16 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['submitChanges'])){
+	if(isset($_POST['newDate'])){
 		$newDate = $_POST['newDate'];
 		$newDateName = $_POST['newDateName'];
 		$calendarID = $_SESSION['calendarID'];
 		
-		//check if there are changes in email
+		//check if there are changes in date name
 		if ($_POST['oldDateName'] != $_POST['newDateName']){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-			//check if email already exists
+			//check if date name exists
 			$result = mysqli_query($db,	"SELECT * FROM calendar WHERE DateName = '$newDateName'  AND CompanyID = '$companyID' ") or die("Select Error");
 
 			$num_rows=mysqli_num_rows($result);
@@ -29,11 +29,11 @@ session_start();
 		}
 		else $_SESSION['message1'] = "";
 		
-		// if first name changed
+		// if date changed
 		if(@$_POST['oldDate'] != $_POST['newDate']){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-			//check if email already exists
+			//check if date already exists
 			$result = mysqli_query($db,	"SELECT * FROM calendar WHERE Date = '$newDate' AND CompanyID = '$companyID' ") or die("Select Error");
 
 			$num_rows=mysqli_num_rows($result);
@@ -85,7 +85,7 @@ session_start();
 				
 				$companyID = $_SESSION['companyID'];
 			
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifyEntry' method='POST'>
 						<br>
 						<table >
 						<tr>
@@ -103,7 +103,7 @@ session_start();
 						<br>
 							Date Name: <input type='text' name='newDateName' value='" . $_SESSION['dateName'] . "' ><br>
 							Date: <input type='date' name='newDate' value=" . $_SESSION['date'] . " > <br>
-						<input type='submit' name='submitChanges' value='Update'>
+						<input type='button' value='Update' onclick='confirmDiag()'>
 						</form>
 							</td>
 						</tr>
@@ -116,7 +116,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyEntry').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

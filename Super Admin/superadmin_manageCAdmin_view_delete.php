@@ -11,7 +11,7 @@ if (isset($_POST['submitSpecialisation'])) {
 	exit;
 }
 
-if(isset($_POST['deleteCAdmin']))
+if(isset($_POST['delete']) == 'yes')
 {
 	$cAdminID = $_POST['cAdminID'];
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -123,7 +123,8 @@ if (isset($_POST['editCAdmin'])) {
 							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
 							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-							<input type='submit' name='deleteCAdmin' value='Delete'>
+							<input type='hidden' name='delete' value='yes'/>
+							<input type='button' value='Delete' onclick='confirmDiag(event, this.form);'>
 							</form></td>";
 						$accountsTable.= "</tr>";
 					}
@@ -139,7 +140,18 @@ if (isset($_POST['editCAdmin'])) {
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Company Admin?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

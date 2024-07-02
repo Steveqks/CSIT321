@@ -3,13 +3,13 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['deleteUser']))
+	if(isset($_POST['delete'])=='yes')
 	{
 		$userID = $_POST['userID'];
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
 		
-		$_SESSION['message1'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
+		$_SESSION['message1'] = $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
 		header('Location: companyadmin_ManageUserAccounts_view.php');
 		exit;
 	}
@@ -30,13 +30,13 @@ session_start();
 		{
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
-		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
+		$_SESSION['message0'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
 		}
 		else
 		{
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
-		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
+		$_SESSION['message0'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
 		}
 		
 		header('Location: companyadmin_ManageUserAccounts_view.php');
@@ -131,7 +131,8 @@ session_start();
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
 						<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
 						<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
-						<input type='submit' name='deleteUser' value='Delete'>
+						<input type='hidden' name='delete' value='yes'/>
+						<input type='button' value='Delete' onclick='confirmDiag(event, this.form)'>
 						</form></td>";
 					$accountsTable.= "</tr>";
 				}
@@ -143,7 +144,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete User?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

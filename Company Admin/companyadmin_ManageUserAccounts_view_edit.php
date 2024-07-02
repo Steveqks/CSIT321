@@ -3,8 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['submitChanges'])){
+	if(isset($_POST['newFirstName'])){
 		
+		$userID = $_POST['userID'];
 		$newFirstName = $_POST['newFirstName'];
 		$newLastName = $_POST['newLastName'];
 		$newGender = $_POST['newGender'];
@@ -17,7 +18,7 @@ session_start();
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			
 			$result = mysqli_query($db,"UPDATE existinguser SET FirstName = '$newFirstName' WHERE UserID = '$userID'") or die("update Error");
-			$_SESSION['message1'] = "<p>First Name has been changed";
+			$_SESSION['message1'] = "<p>First Name has been changed.</p>";
 		}
 		else $_SESSION['message1'] = "";
 		
@@ -26,7 +27,7 @@ session_start();
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			
 			$result = mysqli_query($db,"UPDATE existinguser SET LastName = '$newLastName' WHERE UserID = '$userID'") or die("update Error");
-			$_SESSION['message2'] = "<p>Last Name has been changed";
+			$_SESSION['message2'] = "<p>Last Name has been changed.</p>";
 		}
 		else $_SESSION['message2'] = "";
 		
@@ -133,7 +134,7 @@ session_start();
 					$Role =	$Row['Role'];
 					$Status =	$Row['Status'];
 				// fill and get necessary fields
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifyAccount' method='POST'>
 						<br>
 						<table >
 						<tr>
@@ -157,6 +158,7 @@ session_start();
 						First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' ><br>
 						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' > <br>							
 						Gender: <input type='text' name='newGender' value=" . $Row['Gender'] . " > <br>
+						<input type='hidden' name='userID' value=" . $Row['UserID'] . " >
 						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " > <br>";
 				}
 				
@@ -196,7 +198,7 @@ session_start();
 						<br>
 							Status: <input type='text' name='' value=" . $Status . " readonly><br>";
 						
-				$form .= "</select><input type='submit' name='submitChanges' value='Update'> </td></tr> </table></form>";
+				$form .= "</select><input type='button' value='Update' onclick='confirmDiag();'> </td></tr> </table></form>";
 			
 				echo $form;
 				
@@ -212,7 +214,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifyAccount').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
