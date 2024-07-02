@@ -17,7 +17,7 @@ session_start();
 		exit;
 	}
 
-	if(isset($_POST['deleteTeam']))
+	if(isset($_POST['delete']) == 'yes')
 	{
 		$teamID = $_POST['teamID'];
 		$totalUser = $_POST['totalUser'];
@@ -128,7 +128,8 @@ session_start();
 						<input type='hidden' name='totalUser' value='" . $Row['TotalUsers'] . "'/>
 						<input type='hidden' name='teamName' value='" . $Row['TeamName'] . "'/>
 						<input type='hidden' name='teamID' value='" . $Row['MainTeamID'] . "'/>
-						<input type='submit' name='deleteTeam' value='Delete'>
+						<input type='hidden' name='delete' value='yes'/>
+						<input type='button' value='Delete' onclick='confirmDiag(this.form)'>
 						</form></td>";
 
 					$accountsTable.= "</tr>";
@@ -141,7 +142,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Team?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
