@@ -111,7 +111,7 @@ session_start();
 			<script>
 				function confirmDiag(form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Submit Changes?");
+					let result = confirm("Delete Entry?");
 					if (result)
 					{
 						form.submit();
