@@ -4,7 +4,7 @@ session_start();
 	include '../Session/session_check_companyadmin.php';
 
 	//create company
-	if(isset($_POST['submit'])){
+	if(isset($_POST['tname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$tname = $_POST['tname'];
@@ -74,7 +74,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "", method = "post">
+            <form action = "" id='createTeam' method = "post">
 				<h2>Create Team</h2>
 				
 					
@@ -100,7 +100,7 @@ session_start();
 
 					?>
 					</h4>
-					<button id = "submitBtn" name = "submit">Create</button>
+					<input type='button' value = "Create" onclick='confirmDiag()'>
 			</form>
 			
 			<?php   
@@ -110,7 +110,18 @@ session_start();
 			
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('createTeam').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
