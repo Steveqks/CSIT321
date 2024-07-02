@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `AttendanceID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
   `ClockIn` datetime NOT NULL,
-  `ClockOut` datetime NOT NULL,
-  `StartBreak` datetime NOT NULL,
-  `EndBreak` datetime NOT NULL,
-  `TotalHours` float NOT NULL,
+  `ClockOut` datetime,
+  `StartBreak` datetime,
+  `EndBreak` datetime,
+  `TotalHours` float,
   PRIMARY KEY (`AttendanceID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
