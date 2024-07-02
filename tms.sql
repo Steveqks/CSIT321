@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 25, 2024 at 03:45 AM
--- Server version: 8.0.31
--- PHP Version: 8.0.26
+-- Generation Time: Jul 02, 2024 at 05:33 AM
+-- Server version: 8.3.0
+-- PHP Version: 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -130,18 +130,19 @@ CREATE TABLE IF NOT EXISTS `existinguser` (
   PRIMARY KEY (`UserID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `SpecialisationID` (`SpecialisationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `existinguser`
 --
 
 INSERT INTO `existinguser` (`UserID`, `CompanyID`, `SpecialisationID`, `Role`, `FirstName`, `LastName`, `Gender`, `Email`, `Password`, `Status`) VALUES
-(27, 82, 77, 'Manager', 'manager', '1', 'T', 'manager@email.com', '123', 1),
+(27, 82, 77, 'Manager', 'manager', '1', 'T', 'manager1@email.com', '123', 1),
 (28, 82, 77, 'FT', 'FT', '1', '1', 'FT1@email.com', '123', 1),
 (29, 82, 78, 'FT', 'FT', '2', 'M', 'FT2@email.com', '123', 1),
 (30, 82, 78, 'PT', 'PT', '1', 'M', 'PT1@email.com', '31', 1),
-(31, 82, 79, 'PT', 'PT', '2', 'A', 'PT2@email.com', '123', 1);
+(31, 82, 79, 'PT', 'PT', '2', 'A', 'PT2@email.com', '123', 1),
+(32, 82, 78, 'Manager', 'Manager', '2', 'F', 'manager2@email.com', '123', 1);
 
 -- --------------------------------------------------------
 
@@ -157,10 +158,19 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `StartDate` date NOT NULL,
   `EndDate` date NOT NULL,
   `HalfDay` tinyint(1) NOT NULL,
+  `Status` int DEFAULT NULL,
   `Comments` varchar(100) NOT NULL,
   PRIMARY KEY (`LeaveID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `leaves`
+--
+
+INSERT INTO `leaves` (`LeaveID`, `UserID`, `LeaveType`, `StartDate`, `EndDate`, `HalfDay`, `Status`, `Comments`) VALUES
+(1, 28, 'Personal', '2024-07-04', '2024-07-04', 1, 1, ''),
+(2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -216,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`ProjectID`),
   KEY `TeamID` (`MainTeamID`),
   KEY `project_ibfk_2` (`MainProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -235,7 +245,14 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
   PRIMARY KEY (`MainProjectID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ProjectManagerID` (`ProjectManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `projectinfo`
+--
+
+INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
+(6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01');
 
 -- --------------------------------------------------------
 
@@ -355,7 +372,7 @@ CREATE TABLE IF NOT EXISTS `team` (
   PRIMARY KEY (`TeamID`),
   KEY `MainTeamID` (`MainTeamID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=380 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=381 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `team`
@@ -364,12 +381,11 @@ CREATE TABLE IF NOT EXISTS `team` (
 INSERT INTO `team` (`TeamID`, `MainTeamID`, `UserID`) VALUES
 (372, 15, 28),
 (373, 15, 31),
-(374, 16, 29),
 (375, 16, 30),
 (376, 16, 28),
-(377, 17, 29),
 (378, 17, 30),
-(379, 17, 28);
+(379, 17, 28),
+(380, 18, 29);
 
 -- --------------------------------------------------------
 
@@ -386,7 +402,7 @@ CREATE TABLE IF NOT EXISTS `teaminfo` (
   PRIMARY KEY (`MainTeamID`),
   KEY `ManagerID` (`ManagerID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `teaminfo`
@@ -395,7 +411,8 @@ CREATE TABLE IF NOT EXISTS `teaminfo` (
 INSERT INTO `teaminfo` (`MainTeamID`, `ManagerID`, `CompanyID`, `TeamName`) VALUES
 (15, 27, 82, 'Team A'),
 (16, 27, 82, 'Team B'),
-(17, 27, 82, 'Team C');
+(17, 27, 82, 'Team C'),
+(18, 32, 82, 'Team D');
 
 -- --------------------------------------------------------
 
