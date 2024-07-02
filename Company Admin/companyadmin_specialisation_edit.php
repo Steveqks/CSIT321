@@ -3,7 +3,7 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	if(isset($_POST['submitSpecialisation'])){
+	if(isset($_POST['specialisationID'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$specialisationName = $_POST['specialisationName'];
@@ -61,7 +61,7 @@ session_start();
 
 			<?php   
 				
-				$form = "<form action'' method='POST'>
+				$form = "<form action'' id='ModifySpecialisation' method='POST'>
 				
 						FROM 
 						<input type='text' value='" . $_SESSION['specialisationName'] . "' readonly>
@@ -69,7 +69,7 @@ session_start();
 						TO
 						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "'>
 						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . ">
-						<input type='submit' name='submitSpecialisation' value='Update'>
+						<input type='button' value='Update' onclick='confirmDiag()' >
 						</form>";
 				echo $form;
 				
@@ -82,7 +82,18 @@ session_start();
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(){
+					console.log('confirmDiag() executing');
+					let result = confirm("Submit Changes?");
+					if (result)
+					{
+						document.getElementById('ModifySpecialisation').submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
