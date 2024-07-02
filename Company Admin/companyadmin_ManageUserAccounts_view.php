@@ -9,7 +9,7 @@ session_start();
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
 		
-		$_SESSION['message1'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
+		$_SESSION['message1'] = $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
 		header('Location: companyadmin_ManageUserAccounts_view.php');
 		exit;
 	}
@@ -30,13 +30,13 @@ session_start();
 		{
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
-		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
+		$_SESSION['message0'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
 		}
 		else
 		{
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
-		$_SESSION['message0'] = "User ID :" .$userID. ", ". $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
+		$_SESSION['message0'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
 		}
 		
 		header('Location: companyadmin_ManageUserAccounts_view.php');
