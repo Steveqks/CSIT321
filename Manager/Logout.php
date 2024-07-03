@@ -20,5 +20,5 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 //Route User to Login Page PHP
-header("Location:../Manager/Manager_viewTasks.php");
+header("Location:../Unregistered Users/LoginPage.php");
 ?>
