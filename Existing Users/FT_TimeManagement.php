@@ -12,23 +12,6 @@
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
 	$FirstName = $_SESSION['FirstName'];
-			
-	// Connect to the database
-	$conn = OpenCon();
-
-	// Fetch Leaves(Start Date, End Date, Leave Type, Half Day, Comments)
-	$sql = "SELECT StartDate,EndDate,LeaveType,HalfDay,Comments FROM leaves WHERE UserID = $user_id";
-	
-	$stmt = $conn->prepare($sql);
-	// $stmt->bind_param("i", $user_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$leaves = $result->fetch_all(MYSQLI_ASSOC);
-
-	// Close the database connection
-	$stmt->close();
-	CloseCon($conn);
-
 ?>
 
 
@@ -40,17 +23,18 @@
     <title>Your Account Details (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
-		body {
-            margin: 0;
-            font-family: Arial, sans-serif;
+		body 
+		{
+			margin: 0;
+			font-family: Arial, sans-serif;
 		}
-
-		.top-section {
-					border: 1px solid black;
-					height: 20vh;
-					overflow: hidden;
-					text-align: left;
-					padding: 10px;
+		.top-section 
+		{
+			border: 1px solid black;
+			height: 20vh;
+			overflow: hidden;
+			text-align: left;
+			padding: 10px;
 		}
 
 		.top-section img {
@@ -101,27 +85,14 @@
 			border: 0.5px solid black;
 		}
 
-		.view-leaves-table {
-			width: 100%;
-			border-collapse: collapse;
-		}
-
-		.view-leaves-table th, .view-leaves-table td {
-			border: 1px solid #ddd;
-			padding: 8px;
-			text-align: left;
-		}
-
-		.view-leaves-table th {
-			background-color: #f2f2f2;
-		}
-
-		.view-leaves-section {
+		.time-section 
+		{
 			padding: 20px;
 			flex-grow: 1;
 		}
 
-		.view-leaves-header {
+		.time-header 
+		{
 			display: inline-flex;
 			align-items: center;
 			border-bottom: 1px solid black;
@@ -129,9 +100,40 @@
 			margin-bottom: 20px;
 		}
 
-		.view-leaves-header i {
+		.time-header i 
+		{
 			margin-right: 10px;
 		}
+		
+		.time-header h2 {
+            margin: 0;
+        }
+
+        .time-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+		
+		.time-button {
+            display: inline-block;
+            width: 200px; /* Adjust the width to make buttons shorter */
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            background-color: #d3d3d3;
+            color: black;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+            border: none;
+            border-radius: 0;
+        }
+		
+		.time-button:hover {
+            background-color: #bbb;
+            color: black;
+        }
+		
+		
 	</style>
 </head>
 <body>
@@ -145,7 +147,7 @@
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <div class="navbar">
             <ul>
-                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
+               <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
                 <li><a href="FT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="FT_TimeManagement.php">Time Management</a></li>
@@ -155,43 +157,17 @@
         </div>
         
         <!-- RIGHT SECTION (TASK TABLE) -->
-        <div class="view-leaves-section">
-            <div class="view-leaves-header">
+        <div class="time-section">
+            <div class="time-header">
                 <i class="fas fa-user"></i>
-                <h2>View My Leaves</h2>
+                <h2>Time Management</h2>
             </div>
-			
-			<table class="view-leaves-table">
-                <thead>
-                    <tr>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Leave Type</th>
-						<th>Half Day</th>
-						<th>Comments</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (count($leaves) > 0): ?>
-                        <?php foreach ($leaves as $leave): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($leave['StartDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['EndDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['LeaveType']); ?></td>
-								<td><?php echo htmlspecialchars($leave['HalfDay']); ?></td>
-								<td><?php echo htmlspecialchars($leave['Comments']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5">No Leaves Applied.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+			<div class="time-buttons">
+                <a href="#" class="time-button">View Schedule</a>
+                <a href="#" class="time-button">View Hours Worked</a>
+                <a href="#" class="time-button">View Time Management</a>
+            </div>
         </div>
-		
-		
     </div>
 </body>
 
