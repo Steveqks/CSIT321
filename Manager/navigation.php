@@ -72,7 +72,7 @@
             <li><a id='myButton2' class='myButton2' onClick='showLinks2()'>Task Management ➕</a>
                 <div id='linkContainer2'>
 					<div class='show'>
-                        <a href='Manager_viewTasks.php'> - View Tasks </a>
+                        <a href='Manager_viewTasksList.php'> - View Tasks </a>
                         <a href='Manager_addTask.php'> - Add Task </a>
                     </div>
 				</div>
