@@ -159,3 +159,9 @@ hr {
     border: 1px solid lightgrey;
     padding: 3%;
 }
+
+/* Details CSS */
+.details {
+    font-weight: bold;
+    text-decoration: underline;
+}

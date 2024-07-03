@@ -56,10 +56,10 @@
             </div>
 
             <div class="innerContent">
-                <div class="details">
-                    <p>First Name: <span><?php echo $userDetails['FirstName']; ?></span></p>
-                    <p>Last Name: <span><?php echo $userDetails['LastName']; ?></span></p>
-                    <p>Email: <span><?php echo htmlspecialchars($userDetails['Email']); ?></span></p>
+                <div class="detailsContent">
+                    <p>First Name: <span class="details"><?php echo $userDetails['FirstName']; ?></span></p>
+                    <p>Last Name: <span class="details"><?php echo $userDetails['LastName']; ?></span></p>
+                    <p>Email: <span class="details"><?php echo htmlspecialchars($userDetails['Email']); ?></span></p>
                     <a href="Manager_editAccount.php" class="edit-button">Edit Account Details</a>
                 </div>
             </div>
