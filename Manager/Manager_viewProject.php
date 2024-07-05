@@ -80,16 +80,16 @@
             </div>
 
             <div class="innerContent">
-                <div class="details">
-                    <p>Project Name: <span><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?></span></p>
+                <div>
+                    <p>Project Name: <span class="details"><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?></span></p>
 
-                    <p>Project Manager's Name: <span><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['fullName']; endforeach; ?></span></p>
+                    <p>Project Manager's Name: <span class="details"><?php foreach ($projectDetails as $projectDetail): echo $projectDetail['fullName']; endforeach; ?></span></p>
 
-                    <p>Start Date: <span><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['StartDate'])); endforeach; ?></span></p>
+                    <p>Start Date: <span class="details"><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['StartDate'])); endforeach; ?></span></p>
 
-                    <p>End Date: <span><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['EndDate'])); endforeach; ?></span></p>
+                    <p>End Date: <span class="details"><?php foreach ($projectDetails as $projectDetail): echo date('F j, Y',strtotime($projectDetail['EndDate'])); endforeach; ?></span></p>
 
-                    <p>Team(s): <?php foreach ($teamProjectDetails as $teamProjectDetail): ?> <span> <?php echo $teamProjectDetail['TeamName'];?></span><?php endforeach; ?></p>
+                    <p>Team(s):  <span class="details"><?php foreach ($teamProjectDetails as $teamProjectDetail): ?> <?php echo $teamProjectDetail['TeamName'];?><?php endforeach; ?></span></p>
 
                     <a href="Manager_editProject.php?mainprojectid=<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['MainProjectID']; endforeach; ?>" class="edit-button">Edit Project</a>
                 </div>

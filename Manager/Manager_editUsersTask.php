@@ -136,22 +136,105 @@
             $statusID = $_POST['statusid'];
         }
 
-        // get users of the specific task
-        $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName FROM existinguser a
-                INNER JOIN task b ON a.UserID = b.UserID
-                WHERE b.MainTaskID = ".$mainTaskID.";";
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $taskUsers = $result->fetch_all(MYSQLI_ASSOC);
+        if (isset($_GET['ismanual']) == 1) {
 
-        //echo " <br> sql1 = ".$sql;
-        
-        $stmt->close();
+            // get FT users of the specific task
+            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName FROM existinguser a
+                    INNER JOIN task b ON a.UserID = b.UserID
+                    WHERE b.MainTaskID = ".$mainTaskID."
+                    AND a.Role = 'FT';";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $FTTaskUsers = $result->fetch_all(MYSQLI_ASSOC);
 
 
-        if((isset($_POST['editTask'])) || (isset($_GET['ismanual']) == 1)) {
+            // get PT users of the specific task
+            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName FROM existinguser a
+                    INNER JOIN task b ON a.UserID = b.UserID
+                    WHERE b.MainTaskID = ".$mainTaskID."
+                    AND a.Role = 'PT';";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $PTTaskUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+            //echo " <br> sql1 = ".$sql;
+
+
+            // get FT Users that does not have tasks
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+                . " INNER JOIN team b ON a.UserID = b.UserID"
+                . " LEFT JOIN task d ON b.UserID = d.UserID"
+                . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
+                . " WHERE a.SpecialisationID = ".$specialisationID
+                . " AND a.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$teamID
+                . " AND a.Role = 'FT'";
+
+            if (count($FTTaskUsers) > 0) {
+                $sql .= " AND a.UserID NOT IN (".$FTTaskUsers[0]['UserID'];
+
+                if (count($FTTaskUsers) > 1) {
+                    for ($i = 1; $i < count($FTTaskUsers); $i++) {
+                        $sql .= ", ".$FTTaskUsers[$i]['UserID'];
+                    }
+                }
+                $sql .= ")";
+            }
+            $sql .= " GROUP BY a.UserID"
+                . " ORDER BY totalTasks ASC;";
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
+            
+            $stmt->close();
+
+
+            // get PT Users that does not have tasks
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+                . " INNER JOIN team b ON a.UserID = b.UserID"
+                . " LEFT JOIN schedule c ON a.UserID = c.UserID"
+                . " LEFT JOIN task d ON c.UserID = d.UserID"
+                . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
+                . " WHERE a.SpecialisationID = ".$specialisationID
+                . " AND a.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$teamID
+                . " AND a.Role = 'PT'"
+                . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'";
+
+            if (count($PTTaskUsers) > 0) {
+
+                $sql .= " AND a.UserID NOT IN (".$PTTaskUsers[0]['UserID'];
+
+                if (count($PTTaskUsers) > 1) {
+                    for ($i = 1; $i < count($PTTaskUsers); $i++) {
+                        $sql .= ", ".$PTTaskUsers[$i]['UserID'];
+                    }
+                }
+                
+
+                $sql .= ")";
+            }
+            $sql .= " GROUP BY a.UserID"
+                . " ORDER BY totalTasks ASC;";
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
+        }
+
+
+
+        if(isset($_POST['editTask'])) {
 
             $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
                 . " INNER JOIN team b ON a.UserID = b.UserID"
@@ -161,39 +244,48 @@
                 . " WHERE a.SpecialisationID = ".$specialisationID
                 . " AND a.Status = ".$userStatus
                 . " AND b.MainTeamID = ".$teamID
-                . " AND c.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
-
-            if (isset($_GET['ismanual']) == 1) {
-                
-                $sql .= " AND (a.Role = 'FT' OR a.Role = 'PT')
-                        AND a.UserID NOT IN (".$taskUsers[0]['UserID'];
-
-                if (count($taskUsers) > 1) {
-                    for ($i = 1; $i < count($taskUsers); $i++) {
-                        $sql .= ", ".$taskUsers[$i]['UserID'];
-                    }
-                }
-                $sql .= ")";
-
-            } else if(isset($_POST['numstaff'])) {
-                    
-                $sql .= " AND a.Role = 'PT'";
-            }
-
-            $sql .= " GROUP BY a.UserID, fullName"
+                . " AND a.Role = 'PT'"
+                . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'"
+                . " GROUP BY a.UserID"
                 . " ORDER BY totalTasks ASC";
 
-            if (isset($_POST['numstaff'])) {
-                
-                $sql .= " LIMIT ".$numStaff.";";
+            if(isset($_POST['numstaff'])) {
+                $sql .= " LIMIT ".$numStaff;
             }
 
             $stmt = $conn->prepare($sql);
+            
             $stmt->execute();
             $result = $stmt->get_result();
-            $users = $result->fetch_all(MYSQLI_ASSOC);
+            $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+
+            // FT Users
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+                . " INNER JOIN team b ON a.UserID = b.UserID"
+                . " LEFT JOIN task d ON b.UserID = d.UserID"
+                . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
+                . " WHERE a.SpecialisationID = ".$specialisationID
+                . " AND a.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$teamID
+                . " AND a.Role = 'FT'"
+                . " GROUP BY a.UserID"
+                . " ORDER BY totalTasks ASC";
                 
-            $stmt->close();
+            if(isset($_POST['numstaff'])) {
+                if (count($PTUsers) < $numStaff) {
+
+                    $FTLimit = $numStaff - count($PTUsers);
+                    $sql .= " LIMIT ".$FTLimit;
+                }
+            }
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
 
             // auto allocation
             if(isset($_POST['numstaff'])) {
@@ -217,17 +309,46 @@
                             // Insert into Task query
                             $stmt = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
 
-                            foreach ($users as $user):
+                            if (count($PTUsers) > 0) {
 
-                                $stmt->bind_param("iii",$teamID,$mainTaskID, $user['UserID']);
+                                foreach ($PTUsers as $user):
 
-                                $stmt->execute();
+                                    $stmt->bind_param("iii",$teamID,$mainTaskID, $user['UserID']);
+
+                                    $stmt->execute();
+
+                                endforeach;
+
+                                if (count($PTUsers) < $numStaff) {
+
+                                    foreach ($FTUsers as $user):
+
+                                        $stmt->bind_param("iii",$teamID,$mainTaskID, $user['UserID']);
+
+                                        $stmt->execute();
+
+                                    endforeach;
+
+                                    echo "<script type='text/javascript'>";
+                                    echo "alert('Task has been auto allocated.');";
+                                    echo "window.location = 'Manager_viewTasks.php?maintaskid=".$mainTaskID."';";
+                                    echo "</script>";
+
+                                }
+                            } else {
+                                foreach ($FTUsers as $user):
+
+                                    $stmt->bind_param("iii",$teamID,$mainTaskID, $user['UserID']);
+
+                                    $stmt->execute();
+
+                                endforeach;
 
                                 echo "<script type='text/javascript'>";
-                                echo "alert('Task has been updated and has been auto allocated.');";
-                                echo "window.location = 'Manager_viewTasks.php';";
+                                echo "alert('Task has been auto allocated.');";
+                                echo "window.location = 'Manager_viewTask.php?maintaskid=".$mainTaskID."';";
                                 echo "</script>";
-                            endforeach;
+                            }
                                 
                         }
                     } else {
@@ -263,17 +384,17 @@
                     if ($stmt->execute()) {
 
                         // Insert into TaskInfo query
-                        $sql = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
+                        $stmt = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
 
                         foreach ($selectStaff as $userIDs) {
 
-                            $sql->bind_param("iii",$teamID,$mainTaskID, $userIDs);
+                            $stmt->bind_param("iii",$teamID,$mainTaskID, $userIDs);
 
-                            $sql->execute();
+                            $stmt->execute();
 
                             echo "<script type='text/javascript'>";
                             echo "alert('Task has updated.');";
-                            echo "window.location = 'Manager_viewTasks.php';";
+                            echo "window.location = 'Manager_viewTask.php?maintaskid=".$mainTaskID."';";
                             echo "</script>";
                         }
                     }
@@ -332,18 +453,99 @@
 
                                             <label for="userid">
 
+                                                <p class="details">Staff that is allocated to the task: </p>
+
                                                 <?php
-                                                if (count($taskUsers) > 0) {
-                                                    echo "<p>Staff that is allocated to the task: </p>";
-                                                    foreach ($taskUsers as $taskUser):
-                                                        echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $taskUser['UserID']."' checked>" . $taskUser['fullName']."</div>";
-                                                    endforeach;
+                                                if (count($FTTaskUsers) > 0 || count($PTTaskUsers) > 0) {
+
+                                                    echo "<p class='details'>Full-Time</p>";
+                                                
+                                                    if (count($FTTaskUsers) > 0) {
+                                                    ?>
+
+                                                        <div class="checkbox-container">
+
+                                                    <?php
+                                                        foreach ($FTTaskUsers as $taskUser):
+                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $taskUser['UserID']."' checked>" . $taskUser['fullName']."</div>";
+                                                        endforeach;
+                                                    ?>
+
+                                                        </div>
+
+                                                    <?php
+                                                    } else {
+                                                        echo "None.";
+                                                    }
+
+                                                    echo "<p class='details'>Part-Time</p>";
+                                                
+                                                    if (count($PTTaskUsers) > 0) {
+                                                    ?>
+
+                                                        <div class="checkbox-container">
+
+                                                    <?php
+                                                        foreach ($PTTaskUsers as $taskUser):
+                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $taskUser['UserID']."' checked>" . $taskUser['fullName']."</div>";
+                                                        endforeach;
+                                                    ?>
+                                                    
+                                                        </div>
+
+                                                    <?php
+                                                    } else {
+                                                        echo "None.";
+                                                    }
+                                                } else {
+                                                    echo "None.";
                                                 }
-                                                if (count($users) > 0) {
-                                                    echo "<p>Staff that is not allocated to the task: </p>";
-                                                    foreach ($users as $user):
-                                                        echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
-                                                    endforeach;
+
+                                                echo "<p class='details'>Staff that is not allocated to the task: </p>";
+
+                                                if (count($FTUsers) > 0 || count($PTUsers) > 0) {
+
+                                                    echo "<p class='details'>Full-Time</p>";
+                                                
+                                                    if (count($FTUsers) > 0) {
+                                                    ?>
+
+                                                        <div class="checkbox-container">
+
+                                                    <?php
+                                                        foreach ($FTUsers as $user):
+                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
+                                                        endforeach;
+                                                    ?>
+
+                                                        </div>
+
+                                                    <?php
+                                                    } else {
+                                                        echo "None.";
+                                                    }
+
+                                                    echo "<p class='details'>Part-Time</p>";
+                                                
+                                                    if (count($PTUsers) > 0) {
+                                                    ?>
+
+                                                        <div class="checkbox-container">
+
+                                                    <?php
+                                                        foreach ($PTUsers as $user):
+                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
+                                                        endforeach;
+                                                    ?>
+
+                                                        </div>
+
+                                                    <?php
+                                                    } else {
+                                                        echo "None.";
+                                                    }
+                                                } else {
+                                                    echo "None.";
                                                 }
                                         
                                             } ?></label>

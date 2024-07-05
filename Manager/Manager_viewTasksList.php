@@ -31,14 +31,14 @@
 
         $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
                 (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-                CONCAT(eu.FirstName, ' ', eu.LastName) AS fullName
-                FROM task t
-                JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-                JOIN existinguser eu ON t.UserID = eu.UserID
-                JOIN team te ON eu.UserID = te.UserID
+                tei.TeamName, ti.Status
+                FROM taskinfo ti
+                JOIN task t ON t.MainTaskID = ti.MainTaskID
+                JOIN team te ON t.MainTeamID = te.MainTeamID
                 JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
                 WHERE tei.ManagerID = ".$userID."
-                ORDER BY ti.MainTaskID;";
+                GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, tei.TeamName
+                ORDER BY ti.DueDate, ti.Status ASC;";
 /*
             // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("
@@ -91,33 +91,36 @@
                         <th>Task Name</th>
                         <th>Assigned Date</th>
                         <th>Due Date</th>
-                        <th>Assigned To</th>
+                        <th>Assigned Team</th>
                         <th>Avail / Req Number of Staff</th>
+                        <th>Status</th>
                     </tr>
 
                     <?php if (count($tasks) > 0): ?>
                         <?php foreach ($tasks as $task): ?>
                             <tr>
                                 <td>
-                                <?php if ($employeeType == "Manager") { ?>
                                     <a href="Manager_viewTask.php?maintaskid=<?php echo htmlspecialchars($task['MainTaskID']); ?>"><?php echo htmlspecialchars($task['TaskName']); ?></a>
-                                <?php } else { ?>
-                                    <?php echo htmlspecialchars($task['TaskName']); ?>
-                                <?php } ?>
                                 </td>
-                                <td><?php echo htmlspecialchars($task['StartDate']); ?></td>
-                                <td><?php echo htmlspecialchars($task['DueDate']); ?></td>
+                                <td><?php echo date('F j, Y',strtotime($task['StartDate'])); ?></td>
+                                <td><?php echo date('F j, Y',strtotime($task['DueDate'])); ?></td>
+                                <td><?php echo htmlspecialchars($task['TeamName']); ?></td>
+                                <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
 
-                                <?php if ($employeeType == "Manager") { ?>
-                                    <td><?php echo htmlspecialchars($task['fullName']); ?></td>
-                                    <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
-                                <?php } ?>
+                                <?php
+                                    if ($task['Status'] == 1) {
+                                        $statusName = "Ongoing";
+                                    } else {
+                                        $statusName = "Done";
+                                    }
+                                    echo "<td>".$statusName."</td>";
+                                ?>
 
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">No tasks assigned.</td>
+                            <td colspan="6">No tasks assigned.</td>
                         </tr>
                     <?php endif; ?>
                 </table>

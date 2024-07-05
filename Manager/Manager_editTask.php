@@ -36,7 +36,6 @@
     $isManual = FALSE;
 
     // get specialisation for the select option
-    // get specialisation for the select option
     $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
 
     $stmt = $conn->prepare($sql);
@@ -103,22 +102,14 @@
         $specialisationName = $specialisationIDNameE[1];
 
 
-        // find how many and who is in the team that the manager is managing with the specific specialisation
+        // find how many and which staff with the specific specialisation (FT & PT)
         $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-        . " SELECT c.UserID FROM abc a"
-        . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
-        . " INNER JOIN existinguser c on c.UserID = b.UserID"
-        . " WHERE c.SpecialisationID = ".$specialisationIDSub;
-
-        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
-
-            $sql .= " AND c.Role = 'PT' AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
-
-        } else {
-
-            $sql .= " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID.";";
-            
-        }
+            . " SELECT c.UserID FROM abc a"
+            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            . " INNER JOIN existinguser c on c.UserID = b.UserID"
+            . " WHERE c.SpecialisationID = ".$specialisationIDSub
+            . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
+            . " GROUP BY c.UserID;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -127,88 +118,63 @@
 
         $numStaffTeam = count($teamUserIDs);
 
-        // indicate that there are staff in the team with the specific specialisation
-        if ($numStaffTeam > 0) {
 
-            $validSpecialisation = TRUE;
+        if ($statusID == 0) {
 
-        } else {
-            echo "<script type='text/javascript'>";
-            echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
-            echo "</script>";
-        }
+            // Update into TaskInfo query
+            $stmt = $conn->prepare("UPDATE taskinfo SET SpecialisationID=?,TaskName=?,TaskDesc=?,StartDate=?,DueDate=?,NumStaff=?,Priority=?,Status=? WHERE MainTaskID=?");
 
+            $stmt->bind_param("issssiiii",$specialisationIDSub,$taskName,$taskDesc,$startDate,$endDate,$numStaffTeam,$priority,$statusID,$mainTaskID);
 
-        // check if the staff from previous query is working on the dates stated
-        $sql = "SELECT a.UserID, a.FirstName, IFNULL(SUM(d.Status),0) AS totalTasks FROM existinguser a"
-            . " LEFT JOIN schedule b ON a.UserID = b.UserID"
-            . " LEFT JOIN task c ON b.UserID = c.UserID"
-            . " LEFT JOIN taskinfo d ON c.MainTaskID = d.MainTaskID"
-            . " WHERE b.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'";
-            
-        $sql .= " AND (a.UserID = ".$teamUserIDs[0]['UserID'];
+            if ($stmt->execute()) {
 
-        // if there are more than 1 staff
-        if ($numStaffTeam > 1) {
-            for ($i = 1; $i < $numStaffTeam; $i++) {
-    
-                $sql .= " OR a.UserID = ".$teamUserIDs[$i]['UserID'];
-                    
-            }
-        }
-                                
-        $sql .= ") GROUP BY a.UserID, a.FirstName"
-            ." ORDER BY totalTasks ASC;";
-    
-        //echo " ; SQL2 = ".$sql;
-    
-        $result = $conn->query($sql);
-                    
-        // Check for errors
-        if (!$result) {
-            die("Query failed: " . $conn->error);
-        }
-
-        // check if endDate is not less than startDate
-        if ($endDate >= $startDate) {
-
-            $validDate = TRUE;
-
-            // if there are staff working on the specific date
-            if ($result->num_rows > 0) {
-        
-                $validSchedule = TRUE;
-        
-            } else {
                 echo "<script type='text/javascript'>";
-                echo "alert('There are no staff working between ".$startDate." and ".$endDate.". Please select other date.');";
-                echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
+                echo "alert('Task has updated.');";
+                echo "window.location = 'Manager_viewTasksList.php';";
                 echo "</script>";
             }
 
         } else {
-            echo "<script type='text/javascript'>";
-            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
-            echo "</script>";
-        }
+            // indicate that there are staff in the team with the specific specialisation
+            if ($numStaffTeam > 0) {
 
+                $validSpecialisation = TRUE;
 
-        if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
-            
-            $autoallocate = TRUE;
+                // check if endDate is not less than startDate
+                if ($endDate >= $startDate) {
+        
+                    $validDate = TRUE;
 
-            if ($validSpecialisation && $validSchedule && $validDate) {
-                header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                } else {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                    echo "window.location = 'Manager_addTask.php';";
+                    echo "</script>";
+                }
+
+            } else {
+                echo "<script type='text/javascript'>";
+                echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
+                echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
+                echo "</script>";
             }
 
-        } else {
 
-            $isManual = TRUE;
-            
-            if ($validSpecialisation && $validSchedule && $validSchedule && $validDate) {
-                header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+            if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
+                
+                $autoallocate = TRUE;
+
+                if ($validSpecialisation && $validDate) {
+                    header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                }
+
+            } else {
+
+                $isManual = TRUE;
+                
+                if ($validSpecialisation && $validDate) {
+                    header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                }
             }
         }
     }
@@ -323,7 +289,7 @@
                                         </select>
 
                                         <label>
-                                            Auto Allocate (for Part-Time)<input type="checkbox" name="autoallocate">
+                                            Auto Allocate <input type="checkbox" name="autoallocate">
                                         </label>
 
                                     </div>

@@ -47,6 +47,17 @@
             $stmt->execute();
             $result = $stmt->get_result();
             $taskDetails = $result->fetch_assoc();
+
+            $sql = "SELECT a.MainTaskID, a.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                    FROM task a
+                    INNER JOIN existinguser b ON a.UserID = b.UserID
+                    WHERE a.MainTaskID = ".$mainTaskID."
+                    GROUP BY a.MainTaskID, a.UserID, fullName;";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $usersTask = $result->fetch_all(MYSQLI_ASSOC);
         }
     ?>
 
@@ -68,7 +79,7 @@
         <div class="content">
             <div class="task-header">
                 <i class="fas fa-user"></i>
-                <h2>Edit Task</h2>
+                <h2>View Task</h2>
             </div>
 
             <div class="innerContent">
@@ -92,6 +103,9 @@
                                         <span class="details">Team</span>
                                         <p><?php echo $taskDetails['TeamName']; ?></p>
 
+                                        <span class="details">Staff Involved</span>
+                                        <?php foreach ($usersTask as $taskDetail): echo "<p>".$taskDetail['fullName']."</p>"; endforeach; ?>
+
                                     </div>
                                     <div class="col-50">
 
@@ -111,10 +125,10 @@
                                         </p>
 
                                         <span class="details">Start Date</span>
-                                        <p><?php echo $taskDetails['StartDate']; ?></p>
+                                        <p><?php echo date('F j, Y',strtotime($taskDetails['StartDate'])); ?></p>
 
                                         <span class="details">End Date</span>
-                                        <p><?php echo $taskDetails['DueDate']; ?></p>
+                                        <p><?php echo date('F j, Y',strtotime($taskDetails['DueDate'])); ?></p>
                                         
                                         <span class="details">Status</span>
                                         <p>
@@ -132,7 +146,7 @@
                                 
                                 </div>
 
-                                <a href="Manager_editTask.php"><button name="editTask" class="btn">Edit</button></a>
+                                <a href="Manager_editTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Edit</button></a>
                                 
                             </form>
                         </div>
