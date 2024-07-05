@@ -127,7 +127,7 @@
             $result = $stmt->get_result();
             $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
 
-            echo "SQL1 ;; ".$sql;
+            //echo "SQL1 ;; ".$sql;
 
             // FT Users
             $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
@@ -140,7 +140,7 @@
                 . " AND c.Role = 'FT'"
                 . " GROUP BY c.UserID;";
 
-            echo "<br> SQL2 ;; ".$sql;
+            //echo "<br> SQL2 ;; ".$sql;
 
             $stmt = $conn->prepare($sql);
             
@@ -160,7 +160,7 @@
                 . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
                 . " GROUP BY c.UserID;";
 
-                echo "<br> SQL3 ;; ".$sql;
+            //echo "<br> SQL3 ;; ".$sql;
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();

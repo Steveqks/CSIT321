@@ -102,6 +102,47 @@
         $specialisationName = $specialisationIDNameE[1];
 
 
+        // get PT staff that is working on the specific dates
+        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
+            . " SELECT c.UserID FROM abc a"
+            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            . " INNER JOIN existinguser c on c.UserID = b.UserID"
+            . " INNER JOIN schedule d ON c.UserID = d.UserID"
+            . " WHERE c.SpecialisationID = ".$specialisationIDSub
+            . " AND c.Status = ".$userStatus
+            . " AND b.MainTeamID = ".$teamID
+            . " AND c.Role = 'PT'"
+            . " AND d.WorkDate >= '".$startDate."' AND d.WorkDate <= '".$endDate."'"
+            . " GROUP BY c.UserID;";
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+        echo "SQL1 ;; ".$sql;
+
+        // FT Users
+        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
+            . " SELECT c.UserID FROM abc a"
+            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            . " INNER JOIN existinguser c on c.UserID = b.UserID"
+            . " WHERE c.SpecialisationID = ".$specialisationIDSub
+            . " AND c.Status = ".$userStatus
+            . " AND b.MainTeamID = ".$teamID
+            . " AND c.Role = 'FT'"
+            . " GROUP BY c.UserID;";
+
+        echo "<br> SQL2 ;; ".$sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+
         // find how many and which staff with the specific specialisation (FT & PT)
         $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
             . " SELECT c.UserID FROM abc a"
@@ -135,32 +176,33 @@
             }
 
         } else {
-            // indicate that there are staff in the team with the specific specialisation
-            if ($numStaffTeam > 0) {
 
-                $validSpecialisation = TRUE;
+            if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
 
-                // check if endDate is not less than startDate
-                if ($endDate >= $startDate) {
+                // indicate that there are staff in the team with the specific specialisation
+                if (count($PTUsers) > 0 || count($FTUsers) > 0) {
+    
+                    $validSpecialisation = TRUE;
+                
+    
+                    // check if endDate is not less than startDate
+                    if ($endDate >= $startDate) {
         
-                    $validDate = TRUE;
-
+                        $validDate = TRUE;
+        
+                    } else {
+                        echo "<script type='text/javascript'>";
+                        echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                        echo "window.location = 'Manager_addTask.php';";
+                        echo "</script>";
+                    }
+    
                 } else {
                     echo "<script type='text/javascript'>";
-                    echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                    echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
                     echo "window.location = 'Manager_addTask.php';";
                     echo "</script>";
                 }
-
-            } else {
-                echo "<script type='text/javascript'>";
-                echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-                echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."'";
-                echo "</script>";
-            }
-
-
-            if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
                 
                 $autoallocate = TRUE;
 
@@ -169,6 +211,31 @@
                 }
 
             } else {
+
+                // indicate that there are staff in the team with the specific specialisation
+                if ($numStaffTeam > 0) {
+    
+                    $validSpecialisation = TRUE;
+                
+    
+                    // check if endDate is not less than startDate
+                    if ($endDate >= $startDate) {
+        
+                        $validDate = TRUE;
+        
+                    } else {
+                        echo "<script type='text/javascript'>";
+                        echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                        echo "window.location = 'Manager_addTask.php';";
+                        echo "</script>";
+                    }
+    
+                } else {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
+                    echo "window.location = 'Manager_addTask.php';";
+                    echo "</script>";
+                }
 
                 $isManual = TRUE;
                 

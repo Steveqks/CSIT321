@@ -140,7 +140,7 @@
         if (isset($_GET['ismanual']) == 1) {
 
             // get FT users of the specific task
-            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName FROM existinguser a
+            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, a.SpecialisationID FROM existinguser a
                     INNER JOIN task b ON a.UserID = b.UserID
                     WHERE b.MainTaskID = ".$mainTaskID."
                     AND a.Role = 'FT';";
@@ -152,7 +152,7 @@
 
 
             // get PT users of the specific task
-            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName FROM existinguser a
+            $sql = "SELECT b.MainTaskID, a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, a.SpecialisationID FROM existinguser a
                     INNER JOIN task b ON a.UserID = b.UserID
                     WHERE b.MainTaskID = ".$mainTaskID."
                     AND a.Role = 'PT';";
@@ -218,8 +218,6 @@
                         $sql .= ", ".$PTTaskUsers[$i]['UserID'];
                     }
                 }
-                
-
                 $sql .= ")";
             }
             $sql .= " GROUP BY a.UserID"
@@ -466,9 +464,13 @@
                                                         <div class="checkbox-container">
 
                                                     <?php
-                                                        foreach ($FTTaskUsers as $taskUser):
-                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $taskUser['UserID']."' checked>" . $taskUser['fullName']."</div>";
-                                                        endforeach;
+                                                        for ($i = 0; $i < count($FTTaskUsers); $i++){
+                                                            if ($FTTaskUsers[$i]['SpecialisationID'] == $specialisationID) {
+                                                                echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $FTTaskUsers[$i]['UserID']."' checked>" . $FTTaskUsers[$i]['fullName']."</div>";
+                                                            } else {
+                                                                echo "(Not in the selected specialisation) ".$FTTaskUsers[$i]['fullName'];
+                                                            }
+                                                        }
                                                     ?>
 
                                                         </div>
@@ -486,9 +488,13 @@
                                                         <div class="checkbox-container">
 
                                                     <?php
-                                                        foreach ($PTTaskUsers as $taskUser):
-                                                            echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $taskUser['UserID']."' checked>" . $taskUser['fullName']."</div>";
-                                                        endforeach;
+                                                        for ($i = 0; $i < count($PTTaskUsers); $i++){
+                                                            if ($PTTaskUsers[$i]['SpecialisationID'] == $specialisationID) {
+                                                                echo "<div class='checkboxes'><input type='checkbox' name='selectStaff[]' value='". $PTTaskUsers[$i]['UserID']."' checked>" . $PTTaskUsers[$i]['fullName']."</div>";
+                                                            } else {
+                                                                echo "(Not in the selected specialisation) ".$PTTaskUsers[$i]['fullName'];
+                                                            }
+                                                        }
                                                     ?>
                                                     
                                                         </div>

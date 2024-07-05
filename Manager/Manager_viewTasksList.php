@@ -38,7 +38,7 @@
                 JOIN teaminfo tei ON te.MainTeamID = tei.MainTeamID
                 WHERE tei.ManagerID = ".$userID."
                 GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, tei.TeamName
-                ORDER BY ti.DueDate, ti.Status ASC;";
+                ORDER BY ti.Status DESC, ti.DueDate ASC;";
 /*
             // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
             $sql = "WITH abc AS ("

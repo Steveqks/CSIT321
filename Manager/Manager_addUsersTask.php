@@ -282,9 +282,10 @@
                         echo "</script>";
                     }
                 } else {
+                    $autoallocate = TRUE;
                     echo "<script type='text/javascript'>";
                     echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
-                    echo "window.location = 'Manager_addTask.php';";
+                    echo "window.location = 'Manager_addUsersTask.php?taskname=".$taskName."&taskdesc=".$taskDesc."&specialisationidname=".$specialisationIDName."&startdate=".$startDate."&enddate=".$endDate."&priority=".$priority."&autoallocate=".$autoallocate."&numstaffteam=".$numStaffTeam."&mainteamid=".$teamID."';";
                     echo "</script>";
                 }
 
