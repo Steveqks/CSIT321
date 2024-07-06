@@ -559,7 +559,7 @@
                                 
                                 </div>
 
-                                <button name="editTask" type="submit" class="btn">Click to Allocate to users</button>
+                                <button name="editTask" type="submit" class="btn">Click to Allocate to Staff</button>
                                 
                             </form>
                         </div>

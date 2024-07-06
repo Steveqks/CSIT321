@@ -399,7 +399,7 @@
                                 
                                 </div>
 
-                                <button name="addTask" type="submit" class="btn">Click to Allocate to users</button>
+                                <button name="addTask" type="submit" class="btn">Click to Allocate to Staff</button>
                                 
                             </form>
                         </div>
