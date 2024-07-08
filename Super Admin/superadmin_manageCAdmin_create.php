@@ -14,8 +14,8 @@ session_start();
 		//check if company exists
 		if(isCompanyExists($companyID, $db)){
 			//check if email already exists in companyadmin
-			if(isCAEmailExists($emailadd, $db)){
-				echo "<p style='color: red;'>email already exists.</p>";
+			if(isEmailExists($emailadd, $db)){
+				$_SESSION['message'] = "<p>email already exists in database.</p>";
 			}
 			else{
 			$result = mysqli_query($db,"INSERT INTO companyadmin (CAdminID, CompanyID, FirstName, LastName, Email, Password) VALUES (NULL, '$companyID', '$fname', '$lname', '$emailadd', '$password')") or die("Select Error");
@@ -46,7 +46,7 @@ session_start();
 			return false; 
 		}
 	}
-	function isCAEmailExists(string $emailadd, mysqli $db):bool{
+	function isEmailExists(string $emailadd, mysqli $db):bool{
 		$sql = "SELECT * FROM companyadmin WHERE Email = '$emailadd'";
 		$qres = mysqli_query($db, $sql); 
 
@@ -58,7 +58,23 @@ session_start();
 		}
 		// dont exists
 		else{
-			return false; 
+			$sql1 = "SELECT * FROM existinguser WHERE Email = '$emailadd'";
+			$qres1 = mysqli_query($db, $sql1); 
+
+			$num_rows=mysqli_num_rows($qres1);
+			if($num_rows > 0){
+				return true;
+			}
+			else{
+				$sql2 = "SELECT * FROM superadmin WHERE Email = '$emailadd'";
+				$qres2 = mysqli_query($db, $sql2); 
+
+				$num_rows=mysqli_num_rows($qres2);
+				if($num_rows > 0){
+					return true;
+				}
+				else return false;
+			}
 		}
 	}
 ?>
@@ -109,7 +125,7 @@ session_start();
 					</h4>
 					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address"  maxlength='32' required>
 					</h4>
-					<h4>Password: <input name = "password" type = "text" placeholder = "password" maxlength='16' required>
+					<h4>Password: <input name = "password" type = "password" placeholder = "password" maxlength='16' required>
 					</h4>
 					<input type = "button" value='Create' onclick='confirmDiag();' >
 			</form>
