@@ -10,6 +10,7 @@ session_start();
 		$newLastName = $_POST['newLastName'];
 		$newGender = $_POST['newGender'];
 		$newEmail = $_POST['newEmail'];
+		$newPassword = $_POST['newPassword'];
 		$newSID = $_POST['newSID'];
 		$newRole = $_POST['newRole'];
 		
@@ -48,23 +49,32 @@ session_start();
 		}
 		else $_SESSION['message4'] = "";
 		
+		// check if there are changes in password
+		if(@$_POST['newPassword'] != $_POST['oldPassword']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE existinguser SET Password = '$newPassword' WHERE UserID = '$userID' ") or die("update Error");
+			$_SESSION['message5'] = "<p>Password has been changed.</p>";
+
+		}
+		else $_SESSION['message5'] = "";
+		
 		// check if there are changes in specialisation
 		if(@$_POST['newSID'] != $_POST['oldSID']){
 			
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE existinguser SET SpecialisationID = '$newSID' WHERE UserID = '$userID' ") or die("update Error");
-			$_SESSION['message5'] = "<p >Specialisation has been changed.</p>";
+			$_SESSION['message6'] = "<p >Specialisation has been changed.</p>";
 			
 		}
-		else $_SESSION['message5'] = "";
+		else $_SESSION['message6'] = "";
 		
 		// check if there are changes in role
 		if(@$_POST['newRole'] != $_POST['oldRole']){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE existinguser SET Role = '$newRole' WHERE UserID = '$userID' ") or die("update Error");
-			$_SESSION['message6'] = "<p>Role has been changed.</p>" ;
+			$_SESSION['message7'] = "<p>Role has been changed.</p>" ;
 		}
-		else $_SESSION['message6'] = '';
+		else $_SESSION['message7'] = '';
 		
 		header('Location: companyadmin_ManageUserAccounts_view_edit.php');
 		exit;
@@ -115,6 +125,7 @@ session_start();
 											eu.LastName,
 											eu.Gender,
 											eu.Email,
+											eu.Password,
 											s.SpecialisationID,
 											s.SpecialisationName,
 											eu.Role,
@@ -145,6 +156,7 @@ session_start();
 						Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>							
 						Gender: <input type='text' name='oldGender' value=" . $Row['Gender'] . " readonly> <br>
 						Email: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
+						Password: <input type='password' name='oldPassword' value=" . $Row['Password'] . " readonly> <br>
 						Specialisation: <input type='text' name='oldSName' value=" . $Row['SpecialisationName'] . " readonly> <br>
 							<input type='hidden' name='oldSID' value=" . $Row['SpecialisationID'] . " readonly>
 						Role: <input type='text' name='oldRole' value=" . $Row['Role'] . " readonly> <br>
@@ -159,7 +171,9 @@ session_start();
 						Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' maxlength='16'> <br>							
 						Gender: <input type='text' name='newGender' value=" . $Row['Gender'] . " maxlength='5'> <br>
 						<input type='hidden' name='userID' value=" . $Row['UserID'] . " >
-						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'> <br>";
+						Email: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'> <br>
+						Password: <input type='password' name='newPassword' value=" . $Row['Password'] . " > <br>";
+
 				}
 				
 				$result2 = 	mysqli_query($db, "SELECT * FROM `specialisation` WHERE CompanyID = '82';

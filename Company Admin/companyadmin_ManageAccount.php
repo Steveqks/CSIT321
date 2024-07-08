@@ -83,9 +83,9 @@ include '../Session/session_check_companyadmin.php';
 		if(@$_POST['oldPassword'] != $newPassword){
 			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE companyadmin SET Password = '$newPassword' WHERE CAdminID = '$cadminID'") or die("update Error");
-			$_SESSION['message2'] = "<p>Password has been changed.</p>";
+			$_SESSION['message4'] = "<p>Password has been changed.</p>";
 		}
-		else $_SESSION['message2'] = "";
+		else $_SESSION['message4'] = "";
 		
 		header('Location: companyadmin_ManageAccount.php');
 		exit;
@@ -161,6 +161,7 @@ include '../Session/session_check_companyadmin.php';
 		echo @$_SESSION['message1'];
 		echo @$_SESSION['message2'];
 		echo @$_SESSION['message3'];
+		echo @$_SESSION['message4'];
 		
 		
 	?>
