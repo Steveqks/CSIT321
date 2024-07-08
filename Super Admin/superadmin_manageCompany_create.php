@@ -13,6 +13,9 @@ session_start();
 		if(isCompanyExists($companyName, $db)){
 			$_SESSION['message'] = "<p>Company \"".$companyName."\" already exists in database</p>";
 		}
+		else if (isCompanyUENExists($UEN, $db)){
+			$_SESSION['message'] = "<p>Company UEN \"".$UEN."\" already exists in database</p>";			
+		}
 		//doesn't exist, add to db
 		else
 		{
@@ -25,6 +28,22 @@ session_start();
 		
 	function isCompanyExists(string $cname, mysqli $db):bool{
 		$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
+		$qres = mysqli_query($db, $sql); 
+
+		$num_rows=mysqli_num_rows($qres);
+
+		// dont exists
+		if($num_rows > 0){
+			return true; 
+		}
+		// exists
+		else{
+			return false; 
+		}
+	}
+	
+	function isCompanyUENExists(string $UEN, mysqli $db):bool{
+		$sql = "SELECT * FROM company WHERE CompanyUEN = '$UEN'";
 		$qres = mysqli_query($db, $sql); 
 
 		$num_rows=mysqli_num_rows($qres);
