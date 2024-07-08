@@ -1,8 +1,61 @@
 <?php
-session_start();
+	session_start();
 
 
+	if(isset($_POST['newEmail'])){
+		$cAdminID = $_SESSION['cAdminID'];
+		
+		$newfname = $_POST['newFirstName'];			
+		$newlname = $_POST['newLastName'];
+		$newemailAdd = $_POST['newEmail'];
+		$newPassword = $_POST['newPassword'];
+		
+		if ($_POST['oldEmail'] != $_POST['newEmail']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
+			//check if email exists.
+			$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE Email = '$newemailAdd'") or die("Select Error");
+
+			$num_rows=mysqli_num_rows($result);
+			// dont exists
+			if($num_rows == 0){
+				$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newemailAdd' WHERE CAdminID = '$cAdminID'") or die("update Error");
+				$_SESSION['message1'] = "Email address changed";
+			}
+			// exists
+			else{
+				$_SESSION['message1'] = "Email address already exists";
+			}
+		}
+		else $_SESSION['message1'] = "";
+		
+		// if first name changed
+		if(@$_POST['oldFirstName'] != @$newfname){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newfname' WHERE CAdminID = '$cAdminID'") or die("update Error");
+			$_SESSION['message2'] = "<p>First Name updated.</p>";
+		}
+		else $_SESSION['message2'] = "";
+		
+		// if last name changed
+		if(@$_POST['oldLastName'] != @$newlname){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newlname' WHERE CAdminID = '$cAdminID'") or die("update Error");
+			$_SESSION['message3'] = "<p>Last Name updated.</p>";
+		}
+		else $_SESSION['message3'] = "";
+		
+		// if password changed
+		if(@$_POST['oldPassword'] != @$newPassword){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE companyadmin SET Password = '$newPassword' WHERE CAdminID = '$cAdminID'") or die("update Error");
+			$_SESSION['message4'] = "<p>Password updated.</p>";
+		}
+		else $_SESSION['message4'] = '';
+		
+		header('Location: superadmin_manageCAdmin_view_delete_edit.php');
+		exit;
+	}
 
 ?>
 <!DOCTYPE html>
@@ -32,88 +85,54 @@ session_start();
 		
 			<h2>Edit Company Admin</h2>
 			<?php   
-				$form = "<form action'' id='ModifyAccount' method='POST'>
-						<br>
-						<table >
-						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						FROM 
-						<br><br>
-						Company ID: <input type='text' value=" . $_SESSION['cAdminID'] . " readonly><br>
-						First Name: <input type='text' name='oldfname' value='" . $_SESSION['fname'] . "' readonly> <br>
-						Last Name: <input type='text' name='oldlname' value='" . $_SESSION['lname'] . "' readonly> <br>
-						Email Address: <input type='text' name='oldemailAdd' value=" . $_SESSION['emailAdd'] . " readonly> <br>
-						<br>
-							</td>
-							<td style='border: 2px solid black; border-collapse: collapse;'> 
-						TO
-						<br><br>
-						Company ID: <input type='text' name='cAdminID' value=" . $_SESSION['cAdminID'] . " readonly> <br>
-						First Name: <input type='text' name='newfname' value='" . $_SESSION['fname'] . " ' maxlength='16'><br>
-						Last Name: <input type='text' name='newlname' value='" . $_SESSION['lname'] . "' maxlength='16'><br>
-						Email Address: <input type='text' name='newemailAdd' value=" . $_SESSION['emailAdd'] . " maxlength='32'><br>
-						<input type='button' value='Update'onclick='confirmDiag();'>
-						</form>
-							</td>
-						</tr>
-						</table>
-							";
+			
+				$cAdminID = $_SESSION['cAdminID'];
+			
+				//get Admin data
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE CAdminID = '$cAdminID'") or die("Select Error");
+			
+			
+				while($Row = $result->fetch_assoc()){
+					$form = "<form action'' id='ModifyAccount' method='POST'>
+							<br>
+							<table >
+							<tr>
+								<td style='border: 2px solid black; border-collapse: collapse;'>
+							FROM 
+							<br><br>
+							Company ID: <input type='text' value=" . $Row['CompanyID'] . " readonly><br>
+							First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
+							Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
+							Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
+							Password: <input type='password' name='oldPassword' value=" . $Row['Password'] . " readonly> <br>
+							<br>
+								</td>
+								<td style='border: 2px solid black; border-collapse: collapse;'> 
+							TO
+							<br><br>
+							Company ID: <input type='text' value=" . $Row['CompanyID'] . " readonly> <br>
+							First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' maxlength='16'> <br>
+							Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' maxlength='16'><br>
+							Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'><br>
+							Password: <input type='password' name='newPassword' value=" . $Row['Password'] . " > <br>
+							<input type='button' value='Update'onclick='confirmDiag();'>
+							</form>
+								</td>
+							</tr>
+							</table>
+								";
+				}
 				echo $form;
 				
 				echo @$_SESSION['message1'];
 				echo @$_SESSION['message2'];
 				echo @$_SESSION['message3'];
+				echo @$_SESSION['message4'];
 				
 				
 				
-				if(isset($_POST['newlname'])){
-					$newfname = $_POST['newfname'];			
-					$newlname = $_POST['newlname'];
-					$cAdminID = $_POST['cAdminID'];
-					$newemailAdd = $_POST['newemailAdd'];
-					
-					if ($_POST['oldemailAdd'] != $_POST['newemailAdd']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-						//check if email exists.
-						$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE Email = '$newemailAdd'") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result);
-						// dont exists
-						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE companyadmin SET Email = '$newemailAdd' WHERE CAdminID = '$cAdminID'") or die("update Error");
-							$_SESSION['message1'] = "Email address changed";
-							$_SESSION['emailAdd'] = $newemailAdd;
-						}
-						// exists
-						else{
-							$_SESSION['message1'] = "Email address already exists";
-						}
-					}
-					else $_SESSION['message1'] = "";
-					
-					// if first name changed
-					if(@$_POST['oldfname'] != @$newfname){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE companyadmin SET FirstName = '$newfname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message2'] = "<p>First Name updated.</p>";
-						$_SESSION['fname'] = $newfname;
-					}
-					else $_SESSION['message2'] = "";
-					
-					// if last name changed
-					if(@$_POST['oldlname'] != @$newlname){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$result2 = mysqli_query($db,"UPDATE companyadmin SET LastName = '$newlname' WHERE CAdminID = '$cAdminID'") or die("update Error");
-						$_SESSION['message3'] = "<p>Last Name updated.</p>";
-						$_SESSION['lname'] = $newlname;
-					}
-					else $_SESSION['message3'] = "";
-					
-					
-					header('Location: superadmin_manageCAdmin_view_delete_edit.php');
-					exit;
-				}
+				
 			?>
         </div>
     </div>
