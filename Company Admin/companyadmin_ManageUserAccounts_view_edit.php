@@ -157,7 +157,7 @@ session_start();
 						Gender: <input type='text' name='oldGender' value=" . $Row['Gender'] . " readonly> <br>
 						Email: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
 						Password: <input type='password' name='oldPassword' value=" . $Row['Password'] . " readonly> <br>
-						Specialisation: <input type='text' name='oldSName' value=" . $Row['SpecialisationName'] . " readonly> <br>
+						Specialisation: <input type='text' name='oldSName' value='" . $Row['SpecialisationName'] . "' readonly> <br>
 							<input type='hidden' name='oldSID' value=" . $Row['SpecialisationID'] . " readonly>
 						Role: <input type='text' name='oldRole' value=" . $Row['Role'] . " readonly> <br>
 						Status: <input type='text' name='oldStatus' value=" . $Row['Status'] . " readonly> <br>

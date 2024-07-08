@@ -7,6 +7,7 @@ session_start();
 
 		$companyName = $_POST['companyName'];
 		$planType = $_POST['planType'];
+		$UEN = $_POST['UEN'];
 		
 		//check if company exists
 		if(isCompanyExists($companyName, $db)){
@@ -15,7 +16,7 @@ session_start();
 		//doesn't exist, add to db
 		else
 		{
-			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$planType', '1')") or die("Select Error");
+			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, CompanyUEN, PlanID, Status) VALUES (NULL, '$companyName', '$UEN', '$planType', '1')") or die("Select Error");
 			$_SESSION['message'] = "<p>Company \"".$companyName."\" added to database.</p>";
 		}
 		
@@ -66,8 +67,16 @@ session_start();
 		
             <form action = "" id = "CreateCompany" method = "post">
 				<h2>Create Company</h2>
-				<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" maxlength='16'required>
-				<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" maxlength='1' required>
+				<p>Company Name: 
+					<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" maxlength='16'required>
+				</p>
+				<p>Plan Type: 
+					<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" maxlength='1' required>
+				</p>
+				
+				<p>UEN: 
+					<input id = "uen" name = "UEN" type = "text" placeholder = "UEN" maxlength='10' required>
+				</p>
 				<input type = 'button' value='Create' onclick='confirmDiag();'>
 			</form>
 			
