@@ -1,47 +1,44 @@
 <?php
 session_start();
 
-if(isset($_POST['delete']) == 'yes')
-{
-	$companyID = $_POST['companyID'];
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	
-	$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error3");
-	
-	$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
-	header('Location: superadmin_manageCompany_view.php');
-	exit;
-}
+	$_SESSION['message'] ='';
 
-if(isset($_POST['activateSuspend']))
-{
-	$companyID = $_POST['companyID'];
-	$status = $_POST['Status'];
-	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-	
-	if($status == 1){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
+	if(isset($_POST['delete']) == 'yes')
+	{
+		$companyID = $_POST['companyID'];
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		
+		$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error3");
+		
+		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" deleted successfully";
 	}
-	else if($status == 0){
-		$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-		$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
-	}
-	header('Location: superadmin_manageCompany_view.php');
-	exit;
-}
 
-if (isset($_POST['editCompany'])) {
-	$_SESSION['companyID'] = $_POST['companyID'];
-	$_SESSION['companyName'] = $_POST['companyName'];
-	$_SESSION['companyUEN'] = $_POST['companyUEN'];
-	$_SESSION['planID'] = $_POST['planID'];
-	
-	$_SESSION['message'] = '';
-	header('Location: superadmin_manageCompany_view-edit.php');
-	exit;
-}
+	if(isset($_POST['activateSuspend']))
+	{
+		$companyID = $_POST['companyID'];
+		$status = $_POST['Status'];
+		
+		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+		
+		if($status == 1){
+			$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
+			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
+		}
+		else if($status == 0){
+			$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
+			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
+		}
+	}
+
+	if (isset($_POST['editCompany'])) {
+		$_SESSION['companyID'] = $_POST['companyID'];
+		$_SESSION['companyName'] = $_POST['companyName'];
+		$_SESSION['companyUEN'] = $_POST['companyUEN'];
+		$_SESSION['planID'] = $_POST['planID'];
+		
+		header('Location: superadmin_manageCompany_view-edit.php');
+		exit;
+	}
 
 ?>
 <!DOCTYPE html>

@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	$_SESSION['message'] ='';
+
 	//create company
 	if(isset($_POST['companyName'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");

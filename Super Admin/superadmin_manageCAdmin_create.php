@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	$_SESSION['message'] ='';
+
 	//create company
 	if(isset($_POST['fname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -27,8 +29,6 @@ session_start();
 		{
 			$_SESSION['message'] = "<p>Company id \"".$companyID."\" does exists in database</p>";
 		}
-		header('Location: superadmin_manageCAdmin_create.php');
-		exit;
 	}
 		
 	function isCompanyExists(string $companyID, mysqli $db):bool{

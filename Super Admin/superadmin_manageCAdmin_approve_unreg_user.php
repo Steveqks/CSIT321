@@ -1,6 +1,10 @@
 <?php
 session_start();
+	
 	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
+	
+	$_SESSION['message'] = '';
+	
 	if(isset($_POST['approveAccount']))
 	{
 		$aprrove = new userAccount();
@@ -22,8 +26,7 @@ session_start();
 			break;
 			
 		}
-			header('Location: superadmin_manageCAdmin_approve_unreg_user.php');
-			exit;
+
 	}
 
 	if(isset($_POST['deleteEntry']))
@@ -34,8 +37,6 @@ session_start();
 		$result = mysqli_query($db,	"DELETE FROM unregisteredusers  WHERE ApplicationID = '$applicationID' ") or die("Select Error");
 		
 		$_SESSION['message'] = "Application  for \"" .$_POST['cname']. "\" deleted successfully";
-		header('Location: superadmin_manageCAdmin_approve_unreg_user.php');
-		exit;
 	}
 ?>
 <!DOCTYPE html>
@@ -58,7 +59,7 @@ session_start();
     <div style="display: flex; border: 1px solid black; height: 80vh;">
         
         <!-- Left Section (Navigation) -->
-			<?php include_once('navigation.php');?>
+		<?php include_once('navigation.php');?>
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">

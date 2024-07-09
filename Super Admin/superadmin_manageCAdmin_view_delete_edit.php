@@ -1,5 +1,10 @@
 <?php
 	session_start();
+	
+	$_SESSION['message1'] = '';
+	$_SESSION['message2'] = '';
+	$_SESSION['message3'] = '';
+	$_SESSION['message4'] = '';
 
 
 	if(isset($_POST['newEmail'])){
@@ -52,9 +57,6 @@
 			$_SESSION['message4'] = "<p>Password updated.</p>";
 		}
 		else $_SESSION['message4'] = '';
-		
-		header('Location: superadmin_manageCAdmin_view_delete_edit.php');
-		exit;
 	}
 
 ?>

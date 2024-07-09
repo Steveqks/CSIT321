@@ -6,6 +6,8 @@ $_SESSION['message1'] = "";
 $_SESSION['message2'] = "";
 $_SESSION['message3'] = "";
 $_SESSION['message4'] = "";
+$_SESSION['message5'] = "";
+$_SESSION['message6'] = "";
 //$currentDateTime = date('Y-m-d H:i:s');
 //echo $currentDateTime;
 
