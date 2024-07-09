@@ -3,6 +3,11 @@ session_start();
 				
 	$SAdminID = $_SESSION['SAdminID'];
 	
+	$_SESSION['message1'] ='';
+	$_SESSION['message2'] ='';
+	$_SESSION['message3'] ='';
+	$_SESSION['message4'] ='';
+	
 	if(isset($_POST['newEmail'])){
 		$newFirstName = $_POST['newFirstName'];			
 		$newLastName = $_POST['newLastName'];			
@@ -85,9 +90,7 @@ session_start();
 			$_SESSION['message4'] = "<p>Password has been changed.</p>";
 		}
 		else $_SESSION['message4'] = "";
-		
-		header('Location: superadmin_ManageAccount.php');
-		exit;
+	
 	}
 ?>
 <!DOCTYPE html>

@@ -3,6 +3,8 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message'] = '';
+
 	if (isset($_POST['addTeamMember'])) {
 		$_SESSION['teamID'] = $_POST['teamID'];
 		
@@ -22,9 +24,6 @@ session_start();
 									") or die("Select Error");
 		
 		$_SESSION['message'] = $fullname . " is removed from team";
-		$_SESSION['message1'] = " ";
-		header('Location: companyadmin_teamManagement_view_delete_view.php');
-		exit;
 	}
 
 ?>

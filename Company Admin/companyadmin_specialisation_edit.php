@@ -2,6 +2,8 @@
 session_start();
 
 	include '../Session/session_check_companyadmin.php';
+	
+	$_SESSION['message'] = '';
 
 	if(isset($_POST['specialisationID'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -16,17 +18,13 @@ session_start();
 		// dont exists
 		if($num_rows == 0){
 			$result = mysqli_query($db,"UPDATE specialisation SET SpecialisationName = '$specialisationName' WHERE specialisation.SpecialisationID = '$specialisationID'") or die("update Error");
-			$_SESSION['message'] = "<p style='color: green;'>specialisation name changed.</p>";
+			$_SESSION['message'] = "<p>specialisation name changed.</p>";
 			$_SESSION['specialisationName'] = $specialisationName;
 			$_SESSION['specialisationID'] = $specialisationID;
-				header('Location: companyadmin_specialisation_edit.php');
-				exit;
 		}
 		// exists
 		else{
-			$_SESSION['message'] = "<p style='color: red;'>specialisation already exists!</p>";
-			header('Location: companyadmin_specialisation_edit.php');
-				exit;
+			$_SESSION['message'] = "<p>specialisation already exists!</p>";
 		}
 	}
 
@@ -73,9 +71,8 @@ session_start();
 						</form>";
 				echo $form;
 				
-				if ($_SESSION['message']){
 				echo $_SESSION['message'];
-				}
+				
 				
 
 				

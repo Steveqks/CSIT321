@@ -5,14 +5,15 @@ session_start();
 
 	include_once('companyadmin_specialisation_viewdelete_functions.php');
 
+	
+	$_SESSION['message'] = '';
+
 	if(isset($_POST['delete'])=='yes')
 	{
 		$delete = new userAccount();
 		$delete->deleteSpecialisation($_POST['specialisationID']);
 		
 		$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";
-		header('Location: companyadmin_specialisation_view_delete.php');
-		exit();
 	}
 
 	if (isset($_POST['editSpecialisation'])) {

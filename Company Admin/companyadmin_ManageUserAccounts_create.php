@@ -4,6 +4,7 @@ session_start();
 	include_once('../Session/session_check_companyadmin.php');
 				
 	$companyID = $_SESSION['companyID'];
+	$_SESSION['message1'] = "";
 
 	//create user
 	if(isset($_POST['fname'])){

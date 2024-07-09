@@ -3,6 +3,14 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	 $_SESSION['message1'] = "";
+	 $_SESSION['message2'] = "";
+	 $_SESSION['message3'] = "";
+	 $_SESSION['message4'] = "";
+	 $_SESSION['message5'] = "";
+	 $_SESSION['message6'] = "";
+	 $_SESSION['message7'] = "";
+
 	if(isset($_POST['newFirstName'])){
 		
 		$userID = $_POST['userID'];
@@ -76,8 +84,6 @@ session_start();
 		}
 		else $_SESSION['message7'] = '';
 		
-		header('Location: companyadmin_ManageUserAccounts_view_edit.php');
-		exit;
 	}
 ?>
 <!DOCTYPE html>
@@ -111,10 +117,6 @@ session_start();
 				
 				$companyID = $_SESSION['companyID'];;
 			
-				
-				$ManagerID = '';
-				$TeamName = '';
-				
 				$userID = $_SESSION['userID'];
 				
 				//get selected team data
@@ -176,7 +178,7 @@ session_start();
 
 				}
 				
-				$result2 = 	mysqli_query($db, "SELECT * FROM `specialisation` WHERE CompanyID = '82';
+				$result2 = 	mysqli_query($db, "SELECT * FROM `specialisation` WHERE CompanyID = '$companyID';
 											") or die("Select Error");
 											
 				$form .= "<label for='Specialisation'>Specialisation:</label>
@@ -223,6 +225,7 @@ session_start();
 				echo $_SESSION['message4'];
 				echo $_SESSION['message5'];
 				echo $_SESSION['message6'];
+				echo $_SESSION['message7'];
 				
 				
 			?>
