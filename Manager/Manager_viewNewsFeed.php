@@ -31,9 +31,6 @@
 
         if(isset($_GET['viewCompany'])) {
 
-            $viewCompany = TRUE;
-            $viewTeam = FALSE;
-
             $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
                     INNER JOIN existinguser b ON a.ManagerID = b.UserID
                     WHERE b.CompanyID = ".$companyID."
@@ -43,6 +40,18 @@
             $stmt->execute();
             $result = $stmt->get_result();
             $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+            if ($result->num_rows > 0) {
+
+                $viewCompany = TRUE;
+                $viewTeam = FALSE;
+
+            } else {
+
+                $viewCompany = FALSE;
+                $viewTeam = FALSE;
+
+            }
 
         } else if ($viewTeam) {
 
@@ -55,6 +64,18 @@
             $stmt->execute();
             $result = $stmt->get_result();
             $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+            if ($result->num_rows > 0) {
+
+                $viewCompany = FALSE;
+                $viewTeam = TRUE;
+
+            } else {
+
+                $viewCompany = FALSE;
+                $viewTeam = FALSE;
+
+            }
         }
 
         if (isset($_GET['deletenewsfeedid'])) {
@@ -102,7 +123,9 @@
 
             <div class="innerContentNewsFeed">
                 
-                <?php if($viewTeam) {
+                <?php
+                
+                if($viewTeam) {
 
                     foreach ($teamNewsFeed as $team):?>
 
@@ -163,6 +186,8 @@
                         </div>
                     <?php
                         endforeach;
+                    } else {
+                        echo "<h4>No news feed.</h4>";
                     } ?>
             </div>
         </div>
