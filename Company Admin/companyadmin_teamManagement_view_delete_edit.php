@@ -3,11 +3,13 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message1'] = "";
+	$_SESSION['message2'] = "";
+
 	if(isset($_POST['newTeamName']))
 		{
 			$newManagerID = $_POST['newManagerID'];
 			$newTeamName = $_POST['newTeamName'];
-			$managerName = $_POST['managerName'];
 			$mTeamID= $_SESSION['mTeamID'];
 
 
@@ -16,7 +18,7 @@ session_start();
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				
 				$result2 = mysqli_query($db,"UPDATE teaminfo SET ManagerID = '$newManagerID' WHERE MainTeamID = '$mTeamID'") or die("update Error");
-				$_SESSION['message1'] = "<p>Team manager has been changed to " . $managerName . "</p>";						
+				$_SESSION['message1'] = "<p>Team manager has been changed.</p>";						
 			}
 			else $_SESSION['message1'] = "";
 			
@@ -39,9 +41,6 @@ session_start();
 				}
 			}
 			else $_SESSION['message2'] = "";
-			
-			header('Location: companyadmin_teamManagement_view_delete_edit.php');
-			exit;
 		}
 
 ?>
@@ -87,7 +86,7 @@ session_start();
 				$result = mysqli_query($db,	"
 										SELECT 
 											teaminfo.TeamName, 
-											CONCAT(existinguser.FirstName, '_', existinguser.LastName) AS ManagerInCharge,
+											CONCAT(existinguser.FirstName, ' ', existinguser.LastName) AS ManagerInCharge,
 											existinguser.UserID
 										FROM 
 											teaminfo
@@ -120,11 +119,11 @@ session_start();
 						
 						TO
 						<br><br>
-						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' maxlength='32' > <br>
-						<input type='hidden' name='managerName' value=" . $ManagerName . " > ";
+						Team Name: <input type='text' name='newTeamName' value='" . $TeamName . "' maxlength='32' > <br>";
+						
 						
 				
-				$result2 = 	mysqli_query($db, "SELECT CONCAT(FirstName, '_', LastName) AS Fullname, UserID
+				$result2 = 	mysqli_query($db, "SELECT CONCAT(FirstName, ' ', LastName) AS Fullname, UserID
 											FROM existinguser
 											WHERE Role = 'Manager' AND CompanyID = $companyID;
 											") or die("Select Error");
@@ -147,6 +146,8 @@ session_start();
 			
 				echo $form;
 				
+				echo $_SESSION['message1'];
+				echo $_SESSION['message2'];
 			
 			?>
         </div>

@@ -3,6 +3,11 @@ session_start();
 
 include '../Session/session_check_companyadmin.php';
 	
+	$_SESSION['message1'] = "";
+	$_SESSION['message2'] = "";
+	$_SESSION['message3'] = "";
+	$_SESSION['message4'] = "";
+	
 	if(isset($_POST['newLastName'])){
 		$newFirstName = $_POST['newFirstName'];			
 		$newLastName = $_POST['newLastName'];			
@@ -86,9 +91,6 @@ include '../Session/session_check_companyadmin.php';
 			$_SESSION['message4'] = "<p>Password has been changed.</p>";
 		}
 		else $_SESSION['message4'] = "";
-		
-		header('Location: companyadmin_ManageAccount.php');
-		exit;
 	}
 
 ?>

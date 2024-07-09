@@ -3,6 +3,8 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message1'] = '';
+
 	if(isset($_POST['specialisation'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$specialisation = $_POST['specialisation'];
@@ -16,8 +18,6 @@ session_start();
 			$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, companyID) VALUES (NULL, '$specialisation', '$companyID')") or die("Select Error");
 			$_SESSION['message1'] = "<p> Specialisation \"" . $specialisation . "\" created.</p>";
 		}
-		header('Location: companyadmin_specialisation_create.php');
-		exit;
 	}
 						
 	function isSpecialisationExists(string $specialisation, string $companyID, mysqli $db):bool{

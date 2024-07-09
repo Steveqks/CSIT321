@@ -3,6 +3,8 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message'] = '';
+	
 	//create company
 	if(isset($_POST['tname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -26,11 +28,7 @@ session_start();
 										") or die("Select Error");
 			
 			$_SESSION['message'] = "<p>Team \"". $tname . "\" Created.</p>";
-		}
-		
-		header('Location: companyadmin_teamManagement_create.php');
-		exit();
-		
+		}		
 	}
 		
 	function isTeamExists(string $companyID, string $tname, mysqli $db):bool{

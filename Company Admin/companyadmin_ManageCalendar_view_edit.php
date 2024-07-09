@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message1'] = '';
+	$_SESSION['message2'] = '';
+
 	if(isset($_POST['newDate'])){
 		$newDate = $_POST['newDate'];
 		$newDateName = $_POST['newDateName'];
@@ -49,9 +52,6 @@ session_start();
 			}
 		}
 		else $_SESSION['message2'] = "";
-		
-		header('Location: companyadmin_ManageCalendar_view_edit.php');
-		exit;
 	}
 ?>
 <!DOCTYPE html>

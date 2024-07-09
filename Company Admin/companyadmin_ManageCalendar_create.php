@@ -3,6 +3,8 @@ session_start();
 				
 	include '../Session/session_check_companyadmin.php';
 				
+	$_SESSION['message1'] = '';
+				
 	$companyID = $_SESSION['companyID'];
 	
 	//create user
@@ -28,16 +30,16 @@ session_start();
 				//check if entry on name exists
 				$result2 = mysqli_query($db,"INSERT INTO calendar(CalendarID, CompanyID, DateName, Date) 
 											VALUES (NULL, '$companyID', '$dateName', '$date')") or die("update Error");
-				$_SESSION['message5'] = "<p >New Calendar entry created. Date: ". $date . ", Name: ". $dateName . " </p>";
+				$_SESSION['message1'] = "<p>New Calendar entry created. Date: ". $date . ", Name: ". $dateName . " </p>";
 			}
 			// exists
 			else{
-				$_SESSION['message5'] = "<p >A Calendar entry with the entered Name already exists.</p>";
+				$_SESSION['message1'] = "<p>A Calendar entry with the entered Name already exists.</p>";
 			}
 		}
 		// exists
 		else{
-			$_SESSION['message5'] = "<p >An Calendar entry with the selected date already exists.</p>";
+			$_SESSION['message1'] = "<p>An Calendar entry with the selected date already exists.</p>";
 
 		}
 	}
@@ -79,7 +81,7 @@ session_start();
 			</form>
 			
 			<?php   
-				echo $_SESSION['message5'];
+				echo $_SESSION['message1'];
 			
 				
 				

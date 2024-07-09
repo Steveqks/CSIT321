@@ -3,6 +3,8 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	$_SESSION['message1'] = '';
+
 	if (isset($_POST['viewTeam'])) {
 		$_SESSION['teamName'] = $_POST['teamName'];
 		$_SESSION['teamID'] = $_POST['teamID'];
@@ -35,9 +37,7 @@ session_start();
 									WHERE MainTeamID = '$teamID';
 									") or die("Select Error");
 		
-		$_SESSION['message'] = " ";
-		$_SESSION['message1'] = " ";
-		$_SESSION['message2'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
+		$_SESSION['message1'] =  $totalUser . " users is removed from team \"". $teamName . "\", Team \"". $teamName ."\" deleted.";
 	}
 
 
@@ -90,7 +90,7 @@ session_start();
 								LEFT JOIN 
 									team t ON ti.MainTeamID = t.MainTeamID
 								WHERE 
-									ti.CompanyID = '82'
+									ti.CompanyID = '$companyID'
 								GROUP BY 
 									ti.MainTeamID, ti.TeamName, eu.FirstName, eu.LastName;
 								") 
@@ -137,8 +137,7 @@ session_start();
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message2'])
-					echo $_SESSION['message2'];
+				echo $_SESSION['message1'];
 			?>
         </div>
     </div>
