@@ -6,7 +6,8 @@ include '../Session/session_check_companyadmin.php';
 	if(isset($_POST['newLastName'])){
 		$newFirstName = $_POST['newFirstName'];			
 		$newLastName = $_POST['newLastName'];			
-		$newEmail = $_POST['newEmail'];			
+		$newEmail = $_POST['newEmail'];		
+		$newPassword = $_POST['newPassword'];		
 		
 		//check if there are changes in first name
 		if ($_POST['oldFirstName'] != $_POST['newFirstName']){
@@ -78,6 +79,14 @@ include '../Session/session_check_companyadmin.php';
 		}
 		else $_SESSION['message3'] = "";
 		
+		//check if there are changes in last name
+		if(@$_POST['oldPassword'] != $newPassword){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+			$result2 = mysqli_query($db,"UPDATE companyadmin SET Password = '$newPassword' WHERE CAdminID = '$cadminID'") or die("update Error");
+			$_SESSION['message4'] = "<p>Password has been changed.</p>";
+		}
+		else $_SESSION['message4'] = "";
+		
 		header('Location: companyadmin_ManageAccount.php');
 		exit;
 	}
@@ -128,6 +137,8 @@ include '../Session/session_check_companyadmin.php';
 				First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
 				Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
 				Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
+				Password: <input type='password' name='oldPassword' value=" . $Row['Password'] . " readonly> <br>
+
 				<br></td>
 					
 					<td style='border: 2px solid black; border-collapse: collapse;'> 
@@ -136,7 +147,8 @@ include '../Session/session_check_companyadmin.php';
 				First Name: <input type='text' name='newFirstName' maxlength='16'  value='" . $Row['FirstName'] . "' > <br>
 				Last Name: <input type='text' name='newLastName' maxlength='16'  value='" . $Row['LastName'] . "'><br>
 				Email Address: <input type='text' name='newEmail' maxlength='32'  value=" . $Row['Email'] . "><br>
-				
+				Password: <input type='password' name='newPassword' value=" . $Row['Password'] . " > <br>
+
 				<input type='button' value='Update' onclick='confirmDiag();'>
 				</form>
 					</td>
@@ -149,6 +161,7 @@ include '../Session/session_check_companyadmin.php';
 		echo @$_SESSION['message1'];
 		echo @$_SESSION['message2'];
 		echo @$_SESSION['message3'];
+		echo @$_SESSION['message4'];
 		
 		
 	?>

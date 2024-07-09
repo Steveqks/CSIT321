@@ -78,14 +78,25 @@ footer ul li a {
   display: block;
   padding: 12px;
   text-decoration: none;
+  
+  border-style: solid;
+  border-width: thin;
 }
 
 .show {
-  background-color: #aaa;
+  background-color: white;
   color: black;
   display: block;
-  padding: 3px;
   text-decoration: none;
+
+  border-style: solid;
+  border-width: thin;
+}
+
+.show a {
+	border-style: solid;
+	border-width: thin;
+	background-color: #fff;
 }
 
 .vertical-menu a:hover {

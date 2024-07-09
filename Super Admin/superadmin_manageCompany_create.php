@@ -7,15 +7,19 @@ session_start();
 
 		$companyName = $_POST['companyName'];
 		$planType = $_POST['planType'];
+		$UEN = $_POST['UEN'];
 		
 		//check if company exists
 		if(isCompanyExists($companyName, $db)){
 			$_SESSION['message'] = "<p>Company \"".$companyName."\" already exists in database</p>";
 		}
+		else if (isCompanyUENExists($UEN, $db)){
+			$_SESSION['message'] = "<p>Company UEN \"".$UEN."\" already exists in database</p>";			
+		}
 		//doesn't exist, add to db
 		else
 		{
-			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, PlanID, Status) VALUES (NULL, '$companyName', '$planType', '1')") or die("Select Error");
+			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, CompanyUEN, PlanID, Status) VALUES (NULL, '$companyName', '$UEN', '$planType', '1')") or die("Select Error");
 			$_SESSION['message'] = "<p>Company \"".$companyName."\" added to database.</p>";
 		}
 		
@@ -24,6 +28,22 @@ session_start();
 		
 	function isCompanyExists(string $cname, mysqli $db):bool{
 		$sql = "SELECT * FROM company WHERE CompanyName = '$cname'";
+		$qres = mysqli_query($db, $sql); 
+
+		$num_rows=mysqli_num_rows($qres);
+
+		// dont exists
+		if($num_rows > 0){
+			return true; 
+		}
+		// exists
+		else{
+			return false; 
+		}
+	}
+	
+	function isCompanyUENExists(string $UEN, mysqli $db):bool{
+		$sql = "SELECT * FROM company WHERE CompanyUEN = '$UEN'";
 		$qres = mysqli_query($db, $sql); 
 
 		$num_rows=mysqli_num_rows($qres);
@@ -66,8 +86,16 @@ session_start();
 		
             <form action = "" id = "CreateCompany" method = "post">
 				<h2>Create Company</h2>
-				<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" maxlength='16'required>
-				<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" maxlength='1' required>
+				<p>Company Name: 
+					<input id = "companyName" name = "companyName" type = "text" placeholder = "Company Name" maxlength='16'required>
+				</p>
+				<p>Plan Type: 
+					<input id = "planType" name = "planType" type = "text" placeholder = "Plan Type" maxlength='1' required>
+				</p>
+				
+				<p>UEN: 
+					<input id = "uen" name = "UEN" type = "text" placeholder = "UEN" maxlength='10' required>
+				</p>
 				<input type = 'button' value='Create' onclick='confirmDiag();'>
 			</form>
 			
