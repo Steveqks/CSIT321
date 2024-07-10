@@ -24,22 +24,23 @@
 		$enddate = $_POST['enddate'];
 		$leavetype = $_POST['leavetype'];
 		$Comments = $_POST['Comments'];
+		$status = 0; //Unapproved by default
 		
 		if(isset($_POST['HalfDay']) && $_POST['HalfDay'] == "1")
 		{
 			$HalfDay = 1;
 			// Fetch tasks for the logged-in user
-			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay', '$Comments')")or die("Error Occured");
+			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
 			echo "<div class='message'>
-                      <p>Registration successfully!</p>
+                      <p>Leave Applied Successfully!</p>
                   </div> <br>";
 		}
 		else
 		{
 			$HalfDay = 0;
-			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay', '$Comments')")or die("Error Occured");
+			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
 			echo "<div class='message'>
-                      <p>Registration successfully!</p>
+                      <p>Leave Applied Successfully!</p>
                   </div> <br>";
 		}
 	}
