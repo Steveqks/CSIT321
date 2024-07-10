@@ -23,6 +23,15 @@ session_start();
 		{
 			$result = mysqli_query($db,"INSERT INTO company (CompanyID, CompanyName, CompanyUEN, PlanID, Status) VALUES (NULL, '$companyName', '$UEN', '$planType', '1')") or die("Select Error");
 			$_SESSION['message'] = "<p>Company \"".$companyName."\" added to database.</p>";
+			
+			$result = mysqli_query($db,"SELECT CompanyID FROM company WHERE CompanyName = '$companyName'") or die("Select Error");
+			while ($Row = $result->fetch_assoc()) 
+			{
+				$companyID = $Row['CompanyID'];
+			}
+			
+			$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, CompanyID) VALUES (NULL, 'Manager', '$companyID')") or die("Select Error");
+			$_SESSION['message'] = "<p>Company \"".$companyName."\" added to database.</p>";
 		}
 		
 	}

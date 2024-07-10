@@ -56,7 +56,7 @@ session_start();
     </div>
 
     <!-- Middle Section -->
-    <div style="display: flex; border: 1px solid black; height: 80vh;">
+    <div style="display: flex; border: 1px solid black; min-height: 80vh;">
         
         <!-- Left Section (Navigation) -->
 		<?php include_once('navigation.php');?>

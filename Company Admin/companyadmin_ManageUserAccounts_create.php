@@ -91,7 +91,7 @@ session_start();
 					<h4>Password: <input name = "password" type = "password" placeholder = "password" maxlength='16'  required>
 					</h4>
 					<h4>  <label for="Role">Role:</label>
-					  <select name="role" id="">
+					  <select name="role" id="RoleSelect" >
 						  <option value="Manager">Manager</option>
 						  <option value="FT">FT</option>
 						  <option value="PT">PT</option>
@@ -104,7 +104,7 @@ session_start();
 						$qres = mysqli_query($db, $sql); 
 						
 						$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
-									<select name='specialisationID' id=''>";		
+									<select name='specialisationID' id='SelectSpecialisation' >";		
 						while ($Row = $qres->fetch_assoc()) 
 						{
 							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> " 
@@ -138,6 +138,7 @@ session_start();
 					}else console.log('result = neg');
 					console.log('confirmDiag() executed');
 				}
+				
 			</script>
 </body>
 </html>
