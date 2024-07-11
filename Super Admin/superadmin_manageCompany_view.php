@@ -22,11 +22,11 @@ session_start();
 		
 		if($status == 1){
 			$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 0.";
+			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to Suspended.";
 		}
 		else if($status == 0){
 			$result = mysqli_query($db,	"UPDATE company SET Status = 1 WHERE company.CompanyID = '$companyID'") or die("Select Error");
-			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to 1.";
+			$_SESSION['message'] = "Company \"" .$_POST['companyName']. "\" status set to Active.";
 		}
 	}
 
@@ -70,6 +70,7 @@ session_start();
 
   
 			<?php     
+					echo $_SESSION['message'];
 
 		
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -92,8 +93,11 @@ session_start();
 						."<td>" . $Row['CompanyID'] . "</td>" 
 						."<td>" . $Row['CompanyName'] . "</td>" 
 						."<td>" . $Row['CompanyUEN'] . "</td>" 
-						."<td>" . $Row['PlanID'] . "</td>" 
-						."<td>" . $Row['Status'] . "</td>";
+						."<td>" . $Row['PlanID'] . "</td>" ;
+						
+						if($Row['Status'] == '1')
+						$accountsTable.= "<td> Active </td>";
+						else $accountsTable.= "<td> Suspended </td>";
 						
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='companyID' value='" . $Row['CompanyID'] . "'/>
@@ -121,10 +125,7 @@ session_start();
 					$accountsTable.= "</table>";
 					echo  $accountsTable;
 					
-					if($_SESSION['message'])
-					{
-						echo $_SESSION['message'];
-					}
+					
 
 
 			?>

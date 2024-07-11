@@ -71,6 +71,8 @@ session_start();
 
   
 			<?php     
+				echo $_SESSION['message1'];
+
 				
 				$companyID = $_SESSION['companyID'];;
 
@@ -137,7 +139,6 @@ session_start();
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				echo $_SESSION['message1'];
 			?>
         </div>
     </div>

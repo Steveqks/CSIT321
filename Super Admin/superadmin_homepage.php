@@ -38,7 +38,7 @@ $_SESSION['message6'] = "";
         <div style="width: 80%; padding: 10px;">
 
             <!-- Add more content as needed -->
-			
+			<h3><u> HomePage </u></h3>
 			<?php
 			echo "<b>Welcome, </b><br>" . $_SESSION['FirstName'] . "(" . $_SESSION['Role']  .  ")";
 			?>

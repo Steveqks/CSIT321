@@ -5,7 +5,7 @@ session_start();
 	
 	$_SESSION['message'] = '';
 	
-	if(isset($_POST['approveAccount']))
+	if(isset($_POST['approve']) == 'yes')
 	{
 		$aprrove = new userAccount();
 
@@ -29,7 +29,7 @@ session_start();
 
 	}
 
-	if(isset($_POST['deleteEntry']))
+	if(isset($_POST['delete']) == 'yes')
 	{
 		$applicationID = $_POST['applicationID'];
 
@@ -67,6 +67,7 @@ session_start();
 			<h2>Approve Company</h2>
 
 				<?php   
+						echo $_SESSION['message'];
 
 						$view = new userAccount();
 						$qres = $view->viewAccount();
@@ -101,25 +102,48 @@ session_start();
 								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
 								<input type='hidden' name='companyUEN' value='" . $Row['CompanyUEN'] . "'/>
 								<input type='hidden' name='planID' value='" . $Row['PlanID'] . "'/>
-								<input type='submit' name='approveAccount' value='Approve'>
+								<input type='hidden' name='approve' value='yes'/>
+								<input type='button' value='Approve' onclick='confirmDiag2(event, this.form);'>
 								</form></td>";
 								
 							$accountsTable .= "<td><form action'' method='POST'>
 								<input type='hidden' name='applicationID' value='" . $Row['ApplicationID'] . "'/>
 								<input type='hidden' name='cname' value='" . $Row['CompanyName'] . "'/>
-								<input type='submit' name='deleteEntry' value='Delete'>
+								<input type='hidden' name='delete' value='yes'/>
+								<input type='button' value='Delete' onclick='confirmDiag(event, this.form);'>
 								</form></td>";
 							$accountsTable.= "</tr>";
 						}
 						$accountsTable.= "</table>";
 						echo $accountsTable;
-						echo $_SESSION['message'];
 						
 						
 				?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Delete Company Entry?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+				
+				function confirmDiag2(event, form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Approve Company?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 

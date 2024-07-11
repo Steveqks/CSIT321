@@ -56,12 +56,14 @@ session_start();
             <!-- Add more content as needed -->
 			<?php   
 
+
 				$companyID = $_SESSION['companyID'];;
 				$teamID = $_SESSION['teamID'];
 				$teamName = $_SESSION['teamName'];
 				
 				echo "<h2>View Team: ". $teamName . " </h2>";
-				
+				echo $_SESSION['message'];
+
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	
 					"
@@ -122,8 +124,6 @@ session_start();
 						</form></td>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message'])
-					echo $_SESSION['message'];
 			?>
         </div>
     </div>

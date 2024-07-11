@@ -22,11 +22,11 @@ session_start();
 		
 		if($status == 1){
 			$result = mysqli_query($db,	"UPDATE companyadmin SET Status = 0 WHERE CAdminID = '$cAdminID'") or die("Select Error");
-			$_SESSION['message'] = "Company Admin \"" .$cAdminID. "\" status set to 0.";
+			$_SESSION['message'] = "Company Admin ". $_POST['fname']. ' '. $_POST['lname']. " status set to Suspended.";
 		}
 		else if($status == 0){
 			$result = mysqli_query($db,	"UPDATE companyadmin SET Status = 1 WHERE CAdminID = '$cAdminID'") or die("Select Error");
-			$_SESSION['message'] = "Company Admin \"" .$cAdminID. "\" status set to 1.";
+			$_SESSION['message'] = "Company Admin ". $_POST['fname']. ' '. $_POST['lname']. " status set to Active.";
 		}
 	}
 
@@ -70,6 +70,7 @@ session_start();
   			<h2>View Company Admins</h2>
 
 			<?php     
+				echo $_SESSION['message'];
 
 				$view = new userAccount();
 						$qres = $view->viewCAdmin();
@@ -78,7 +79,7 @@ session_start();
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
 												<th>Company Admin ID</th>
-												<th>Company ID</th>
+												<th>Company Name</th>
 												<th>First Name</th>
 												<th>Last Name</th>
 												<th>Email</th>
@@ -89,11 +90,15 @@ session_start();
 					while ($Row = $qres->fetch_assoc()) {
 						$accountsTable.= "<tr>\n"
 						."<td>" . $Row['CAdminID'] . "</td>" 
-						."<td>" . $Row['CompanyID'] . "</td>" 
+						."<td>" . $Row['CompanyName'] . "</td>" 
 						."<td>" . $Row['FirstName'] . "</td>" 
 						."<td>" . $Row['LastName'] . "</td>"
-						."<td>" . $Row['Email'] . "</td>"
-						."<td>" . $Row['Status'] . "</td>";
+						."<td>" . $Row['Email'] . "</td>";
+						
+						if ($Row['Status'] == '1') 
+						$accountsTable.= "<td>Active</td>";
+						else $accountsTable.= "<td>Suspended</td>";
+					
 						
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
@@ -105,6 +110,8 @@ session_start();
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
+							<input type='hidden' name='fname' value='" . $Row['FirstName'] . "'/>
+							<input type='hidden' name='lname' value='" . $Row['LastName'] . "'/>
 							<input type='hidden' name='status' value='" . $Row['Status'] . "'/>
 							<input type='submit' name='activateSuspend' value='Activate/Suspend'>
 							</form></td>";
@@ -120,10 +127,8 @@ session_start();
 					$accountsTable.= "</table>";
 					echo  $accountsTable;
 					
-					if(@$_SESSION['message'])
-					{
-						echo $_SESSION['message'];
-					}
+				
+					
 
 
 			?>
@@ -143,5 +148,6 @@ session_start();
 			</script>
 </body>
 </html>
+
 
 

@@ -82,9 +82,6 @@ session_start();
 			
 			<?php   
 				echo $_SESSION['message1'];
-			
-				
-				
 			?>
         </div>
     </div>

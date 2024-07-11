@@ -51,6 +51,9 @@ session_start();
 			<h2>View Specialisation</h2>
 
 				<?php   
+					echo $_SESSION['message'];
+
+				
 					$companyID = $_SESSION['companyID'];;
 				
 
@@ -93,8 +96,6 @@ session_start();
 					}
 					$accountsTable.= "</table>";
 					echo  $accountsTable;
-
-					if(@$_SESSION['message']) echo $_SESSION['message'];
 
 				?>
 	

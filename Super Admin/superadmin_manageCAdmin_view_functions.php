@@ -66,7 +66,16 @@ class userAccount{
 	}
 
 	public function viewCAdmin():bool|mysqli_result{
-	    $Sql = "SELECT * FROM companyadmin";
+	    $Sql = "SELECT 
+					companyadmin.*, 
+					company.CompanyName
+				FROM 
+					companyadmin
+				JOIN 
+					company 
+				ON 
+					companyadmin.CompanyID = company.CompanyID;
+				";
         $qres = mysqli_query($this->conn, $Sql); 
         if($qres === false){
             return false; 
