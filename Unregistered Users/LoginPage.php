@@ -31,6 +31,7 @@
 				$_SESSION['Email'] = $row['Email'];
 				$_SESSION['FirstName'] = $row['FirstName'];
 				$_SESSION['Role']= $row['Role'];
+				$_SESSION['SpecialisationID'] = $row['specialisation_id'];
 				
 				if($row['Role'] == "FT")
 				{
