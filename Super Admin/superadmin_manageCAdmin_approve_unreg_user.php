@@ -67,6 +67,7 @@ session_start();
 			<h2>Approve Company</h2>
 
 				<?php   
+						echo $_SESSION['message'];
 
 						$view = new userAccount();
 						$qres = $view->viewAccount();
@@ -115,7 +116,6 @@ session_start();
 						}
 						$accountsTable.= "</table>";
 						echo $accountsTable;
-						echo $_SESSION['message'];
 						
 						
 				?>
