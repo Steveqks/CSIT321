@@ -53,6 +53,9 @@ session_start();
 
   
 			<?php     
+				echo $_SESSION['message1'];
+
+			
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -103,8 +106,6 @@ session_start();
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message1'])
-					echo $_SESSION['message1'];
 			?>
         </div>
     </div>

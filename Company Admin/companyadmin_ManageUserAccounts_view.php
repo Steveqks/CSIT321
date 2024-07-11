@@ -68,6 +68,9 @@ session_start();
 
   
 			<?php     
+				echo $_SESSION['message1'];
+
+			
 				$companyID = $_SESSION['companyID'];;
 
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
@@ -109,8 +112,10 @@ session_start();
 					."<td>" . $Row['Gender'] . "</td>"
 					."<td>" . $Row['EmailAddress'] . "</td>" 
 					."<td>" . $Row['SpecialisationName'] . "</td>" 
-					."<td>" . $Row['Role'] . "</td>" 
-					."<td>" . $Row['Status'] . "</td>";
+					."<td>" . $Row['Role'] . "</td>" ;
+					
+					if ($Row['Status'] == '1') $accountsTable .=  "<td> Active </td>";
+					else $accountsTable .=  "<td> Suspended </td>";
 					
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
@@ -137,8 +142,6 @@ session_start();
 				$accountsTable.= "</table>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message1'])
-					echo $_SESSION['message1'];
 
 			?>
         </div>
