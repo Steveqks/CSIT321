@@ -279,16 +279,18 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 
 DROP TABLE IF EXISTS `swap_requests`;
 CREATE TABLE swap_requests (
-    RequestID int NOT NULL AUTO_INCREMENT,
-    UserID int NOT NULL,
-    UserScheduleID int NOT NULL,
-    SwapScheduleID int NOT NULL,
-    Status varchar(10) NOT NULL,
-    PRIMARY KEY (RequestID),
-    FOREIGN KEY (UserID) REFERENCES existinguser(UserID),
-    FOREIGN KEY (UserScheduleID) REFERENCES schedule(ScheduleID),
-    FOREIGN KEY (SwapScheduleID) REFERENCES schedule(ScheduleID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    SwapRequestID INT AUTO_INCREMENT PRIMARY KEY,
+    RequestorScheduleID INT NOT NULL,
+    RequestedScheduleID INT NOT NULL,
+    RequestorUserID INT NOT NULL,
+    RequestedUserID INT NOT NULL,
+    Status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
+    RequestDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (RequestorScheduleID) REFERENCES schedule(ScheduleID),
+    FOREIGN KEY (RequestedScheduleID) REFERENCES schedule(ScheduleID),
+    FOREIGN KEY (RequestorUserID) REFERENCES existinguser(UserID),
+    FOREIGN KEY (RequestedUserID) REFERENCES existinguser(UserID)
+);
 
 -- --------------------------------------------------------
 
