@@ -26,225 +26,234 @@
         // Connect to the database
         $conn = OpenCon();
 
-    $taskStatus = 1;
-    $userStatus = 1;
+        $taskStatus = 1;
+        $userStatus = 1;
 
-    $validSpecialisation = FALSE;
-    $validSchedule = FALSE;
-    $validDate = FALSE;
+        $validSpecialisation = FALSE;
+        $validSchedule = FALSE;
+        $validDate = FALSE;
 
-    $isManual = FALSE;
+        $isManual = FALSE;
 
-    // get specialisation for the select option
-    $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $specialisations = $result->fetch_all(MYSQLI_ASSOC);
-
-    // get team for the select option
-    $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
-        . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $teams = $result->fetch_all(MYSQLI_ASSOC);
-
-
-
-    if (isset($_GET['maintaskid'])) {
-        $mainTaskID = $_GET['maintaskid'];
-    
-        // get task detail of the specific task
-        $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
-                FROM taskinfo a
-                INNER JOIN task b ON a.MainTaskID = b.MainTaskID
-                INNER JOIN teaminfo f ON f.MainTeamID = b.MainTeamID
-                INNER JOIN existinguser c ON b.UserID = c.UserID
-                INNER JOIN specialisation e ON e.SpecialisationID = a.SpecialisationID
-                WHERE a.MainTaskID = ".$mainTaskID."
-                GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName;";
+        // get specialisation for the select option
+        $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $taskDetails = $result->fetch_all(MYSQLI_ASSOC);
-    }
+        $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
-
-    // date from FORM
-    if(isset($_POST['editTask'])) {
-
-        $taskName = $_POST['taskname'];
-        $taskDesc = $_POST['taskdesc'];
-
-        $sDate = strtotime($_POST['startdate']);
-        $startDate = date('Y-m-d', $sDate);
-        
-        $eDate = strtotime($_POST['enddate']);
-        $endDate = date('Y-m-d', $eDate);
-
-        $priority = $_POST['priority'];
-        $teamID = $_POST['team'];
-        $statusID = $_POST['statusid'];
-
-        $mainTaskID = $_POST['maintaskid'];
-        
-
-        $specialisationIDName = $_POST['specialisationidname'];
-
-        $specialisationIDNameE = explode(" ", $specialisationIDName);
-
-        $specialisationIDSub = $specialisationIDNameE[0];
-        
-        $specialisationName = $specialisationIDNameE[1];
-
-
-        // get PT staff that is working on the specific dates
-        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-            . " SELECT c.UserID FROM abc a"
-            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
-            . " INNER JOIN existinguser c on c.UserID = b.UserID"
-            . " INNER JOIN schedule d ON c.UserID = d.UserID"
-            . " WHERE c.SpecialisationID = ".$specialisationIDSub
-            . " AND c.Status = ".$userStatus
-            . " AND b.MainTeamID = ".$teamID
-            . " AND c.Role = 'PT'"
-            . " AND d.WorkDate >= '".$startDate."' AND d.WorkDate <= '".$endDate."'"
-            . " GROUP BY c.UserID;";
-
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-        echo "SQL1 ;; ".$sql;
-
-        // FT Users
-        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-            . " SELECT c.UserID FROM abc a"
-            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
-            . " INNER JOIN existinguser c on c.UserID = b.UserID"
-            . " WHERE c.SpecialisationID = ".$specialisationIDSub
-            . " AND c.Status = ".$userStatus
-            . " AND b.MainTeamID = ".$teamID
-            . " AND c.Role = 'FT'"
-            . " GROUP BY c.UserID;";
-
-        echo "<br> SQL2 ;; ".$sql;
-
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-
-        // find how many and which staff with the specific specialisation (FT & PT)
-        $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-            . " SELECT c.UserID FROM abc a"
-            . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
-            . " INNER JOIN existinguser c on c.UserID = b.UserID"
-            . " WHERE c.SpecialisationID = ".$specialisationIDSub
-            . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
-            . " GROUP BY c.UserID;";
+        // get team for the select option
+        $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
+            . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $teamUserIDs = $result->fetch_all(MYSQLI_ASSOC);
-
-        $numStaffTeam = count($teamUserIDs);
+        $teams = $result->fetch_all(MYSQLI_ASSOC);
 
 
-        if ($statusID == 0) {
-
-            // Update into TaskInfo query
-            $stmt = $conn->prepare("UPDATE taskinfo SET SpecialisationID=?,TaskName=?,TaskDesc=?,StartDate=?,DueDate=?,NumStaff=?,Priority=?,Status=? WHERE MainTaskID=?");
-
-            $stmt->bind_param("issssiiii",$specialisationIDSub,$taskName,$taskDesc,$startDate,$endDate,$numStaffTeam,$priority,$statusID,$mainTaskID);
-
-            if ($stmt->execute()) {
-
-                echo "<script type='text/javascript'>";
-                echo "alert('Task has updated.');";
-                echo "window.location = 'Manager_viewTasksList.php';";
-                echo "</script>";
-            }
-
-        } else {
-
-            if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
-
-                // indicate that there are staff in the team with the specific specialisation
-                if (count($PTUsers) > 0 || count($FTUsers) > 0) {
-    
-                    $validSpecialisation = TRUE;
-                
-    
-                    // check if endDate is not less than startDate
-                    if ($endDate >= $startDate) {
+        // for viewing of task details
+        if (isset($_GET['maintaskid'])) {
+            $mainTaskID = $_GET['maintaskid'];
         
-                        $validDate = TRUE;
-        
-                    } else {
-                        echo "<script type='text/javascript'>";
-                        echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                        echo "window.location = 'Manager_addTask.php';";
-                        echo "</script>";
-                    }
-    
-                } else {
+            // get task detail of the specific task
+            $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
+                    FROM taskinfo a
+                    INNER JOIN task b ON a.MainTaskID = b.MainTaskID
+                    INNER JOIN teaminfo f ON f.MainTeamID = b.MainTeamID
+                    INNER JOIN existinguser c ON b.UserID = c.UserID
+                    INNER JOIN specialisation e ON e.SpecialisationID = a.SpecialisationID
+                    WHERE a.MainTaskID = ".$mainTaskID."
+                    GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName;";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $taskDetails = $result->fetch_all(MYSQLI_ASSOC);
+        }
+
+
+        // FORM
+        if(isset($_POST['editTask'])) {
+
+            $taskName = $_POST['taskname'];
+            $taskDesc = $_POST['taskdesc'];
+
+            $sDate = strtotime($_POST['startdate']);
+            $startDate = date('Y-m-d', $sDate);
+            
+            $eDate = strtotime($_POST['enddate']);
+            $endDate = date('Y-m-d', $eDate);
+
+            $priority = $_POST['priority'];
+
+
+            $teamIDName = $_POST['team'];
+
+            $teamIDNameE = explode(",", $teamIDName);
+
+            $mainTeamID = $teamIDNameE[0];
+            
+            $mainTeamName = $teamIDNameE[1];
+
+
+            $statusID = $_POST['statusid'];
+
+            $mainTaskID = $_POST['maintaskid'];
+            
+
+            $specialisationIDName = $_POST['specialisationidname'];
+
+            $specialisationIDNameE = explode(" ", $specialisationIDName);
+
+            $specialisationIDSub = $specialisationIDNameE[0];
+            
+            $specialisationName = $specialisationIDNameE[1];
+
+
+            // get PT staff that is working on the specific dates
+            $sql = "SELECT c.UserID FROM team b"
+                . " INNER JOIN existinguser c on c.UserID = b.UserID"
+                . " INNER JOIN schedule d ON c.UserID = d.UserID"
+                . " WHERE c.SpecialisationID = ".$specialisationIDSub
+                . " AND c.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$mainTeamID
+                . " AND c.Role = 'PT'"
+                . " AND d.WorkDate >= '".$startDate."' AND d.WorkDate <= '".$endDate."'"
+                . " GROUP BY c.UserID;";
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+            //echo "SQL1 ;; ".$sql;
+
+            // FT Users
+            $sql = "SELECT c.UserID,"
+                . " (SELECT COUNT(*) FROM leaves WHERE UserID = c.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
+                . " FROM team b"
+                . " INNER JOIN existinguser c on c.UserID = b.UserID"
+                . " WHERE c.SpecialisationID = ".$specialisationIDSub
+                . " AND c.Status = ".$userStatus
+                . " AND b.MainTeamID = ".$mainTeamID
+                . " AND c.Role = 'FT'"
+                . " GROUP BY c.UserID, onLeave"
+                . " HAVING onLeave = 0;";
+
+            //echo "<br> SQL2 ;; ".$sql;
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+
+            // find how many and which staff with the specific specialisation (FT & PT)
+            // to put into NumStaff column in taskinfo table
+            $sql = "SELECT c.UserID FROM team b"
+                . " INNER JOIN existinguser c on c.UserID = b.UserID"
+                . " WHERE c.SpecialisationID = ".$specialisationIDSub
+                . " AND b.MainTeamID = ".$mainTeamID
+                . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
+                . " GROUP BY c.UserID;";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $teamUserIDs = $result->fetch_all(MYSQLI_ASSOC);
+
+            $numStaffTeam = count($teamUserIDs);
+
+
+            if ($statusID == 0) {
+
+                // Update into TaskInfo query
+                $stmt = $conn->prepare("UPDATE taskinfo SET SpecialisationID=?,TaskName=?,TaskDesc=?,StartDate=?,DueDate=?,NumStaff=?,Priority=?,Status=? WHERE MainTaskID=?");
+
+                $stmt->bind_param("issssiiii",$specialisationIDSub,$taskName,$taskDesc,$startDate,$endDate,$numStaffTeam,$priority,$statusID,$mainTaskID);
+
+                if ($stmt->execute()) {
+
                     echo "<script type='text/javascript'>";
-                    echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-                    echo "window.location = 'Manager_addTask.php';";
+                    echo "alert('Task has updated.');";
+                    echo "window.location = 'Manager_viewTasksList.php';";
                     echo "</script>";
-                }
-                
-                $autoallocate = TRUE;
-
-                if ($validSpecialisation && $validDate) {
-                    header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
                 }
 
             } else {
 
-                // indicate that there are staff in the team with the specific specialisation
-                if ($numStaffTeam > 0) {
-    
-                    $validSpecialisation = TRUE;
-                
-    
-                    // check if endDate is not less than startDate
-                    if ($endDate >= $startDate) {
+                if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
+
+                    // indicate that there are staff in the team with the specific specialisation
+                    if (count($PTUsers) > 0 || count($FTUsers) > 0) {
         
-                        $validDate = TRUE;
+                        $validSpecialisation = TRUE;
+                    
+        
+                        // check if endDate is not less than startDate
+                        if ($endDate >= $startDate) {
+            
+                            $validDate = TRUE;
+            
+                        } else {
+                            echo "<script type='text/javascript'>";
+                            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."';";
+                            echo "</script>";
+                        }
         
                     } else {
                         echo "<script type='text/javascript'>";
-                        echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                        echo "window.location = 'Manager_addTask.php';";
+                        echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
+                        echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."';";
                         echo "</script>";
                     }
-    
-                } else {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-                    echo "window.location = 'Manager_addTask.php';";
-                    echo "</script>";
-                }
+                    
+                    $autoallocate = TRUE;
 
-                $isManual = TRUE;
-                
-                if ($validSpecialisation && $validDate) {
-                    header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamid=".$teamID."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                    if ($validSpecialisation && $validDate) {
+                        header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam.'&mainteamidname='.$teamIDName.'&maintaskid='.$mainTaskID.'&statusid='.$statusID);
+                    }
+
+                } else {
+
+                    // indicate that there are staff in the team with the specific specialisation
+                    if ($numStaffTeam > 0) {
+        
+                        $validSpecialisation = TRUE;
+                    
+        
+                        // check if endDate is not less than startDate
+                        if ($endDate >= $startDate) {
+            
+                            $validDate = TRUE;
+            
+                        } else {
+                            echo "<script type='text/javascript'>";
+                            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
+                            echo "window.location = 'Manager_editTask.php';";
+                            echo "</script>";
+                        }
+        
+                    } else {
+                        echo "<script type='text/javascript'>";
+                        echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
+                        echo "window.location = 'Manager_editTask.php';";
+                        echo "</script>";
+                    }
+
+                    $isManual = TRUE;
+                    
+                    if ($validSpecialisation && $validDate) {
+                        header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamidname=".$teamIDName."&maintaskid=".$mainTaskID."&statusid=".$statusID);
+                    }
                 }
             }
         }
-    }
 
     ?>
 
@@ -306,11 +315,11 @@
                                         <select id="team" name="team" required>
 
                                             <?php foreach ($taskDetails as $taskDetail):
-                                                echo "<option value='". $taskDetail['MainTeamID']."'>-- " . $taskDetail['TeamName']." --</option>";
+                                                echo "<option value='". $taskDetail['MainTeamID'].",".$taskDetail['TeamName']."'>-- " . $taskDetail['TeamName']." --</option>";
                                             endforeach; ?>
 
                                             <?php foreach ($teams as $team):
-                                                echo "<option value='". $team['MainTeamID']."'>" . $team['TeamName']."</option>";
+                                                echo "<option value='". $team['MainTeamID'].",".$team['TeamName']."'>" . $team['TeamName']."</option>";
                                             endforeach; ?>
 
                                         </select>
@@ -364,7 +373,7 @@
                                 
                                 </div>
 
-                                <button name="editTask" type="submit" class="btn">Click to Allocate to Staff</button>
+                                <button name="editTask" type="submit" class="btn">Allocate to Staff</button>
                                 
                             </form>
                         </div>

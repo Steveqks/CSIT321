@@ -32,6 +32,28 @@
 
         if (isset($_GET['maintaskid'])) {
             $mainTaskID = $_GET['maintaskid'];
+
+            if (isset($_GET['delete']) && $_GET['delete'] == "true") {
+
+                $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
+
+                $stmt->bind_param("i",$mainTaskID);
+
+                if ($stmt->execute()) {
+
+                    // Delete project
+                    $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
+        
+                    $stmt->bind_param("i",$mainTaskID);
+
+                    if ($stmt->execute()) {
+                        echo "<script type='text/javascript'>";
+                        echo "alert('Task has been deleted.');";
+                        echo "window.location = 'Manager_viewTasksList.php';";
+                        echo "</script>";
+                    }
+                }
+            }
         
             // get task detail of the specific task
             $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
@@ -142,11 +164,18 @@
                                         ?>
                                         </p>
                                     </div>
-                                    <?php } ?>
-                                
+                                <?php } ?>
+
+                                <div class="col-50">
+                                    <a href="Manager_viewTask.php?delete=true&maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="deleteTask" class="delbtn">Delete</button></a>
                                 </div>
 
-                                <a href="Manager_editTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Edit</button></a>
+                                <div class="col-50">
+                                    <a href="Manager_editTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Edit</button></a>
+                                </div>
+                            </div>
+
+                                
                                 
                             </form>
                         </div>
