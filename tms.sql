@@ -43,6 +43,21 @@ CREATE TABLE IF NOT EXISTS `attendance` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `availability`
+--
+
+DROP TABLE IF EXISTS `availability`;
+CREATE TABLE IF NOT EXISTS `availability` (
+  `UserID` int NOT NULL,
+  `WeekStartDate` date NOT NULL,
+  `DayOfWeek` varchar(10) NOT NULL,
+  `IsAvailable` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`UserID`,`WeekStartDate`,`DayOfWeek`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `company`
 --
 
