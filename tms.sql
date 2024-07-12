@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 02, 2024 at 05:33 AM
--- Server version: 8.3.0
--- PHP Version: 8.2.18
+-- Generation Time: Jul 12, 2024 at 07:58 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `AttendanceID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
   `ClockIn` datetime NOT NULL,
-  `ClockOut` datetime,
-  `StartBreak` datetime,
-  `EndBreak` datetime,
-  `TotalHours` float,
+  `ClockOut` datetime DEFAULT NULL,
+  `StartBreak` datetime DEFAULT NULL,
+  `EndBreak` datetime DEFAULT NULL,
+  `TotalHours` float DEFAULT NULL,
   PRIMARY KEY (`AttendanceID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -53,7 +53,32 @@ CREATE TABLE IF NOT EXISTS `availability` (
   `DayOfWeek` varchar(10) NOT NULL,
   `IsAvailable` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`UserID`,`WeekStartDate`,`DayOfWeek`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `calendar`
+--
+
+DROP TABLE IF EXISTS `calendar`;
+CREATE TABLE IF NOT EXISTS `calendar` (
+  `CalendarID` int NOT NULL AUTO_INCREMENT,
+  `CompanyID` int NOT NULL,
+  `DateName` varchar(32) NOT NULL,
+  `Date` date NOT NULL,
+  PRIMARY KEY (`CalendarID`),
+  KEY `calendar_ibfk_1` (`CompanyID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `calendar`
+--
+
+INSERT INTO `calendar` (`CalendarID`, `CompanyID`, `DateName`, `Date`) VALUES
+(8, 42, 'christmas day', '2024-12-25'),
+(9, 42, 'CO birthday', '2024-07-10'),
+(11, 42, 'valentines day', '2024-02-14');
 
 -- --------------------------------------------------------
 
@@ -289,27 +314,6 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `swap_requests`
---
-
-DROP TABLE IF EXISTS `swap_requests`;
-CREATE TABLE swap_requests (
-    SwapRequestID INT AUTO_INCREMENT PRIMARY KEY,
-    RequestorScheduleID INT NOT NULL,
-    RequestedScheduleID INT NOT NULL,
-    RequestorUserID INT NOT NULL,
-    RequestedUserID INT NOT NULL,
-    Status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
-    RequestDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (RequestorScheduleID) REFERENCES schedule(ScheduleID),
-    FOREIGN KEY (RequestedScheduleID) REFERENCES schedule(ScheduleID),
-    FOREIGN KEY (RequestorUserID) REFERENCES existinguser(UserID),
-    FOREIGN KEY (RequestedUserID) REFERENCES existinguser(UserID)
-);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `specialisation`
 --
 
@@ -354,6 +358,28 @@ CREATE TABLE IF NOT EXISTS `superadmin` (
 INSERT INTO `superadmin` (`SAdminID`, `FirstName`, `LastName`, `Email`, `Password`) VALUES
 (1, 'Superb', 'Administrator', 'blank13@paper.com', '666'),
 (2, 'super', 'admin', 'email.sa', '123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `swap_requests`
+--
+
+DROP TABLE IF EXISTS `swap_requests`;
+CREATE TABLE IF NOT EXISTS `swap_requests` (
+  `SwapRequestID` int NOT NULL AUTO_INCREMENT,
+  `RequestorScheduleID` int NOT NULL,
+  `RequestedScheduleID` int NOT NULL,
+  `RequestorUserID` int NOT NULL,
+  `RequestedUserID` int NOT NULL,
+  `Status` enum('Pending','Approved','Rejected') NOT NULL DEFAULT 'Pending',
+  `RequestDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`SwapRequestID`),
+  KEY `RequestorScheduleID` (`RequestorScheduleID`),
+  KEY `RequestedScheduleID` (`RequestedScheduleID`),
+  KEY `RequestorUserID` (`RequestorUserID`),
+  KEY `RequestedUserID` (`RequestedUserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -491,6 +517,18 @@ ALTER TABLE `attendance`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
+-- Constraints for table `availability`
+--
+ALTER TABLE `availability`
+  ADD CONSTRAINT `avaliability_constraint1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `calendar`
+--
+ALTER TABLE `calendar`
+  ADD CONSTRAINT `calendar_constraint1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
 -- Constraints for table `company`
 --
 ALTER TABLE `company`
@@ -546,6 +584,12 @@ ALTER TABLE `schedule`
 --
 ALTER TABLE `specialisation`
   ADD CONSTRAINT `specialisation_ibfk_1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `swap_requests`
+--
+ALTER TABLE `swap_requests`
+  ADD CONSTRAINT `constraint_swap_requests` FOREIGN KEY (`RequestorUserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `task`
