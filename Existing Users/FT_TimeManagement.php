@@ -163,7 +163,7 @@
                 <h2>Time Management</h2>
             </div>
 			<div class="time-buttons">
-                <a href="#" class="time-button">View Schedule</a>
+                <a href="FT_ViewSchedule.php" class="time-button">View Schedule</a>
                 <a href="#" class="time-button">View Hours Worked</a>
                 <a href="#" class="time-button">View Time Management</a>
             </div>
