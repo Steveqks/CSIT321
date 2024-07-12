@@ -237,19 +237,7 @@ CloseCon($conn);
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="PT_HomePage.php"><?php echo htmlspecialchars("$FirstName, Staff(PT)"); ?></a></li>
-                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
-                <li><a href="PT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="#">Time Management</a></li>
-                <li><a href="PT_ViewNewsFeed.php">View News Feed</a></li>
-                <li><a href="PT_SwapShift.php">Swap Shifts</a></li>
-                <li><a href="#">Set Availability</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
 
         <!-- RIGHT SECTION (SWAP SHIFT FORM) -->
         <div class="swap-section">

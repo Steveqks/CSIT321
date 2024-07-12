@@ -9,7 +9,7 @@ if (!isset($_SESSION['Email'])) {
 }
 
 $user_id = $_SESSION['UserID'];
-$firstName = $_SESSION['FirstName'];
+$FirstName = $_SESSION['FirstName'];
 $companyID = $_SESSION['CompanyID'];
 $role = $_SESSION['Role'];
 
@@ -149,19 +149,7 @@ CloseCon($conn);
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="PT_HomePage.php"><?php echo htmlspecialchars("$firstName, Staff(PT)"); ?></a></li>
-                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
-                <li><a href="PT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="#">Time Management</a></li>
-                <li><a href="PT_ViewNewsFeed.php">View News Feed</a></li>
-                <li><a href="#">Swap Shifts</a></li>
-                <li><a href="#">Set Availability</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
         
         <!-- RIGHT SECTION (NEWS FEED) -->
         <div class="content-section">
