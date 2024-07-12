@@ -24,22 +24,23 @@
 		$enddate = $_POST['enddate'];
 		$leavetype = $_POST['leavetype'];
 		$Comments = $_POST['Comments'];
+		$status = 0; //Unapproved by default
 		
 		if(isset($_POST['HalfDay']) && $_POST['HalfDay'] == "1")
 		{
 			$HalfDay = 1;
 			// Fetch tasks for the logged-in user
-			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay', '$Comments')")or die("Error Occured");
+			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
 			echo "<div class='message'>
-                      <p>Registration successfully!</p>
+                      <p>Leave Applied Successfully!</p>
                   </div> <br>";
 		}
 		else
 		{
 			$HalfDay = 0;
-			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay', '$Comments')")or die("Error Occured");
+			mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
 			echo "<div class='message'>
-                      <p>Registration successfully!</p>
+                      <p>Leave Applied Successfully!</p>
                   </div> <br>";
 		}
 	}
@@ -146,19 +147,7 @@
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="PT_HomePage.php"><?php echo "$FirstName, Staff(PT)"?></a></li>
-                <li><a href="PT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="PT_AttendanceManagement.php">Attendance Management</a></li>
-                <li><a href="PT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="#">Time Management</a></li>
-                <li><a href="#">View News Feed</a></li>
-                <li><a href="#">Swap Shifts</a></li>
-                <li><a href="#">Set Availability</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
         
         <!-- RIGHT SECTION (TASK TABLE) -->
         <div class="apply-leaves-section">

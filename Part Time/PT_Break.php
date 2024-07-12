@@ -31,11 +31,12 @@ $stmt_schedule->close();
 
 $hasWorkToday = $schedule ? true : false;
 
-// Check if user has already clocked in
+// Check if user has already clocked in and has not yet clocked out
 $clockInExists = false;
 $clockOutExists = false;
+$onBreak = false;
 if ($hasWorkToday) {
-    $sql_attendance = "SELECT ClockIn, ClockOut FROM attendance WHERE UserID = ? AND DATE(ClockIn) = ?";
+    $sql_attendance = "SELECT ClockIn, ClockOut, StartBreak, EndBreak FROM attendance WHERE UserID = ? AND DATE(ClockIn) = ?";
     $stmt_attendance = $conn->prepare($sql_attendance);
     $stmt_attendance->bind_param("is", $user_id, $today);
     $stmt_attendance->execute();
@@ -48,6 +49,9 @@ if ($hasWorkToday) {
         if (!is_null($attendance['ClockOut'])) {
             $clockOutExists = true;
         }
+        if (!is_null($attendance['StartBreak']) && is_null($attendance['EndBreak'])) {
+            $onBreak = true;
+        }
     }
 }
 
@@ -59,7 +63,7 @@ CloseCon($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take Attendance (PT)</title>
+    <title>Take Break (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -149,7 +153,7 @@ CloseCon($conn);
             margin-bottom: 10px;
         }
 
-        .clock-button {
+        .clock-button, .break-button {
             display: inline-block;
             padding: 10px 20px;
             background-color: green;
@@ -161,15 +165,15 @@ CloseCon($conn);
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .clock-button:hover {
+        .clock-button:hover, .break-button:hover {
             background-color: #004d00;
         }
 
-        .clock-out-button {
+        .end-break-button {
             background-color: red;
         }
 
-        .clock-out-button:hover {
+        .end-break-button:hover {
             background-color: darkred;
         }
 
@@ -205,11 +209,11 @@ CloseCon($conn);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <?php include 'navbar.php'; ?>
 
-        <!-- RIGHT SECTION (TAKE ATTENDANCE) -->
+        <!-- RIGHT SECTION (TAKE BREAK) -->
         <div class="attendance-section">
             <div class="attendance-header">
-                <i class="fas fa-clock"></i>
-                <h2>Take Attendance</h2>
+                <i class="fas fa-coffee"></i>
+                <h2>Take Break</h2>
             </div>
 
             <!-- Display feedback messages -->
@@ -220,32 +224,28 @@ CloseCon($conn);
             <?php endif; ?>
 
             <?php if ($hasWorkToday): ?>
-                <?php if (!$clockInExists): ?>
-                    <!-- Clock In Page -->
-                    <div class="info-text">
-                        Your shift today starts at <span class="underline"><?php echo date("H:i", strtotime($schedule['StartWork'])); ?>h</span> and ends at <span class="underline"><?php echo date("H:i", strtotime($schedule['EndWork'])); ?>h</span>.
-                    </div>
-                    <div>
-                        The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
-                    </div>
-                    <div class="button-container">
-                        <a href="PT_ClockIn.php" class="clock-button">Clock In</a>
-                    </div>
-                <?php elseif ($clockInExists && !$clockOutExists): ?>
-                    <!-- Clock Out Page -->
-                    <div class="info-text">
-                        You have already clocked in today.
-                    </div>
-                    <div>
-                        The time now is: <span class="underline"><?php echo date("H:i"); ?>h.</span>
-                    </div>
-                    <div class="button-container">
-                        <a href="PT_ClockOut.php" class="clock-button clock-out-button">Clock Out</a>
-                    </div>
+                <?php if ($clockInExists && !$clockOutExists): ?>
+                    <?php if (!$onBreak): ?>
+                        <!-- Start Break Page -->
+                        <div class="info-text">
+                            You are currently working. Would you like to start your break?
+                        </div>
+                        <div class="button-container">
+                            <a href="PT_StartBreak.php" class="break-button">Start Break</a>
+                        </div>
+                    <?php else: ?>
+                        <!-- End Break Page -->
+                        <div class="info-text">
+                            You are currently on a break. Would you like to end your break?
+                        </div>
+                        <div class="button-container">
+                            <a href="PT_EndBreak.php" class="break-button end-break-button">End Break</a>
+                        </div>
+                    <?php endif; ?>
                 <?php else: ?>
-                    <!-- Already Clocked Out -->
+                    <!-- Not Clocked In -->
                     <div class="info-text">
-                        You have already clocked in and out today.
+                        You need to clock in before you can take a break.
                     </div>
                 <?php endif; ?>
             <?php else: ?>
