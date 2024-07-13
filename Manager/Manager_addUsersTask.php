@@ -64,8 +64,14 @@
             $specialisationName = $specialisationIDNameE[1];
         }
 
-        if(isset($_GET['mainteamid'])) {
-            $teamID = $_GET['mainteamid'];
+        if(isset($_GET['mainteamidname'])) {
+            $teamIDName = $_GET['mainteamidname'];
+
+            $teamIDNameE = explode(",", $teamIDName);
+
+            $mainTeamID = $teamIDNameE[0];
+            
+            $mainTeamName = $teamIDNameE[1];
         }
 
         if(isset($_GET['autoallocate'])) {
@@ -98,8 +104,14 @@
             $priority = $_POST['priority'];
         }
 
-        if(isset($_POST['mainteamid'])) {
-            $teamID = $_POST['mainteamid'];
+        if(isset($_POST['mainteamidname'])) {
+            $teamIDName = $_POST['mainteamidname'];
+
+            $teamIDNameE = explode(",", $teamIDName);
+
+            $mainTeamID = $teamIDNameE[0];
+            
+            $mainTeamName = $teamIDNameE[1];
         }
 
         if(isset($_POST['specialisationidname'])) {
@@ -122,6 +134,7 @@
 
         if ((isset($_GET['ismanual']) == 1)) {
 
+            // PT Users
             $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
                 . " INNER JOIN team b ON a.UserID = b.UserID"
                 . " LEFT JOIN schedule c ON a.UserID = c.UserID"
@@ -129,7 +142,7 @@
                 . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
                 . " WHERE a.SpecialisationID = ".$specialisationID
                 . " AND a.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$teamID
+                . " AND b.MainTeamID = ".$mainTeamID
                 . " AND a.Role = 'PT'"
                 . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'"
                 . " GROUP BY a.UserID"
@@ -143,15 +156,18 @@
 
 
             // FT Users
-            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks,"
+                . " (SELECT COUNT(*) FROM leaves WHERE UserID = a.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
+                . " FROM existinguser a"
                 . " INNER JOIN team b ON a.UserID = b.UserID"
                 . " LEFT JOIN task d ON b.UserID = d.UserID"
                 . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
                 . " WHERE a.SpecialisationID = ".$specialisationID
                 . " AND a.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$teamID
+                . " AND b.MainTeamID = ".$mainTeamID
                 . " AND a.Role = 'FT'"
-                . " GROUP BY a.UserID"
+                . " GROUP BY a.UserID, onLeave"
+                . " HAVING onLeave = 0"
                 . " ORDER BY totalTasks ASC";
 
             $stmt = $conn->prepare($sql);
@@ -167,6 +183,7 @@
             // auto allocation
             if(isset($_POST['numstaff'])) {
 
+                // PT Users
                 $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
                     . " INNER JOIN team b ON a.UserID = b.UserID"
                     . " LEFT JOIN schedule c ON a.UserID = c.UserID"
@@ -174,7 +191,7 @@
                     . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
                     . " WHERE a.SpecialisationID = ".$specialisationID
                     . " AND a.Status = ".$userStatus
-                    . " AND b.MainTeamID = ".$teamID
+                    . " AND b.MainTeamID = ".$mainTeamID
                     . " AND a.Role = 'PT'"
                     . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'"
                     . " GROUP BY a.UserID"
@@ -190,21 +207,26 @@
                 //echo "SQL1 ;; ".$sql;
 
                 // FT Users
-                $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
+                $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks,"
+                    . " (SELECT COUNT(*) FROM leaves WHERE UserID = a.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
+                    . " FROM existinguser a"
                     . " INNER JOIN team b ON a.UserID = b.UserID"
                     . " LEFT JOIN task d ON b.UserID = d.UserID"
                     . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
                     . " WHERE a.SpecialisationID = ".$specialisationID
                     . " AND a.Status = ".$userStatus
-                    . " AND b.MainTeamID = ".$teamID
+                    . " AND b.MainTeamID = ".$mainTeamID
                     . " AND a.Role = 'FT'"
-                    . " GROUP BY a.UserID"
+                    . " GROUP BY a.UserID, onLeave"
+                    . " HAVING onLeave = 0"
                     . " ORDER BY totalTasks ASC";
                 
                 if (count($PTUsers) < $numStaff) {
 
                     $FTLimit = $numStaff - count($PTUsers);
                     $sql .= " LIMIT ".$FTLimit;
+                } else {
+                    $sql .= " LIMIT ".$numStaff;
                 }
 
                 //echo "<br> SQL2 ;; ".$sql;
@@ -235,7 +257,7 @@
 
                                 foreach ($PTUsers as $user):
 
-                                    $stmt->bind_param("iii",$teamID,$newMainTaskID, $user['UserID']);
+                                    $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
 
                                     $stmt->execute();
 
@@ -245,7 +267,7 @@
 
                                     foreach ($FTUsers as $user):
 
-                                        $stmt->bind_param("iii",$teamID,$newMainTaskID, $user['UserID']);
+                                        $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
 
                                         $stmt->execute();
 
@@ -260,7 +282,7 @@
                             } else {
                                 foreach ($FTUsers as $user):
 
-                                    $stmt->bind_param("iii",$teamID,$newMainTaskID, $user['UserID']);
+                                    $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
 
                                     $stmt->execute();
 
@@ -284,8 +306,8 @@
                 } else {
                     $autoallocate = TRUE;
                     echo "<script type='text/javascript'>";
-                    echo "alert('The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
-                    echo "window.location = 'Manager_addUsersTask.php?taskname=".$taskName."&taskdesc=".$taskDesc."&specialisationidname=".$specialisationIDName."&startdate=".$startDate."&enddate=".$endDate."&priority=".$priority."&autoallocate=".$autoallocate."&numstaffteam=".$numStaffTeam."&mainteamid=".$teamID."';";
+                    echo "alert('There are ".$numStaffTeam." with ".$specialisationName." in ".$mainTeamName.". The indicated number of staff with the specialisation needed for the task is more than what is available in the team');";
+                    echo "window.location = 'Manager_addUsersTask.php?taskname=".$taskName."&taskdesc=".$taskDesc."&specialisationidname=".$specialisationIDName."&startdate=".$startDate."&enddate=".$endDate."&priority=".$priority."&autoallocate=".$autoallocate."&numstaffteam=".$numStaffTeam."&mainteamidname=".$teamIDName."';";
                     echo "</script>";
                 }
 
@@ -310,13 +332,13 @@
                     
                     foreach ($selectStaff as $selectStaffID) {
 
-                        $stmt->bind_param("iii",$teamID,$newMainTaskID, $selectStaffID);
+                        $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $selectStaffID);
 
                         $stmt->execute();
 
                         echo "<script type='text/javascript'>";
                         echo "alert('Task has been allocated.');";
-                        echo "window.location = 'Manager_viewTasks.php';";
+                        echo "window.location = 'Manager_viewTasksList.php';";
                         echo "</script>";
                     }
 
@@ -363,7 +385,7 @@
                                         <input type="hidden" name="enddate" value="<?php echo $endDate; ?>">
                                         <input type="hidden" name="priority" value="<?php echo $priority; ?>">
                                         <input type="hidden" name="numstaffteam" value="<?php echo $numStaffTeam; ?>">
-                                        <input type="hidden" name="mainteamid" value="<?php echo $teamID; ?>">
+                                        <input type="hidden" name="mainteamidname" value="<?php echo $teamIDName; ?>">
 
                                         <?php
                                         if (isset($_GET['autoallocate']) && $_GET['autoallocate'] == 1) { ?>
@@ -399,7 +421,7 @@
                                 
                                 </div>
 
-                                <button name="addTask" type="submit" class="btn">Click to Allocate to Staff</button>
+                                <button name="addTask" type="submit" class="btn">Save</button>
                                 
                             </form>
                         </div>

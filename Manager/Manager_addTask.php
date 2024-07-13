@@ -95,9 +95,15 @@
 
             $priority = $_POST['priority'];
 
-            if (isset($_POST['team'])) {
-                $teamID = $_POST['team'];
-            }
+
+            $teamIDName = $_POST['team'];
+
+            $teamIDNameE = explode(",", $teamIDName);
+
+            $mainTeamID = $teamIDNameE[0];
+            
+            $mainTeamName = $teamIDNameE[1];
+
 
             $specialisationIDName = $_POST['specialisationidname'];
 
@@ -109,14 +115,12 @@
 
 
             // get PT staff that is working on the specific dates
-            $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-                . " SELECT c.UserID FROM abc a"
-                . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            $sql = "SELECT c.UserID FROM team b"
                 . " INNER JOIN existinguser c on c.UserID = b.UserID"
                 . " INNER JOIN schedule d ON c.UserID = d.UserID"
                 . " WHERE c.SpecialisationID = ".$specialisationIDSub
                 . " AND c.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$teamID
+                . " AND b.MainTeamID = ".$mainTeamID
                 . " AND c.Role = 'PT'"
                 . " AND d.WorkDate >= '".$startDate."' AND d.WorkDate <= '".$endDate."'"
                 . " GROUP BY c.UserID;";
@@ -130,15 +134,16 @@
             //echo "SQL1 ;; ".$sql;
 
             // FT Users
-            $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-                . " SELECT c.UserID FROM abc a"
-                . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            $sql = "SELECT c.UserID,"
+                . " (SELECT COUNT(*) FROM leaves WHERE UserID = c.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
+                . " FROM team b"
                 . " INNER JOIN existinguser c on c.UserID = b.UserID"
                 . " WHERE c.SpecialisationID = ".$specialisationIDSub
                 . " AND c.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$teamID
+                . " AND b.MainTeamID = ".$mainTeamID
                 . " AND c.Role = 'FT'"
-                . " GROUP BY c.UserID;";
+                . " GROUP BY c.UserID, onLeave"
+                . " HAVING onLeave = 0;";
 
             //echo "<br> SQL2 ;; ".$sql;
 
@@ -152,11 +157,10 @@
 
             // find how many and which staff with the specific specialisation (FT & PT)
             // to put into NumStaff column in taskinfo table
-            $sql = "WITH abc AS (SELECT MainTeamID FROM teaminfo WHERE ManagerID = ".$userID.")"
-                . " SELECT c.UserID FROM abc a"
-                . " INNER JOIN team b on a.MainTeamID = b.MainTeamID"
+            $sql = "SELECT c.UserID FROM team b"
                 . " INNER JOIN existinguser c on c.UserID = b.UserID"
                 . " WHERE c.SpecialisationID = ".$specialisationIDSub
+                . " AND b.MainTeamID = ".$mainTeamID
                 . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
                 . " GROUP BY c.UserID;";
 
@@ -201,7 +205,7 @@
                 $autoallocate = TRUE;
 
                 if ($validSpecialisation && $validDate) {
-                    header('location: Manager_addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam.'&mainteamid='.$teamID);
+                    header('location: Manager_addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam.'&mainteamidname='.$teamIDName);
                 }
 
 
@@ -209,7 +213,7 @@
             } else {
 
                 // indicate that there are staff in the team with the specific specialisation
-                if ($numStaffTeam > 0) {
+                if (count($PTUsers) > 0 || count($FTUsers) > 0) {
     
                     $validSpecialisation = TRUE;
                 
@@ -236,7 +240,7 @@
                 $isManual = TRUE;
                 
                 if ($validSpecialisation && $validDate) {
-                    header('location: Manager_addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam.'&mainteamid='.$teamID);
+                    header('location: Manager_addUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam.'&mainteamidname='.$teamIDName);
                 }
             }
         }
@@ -289,7 +293,7 @@
                                         <label for="team">Team</label><!--<p id="disableTeam" style="color:red;"></p>-->
                                         <select id="team" name="team" required>
                                             <?php foreach ($teams as $team):
-                                                echo "<option value='". $team['MainTeamID']."'>" . $team['TeamName']."</option>";
+                                                echo "<option value='". $team['MainTeamID'].",".$team['TeamName']."'>" . $team['TeamName']."</option>";
                                             endforeach; ?>
                                         </select>
                                     
@@ -323,7 +327,7 @@
                                 
                                 </div>
 
-                                <button name="addTask" type="submit" class="btn">Click to Allocate to Staff</button>
+                                <button name="addTask" type="submit" class="btn">Allocate to Staff</button>
                                 
                             </form>
                         </div>

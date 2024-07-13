@@ -7,7 +7,7 @@ body {
     height: 20vh;
     overflow: hidden;
     text-align: left;
-    padding: 10px;
+    padding: 20px;
 }
 .logo {
     height: 100%;
@@ -18,42 +18,62 @@ body {
     border: 1px solid black;
     height: auto;
 }
-.navBar {
-    border: 1px solid black;
-    width: 200px;
-    padding: 0;
-    background-color: #f8f8f8;
-    box-sizing: border-box;
+
+/* Side Nav */
+.vertical-menu {
+    width: 20%;
+    border-right: 1px solid black;
+    padding: 0px;
 }
 
-.navBar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 200px;
-}
-
-.navBar li {
-    margin: 0;
-}
-
-.navBar a {
-    text-decoration: none;
-    color: #333;
+.vertical-menu a {
+    background-color: #eee;
+    color: black;
     display: block;
-    width: calc(100% - 1px);
-    padding: 10px;
-    border: 0.5px solid black;
-    transition: background-color 0.3s, color 0.3s;
-    box-sizing: border-box;
-    border-width: 1px 0px 0px 0px;
+    padding: 12px;
+    text-decoration: none;
+    
+    border-style: solid;
+    border-width: thin;
 }
 
-.navBar a:hover {
-    background-color: #ddd;
-    color: #000;
-    border: 0.5px solid black;
+.show {
+    background-color: white;
+    color: black;
+    display: block;
+    text-decoration: none;
+
+    border-style: solid;
+    border-width: thin;
 }
+
+.show a {
+    border-style: solid;
+    border-width: thin;
+    background-color: #fff;
+}
+
+.vertical-menu a:hover {
+    background-color: #ccc;
+}
+
+.vertical-menu a.active {
+    background-color: #04AA6D;
+    color: white;
+}
+
+#myButton1:hover , #myButton2:hover , #myButton3:hover {
+    background-color: #ccc;
+}
+
+#myButton1.expanded , #myButton2.expanded , #myButton3.expanded {
+    background-color: #bbb;
+}
+
+#linkContainer1 , #linkContainer2 , #linkContainer3 {
+    display: none;
+}
+
 .content {
     border-radius: 5px;
     width: 80%;
