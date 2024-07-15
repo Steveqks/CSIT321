@@ -16,6 +16,15 @@ $specialisation_id = $_SESSION['SpecialisationID'];
 // Connect to the database
 $conn = OpenCon();
 
+$limit = 10; // Number of entries to show in a page.
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+} else {
+    $page = 1;
+}
+
+$start_from = ($page - 1) * $limit;
+
 // Fetch pending swap requests where the logged-in user is either the requestor or the requested user
 $sql_swap_requests = "SELECT sr.SwapRequestID, sr.RequestorScheduleID, sr.RequestedScheduleID, 
                       s1.WorkDate AS RequestorWorkDate, s1.StartWork AS RequestorStartWork, s1.EndWork AS RequestorEndWork,
@@ -27,15 +36,46 @@ $sql_swap_requests = "SELECT sr.SwapRequestID, sr.RequestorScheduleID, sr.Reques
                       INNER JOIN schedule s2 ON sr.RequestedScheduleID = s2.ScheduleID
                       INNER JOIN existinguser e1 ON s1.UserID = e1.UserID
                       INNER JOIN existinguser e2 ON s2.UserID = e2.UserID
-                      WHERE (sr.Status = 'Pending') AND (sr.RequestorUserID = ? OR sr.RequestedUserID = ?)";
+                      WHERE (sr.Status = 'Pending') AND (sr.RequestorUserID = ? OR sr.RequestedUserID = ?)
+                      LIMIT $start_from, $limit";
 $stmt_swap_requests = $conn->prepare($sql_swap_requests);
 $stmt_swap_requests->bind_param("ii", $user_id, $user_id);
 $stmt_swap_requests->execute();
 $result_swap_requests = $stmt_swap_requests->get_result();
 $swap_requests = $result_swap_requests->fetch_all(MYSQLI_ASSOC);
-$stmt_swap_requests->close();
 
+// Get the total number of records
+$sql_total = "SELECT COUNT(*) FROM swap_requests WHERE (Status = 'Pending') AND (RequestorUserID = ? OR RequestedUserID = ?)";
+$stmt_total = $conn->prepare($sql_total);
+$stmt_total->bind_param("ii", $user_id, $user_id);
+$stmt_total->execute();
+$stmt_total->bind_result($total_records);
+$stmt_total->fetch();
+
+$total_pages = ceil($total_records / $limit);
+
+$stmt_swap_requests->close();
+$stmt_total->close();
 CloseCon($conn);
+
+// Function to calculate pagination range
+function getPaginationRange($current_page, $total_pages, $display_range = 10)
+{
+    if ($total_pages == 0) {
+        return [];
+    }
+
+    $start = max(1, $current_page - intval($display_range / 2));
+    $end = min($total_pages, $start + $display_range - 1);
+
+    if ($end - $start < $display_range - 1) {
+        $start = max(1, $end - $display_range + 1);
+    }
+
+    return range($start, $end);
+}
+
+$pagination_range = getPaginationRange($page, $total_pages);
 ?>
 
 <!DOCTYPE html>
@@ -183,6 +223,45 @@ CloseCon($conn);
         .error {
             color: red;
         }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            display: inline;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 2px;
+            text-decoration: none;
+            color: #007BFF;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .active a {
+            background-color: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+
+        .pagination .disabled a {
+            color: #ccc;
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
 </head>
 <body>
@@ -256,6 +335,31 @@ CloseCon($conn);
                     <?php endif; ?>
                 </tbody>
             </table>
+
+            <?php if ($total_pages > 1): ?>
+            <!-- Pagination -->
+            <ul class="pagination">
+                <?php if ($page > 1): ?>
+                    <li><a href="PT_ViewSwapRequests.php?page=<?php echo $page - 1; ?>">&laquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                <?php endif; ?>
+
+                <?php foreach ($pagination_range as $p): ?>
+                    <?php if ($p == $page): ?>
+                        <li class="active"><a href="#"><?php echo $p; ?></a></li>
+                    <?php else: ?>
+                        <li><a href="PT_ViewSwapRequests.php?page=<?php echo $p; ?>"><?php echo $p; ?></a></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
+                <?php if ($page < $total_pages): ?>
+                    <li><a href="PT_ViewSwapRequests.php?page=<?php echo $page + 1; ?>">&raquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&raquo;</a></li>
+                <?php endif; ?>
+            </ul>
+            <?php endif; ?>
         </div>
     </div>
 </body>
