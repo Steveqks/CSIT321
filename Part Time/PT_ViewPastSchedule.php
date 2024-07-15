@@ -9,38 +9,46 @@ if (!isset($_SESSION['Email'])) {
 }
 
 $user_id = $_SESSION['UserID'];
-$Email = $_SESSION['Email'];
 $FirstName = $_SESSION['FirstName'];
+$companyID = $_SESSION['CompanyID'];
+$role = $_SESSION['Role'];
 
 // Connect to the database
 $conn = OpenCon();
 
-// Pagination logic
-$limit = 10; // Number of entries to show in a page
-$page = isset($_GET["page"]) ? $_GET["page"] : 1;
+$limit = 10; // Number of entries to show in a page.
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+} else {
+    $page = 1;
+}
+
 $start_from = ($page - 1) * $limit;
 
-// Fetch total number of leave records
-$sql_total = "SELECT COUNT(*) FROM leaves WHERE UserID = ?";
+// Fetch past schedule for the user
+$sql = "SELECT WorkDate, StartWork, EndWork 
+        FROM schedule 
+        WHERE UserID = ? AND WorkDate < CURDATE()
+        ORDER BY WorkDate DESC
+        LIMIT ?, ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iii", $user_id, $start_from, $limit);
+$stmt->execute();
+$result = $stmt->get_result();
+$pastSchedule = $result->fetch_all(MYSQLI_ASSOC);
+
+// Get the total number of records
+$sql_total = "SELECT COUNT(*) FROM schedule WHERE UserID = ? AND WorkDate < CURDATE()";
 $stmt_total = $conn->prepare($sql_total);
 $stmt_total->bind_param("i", $user_id);
 $stmt_total->execute();
 $stmt_total->bind_result($total_records);
 $stmt_total->fetch();
-$stmt_total->close();
 
 $total_pages = ceil($total_records / $limit);
 
-// Fetch leave records for the current page
-$sql = "SELECT StartDate, EndDate, LeaveType, HalfDay, Comments FROM leaves WHERE UserID = ? LIMIT ?, ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $user_id, $start_from, $limit);
-$stmt->execute();
-$result = $stmt->get_result();
-$leaves = $result->fetch_all(MYSQLI_ASSOC);
-
-// Close the database connection
 $stmt->close();
+$stmt_total->close();
 CloseCon($conn);
 
 // Function to calculate pagination range
@@ -64,7 +72,7 @@ $pagination_range = getPaginationRange($page, $total_pages);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Leaves (PT)</title>
+    <title>View Past Schedule - Part-Time Staff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -88,7 +96,7 @@ $pagination_range = getPaginationRange($page, $total_pages);
         .middle-section {
             display: flex;
             border: 1px solid black;
-            height: 80vh;
+            height: 95vh;
         }
 
         .navbar {
@@ -128,36 +136,46 @@ $pagination_range = getPaginationRange($page, $total_pages);
             border: 0.5px solid black;
         }
 
-        .view-leaves-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .view-leaves-table th, .view-leaves-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .view-leaves-table th {
-            background-color: #f2f2f2;
-        }
-
-        .view-leaves-section {
+        .content-section {
             padding: 20px;
             flex-grow: 1;
         }
 
-        .view-leaves-header {
-            display: inline-flex;
-            align-items: center;
+        .header {
+            display: block;
             border-bottom: 1px solid black;
             padding-bottom: 5px;
             margin-bottom: 20px;
         }
 
-        .view-leaves-header i {
-            margin-right: 10px;
+        .header h2 {
+            margin: 0;
+            display: inline-block;
+        }
+
+        .view-past-schedule-link {
+            margin-top: 10px;
+            margin-bottom: 20px; /* Add margin-bottom for spacing */
+            display: block;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .schedule-table th {
+            background-color: #f2f2f2;
+        }
+
+        .schedule-table td {
+            white-space: nowrap;
         }
 
         .pagination {
@@ -211,47 +229,42 @@ $pagination_range = getPaginationRange($page, $total_pages);
         <!-- LEFT SECTION (NAVIGATION BAR) -->
         <?php include 'navbar.php'; ?>
         
-        <!-- RIGHT SECTION (LEAVES TABLE) -->
-        <div class="view-leaves-section">
-            <div class="view-leaves-header">
-                <i class="fas fa-user"></i>
-                <h2>View My Leaves</h2>
+        <!-- RIGHT SECTION (PAST SCHEDULE) -->
+        <div class="content-section">
+            <div class="header">
+                <i class="fas fa-calendar-alt"></i>
+                <h2>View Past Schedule</h2>
             </div>
-			
-            <table class="view-leaves-table">
+            <table class="schedule-table">
                 <thead>
                     <tr>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Leave Type</th>
-                        <th>Half Day</th>
-                        <th>Comments</th>
+                        <th>Work Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($leaves) > 0): ?>
-                        <?php foreach ($leaves as $leave): ?>
+                    <?php if (count($pastSchedule) > 0): ?>
+                        <?php foreach ($pastSchedule as $shift): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($leave['StartDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['EndDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['LeaveType']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['HalfDay']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['Comments']); ?></td>
+                                <td><?php echo htmlspecialchars($shift['WorkDate']); ?></td>
+                                <td><?php echo htmlspecialchars($shift['StartWork']); ?></td>
+                                <td><?php echo htmlspecialchars($shift['EndWork']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">No Leaves Applied.</td>
+                            <td colspan="3">No past schedules found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
 
             <!-- Pagination -->
-            <?php if ($total_pages > 1 && $total_records > 0): ?>
+            <?php if ($total_pages > 1): ?>
             <ul class="pagination">
                 <?php if ($page > 1): ?>
-                    <li><a href="PT_ViewLeaves.php?page=<?php echo $page - 1; ?>">&laquo;</a></li>
+                    <li><a href="PT_ViewPastSchedule.php?page=<?php echo $page - 1; ?>">&laquo;</a></li>
                 <?php else: ?>
                     <li class="disabled"><a href="#">&laquo;</a></li>
                 <?php endif; ?>
@@ -260,12 +273,12 @@ $pagination_range = getPaginationRange($page, $total_pages);
                     <?php if ($p == $page): ?>
                         <li class="active"><a href="#"><?php echo $p; ?></a></li>
                     <?php else: ?>
-                        <li><a href="PT_ViewLeaves.php?page=<?php echo $p; ?>"><?php echo $p; ?></a></li>
+                        <li><a href="PT_ViewPastSchedule.php?page=<?php echo $p; ?>"><?php echo $p; ?></a></li>
                     <?php endif; ?>
                 <?php endforeach; ?>
 
                 <?php if ($page < $total_pages): ?>
-                    <li><a href="PT_ViewLeaves.php?page=<?php echo $page + 1; ?>">&raquo;</a></li>
+                    <li><a href="PT_ViewPastSchedule.php?page=<?php echo $page + 1; ?>">&raquo;</a></li>
                 <?php else: ?>
                     <li class="disabled"><a href="#">&raquo;</a></li>
                 <?php endif; ?>

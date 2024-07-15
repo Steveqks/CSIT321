@@ -42,6 +42,21 @@ $attendance = $result->fetch_all(MYSQLI_ASSOC);
 // Close the database connection
 $stmt->close();
 CloseCon($conn);
+
+// Function to calculate pagination range
+function getPaginationRange($current_page, $total_pages, $display_range = 10)
+{
+    $start = max(1, $current_page - intval($display_range / 2));
+    $end = min($total_pages, $start + $display_range - 1);
+
+    if ($end - $start < $display_range - 1) {
+        $start = max(1, $end - $display_range + 1);
+    }
+
+    return range($start, $end);
+}
+
+$pagination_range = getPaginationRange($page, $total_pages);
 ?>
 
 <!DOCTYPE html>
@@ -157,33 +172,42 @@ CloseCon($conn);
         }
 
         .pagination {
+            margin-top: 20px;
             display: flex;
             justify-content: center;
-            padding: 10px 0;
+            list-style: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            display: inline;
         }
 
         .pagination a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 2px;
             text-decoration: none;
-            color: #333;
-            padding: 8px 16px;
+            color: #007BFF;
             border: 1px solid #ddd;
-            margin: 0 4px;
-            transition: background-color 0.3s, color 0.3s;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
         .pagination a:hover {
             background-color: #ddd;
-            color: #000;
         }
 
-        .pagination a.active {
-            background-color: #333;
+        .pagination .active a {
+            background-color: #007BFF;
             color: white;
+            border-color: #007BFF;
         }
 
-        .pagination a.disabled {
+        .pagination .disabled a {
+            color: #ccc;
             pointer-events: none;
-            opacity: 0.5;
+            cursor: default;
         }
     </style>
 </head>
@@ -231,51 +255,29 @@ CloseCon($conn);
                 </tbody>
             </table>
 
-            <!-- Pagination controls -->
-            <?php if ($total_pages > 1): ?>
-            <div class="pagination">
-                <a href="PT_ViewAttendance.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
-                
-                <?php
-                // Adjust the start and end pages to show a maximum of 5 page buttons
-                if ($total_pages > 5) {
-                    if ($page <= 3) {
-                        $start_page = 1;
-                        $end_page = 5;
-                    } elseif ($page > $total_pages - 3) {
-                        $start_page = $total_pages - 4;
-                        $end_page = $total_pages;
-                    } else {
-                        $start_page = $page - 2;
-                        $end_page = $page + 2;
-                    }
-                } else {
-                    $start_page = 1;
-                    $end_page = $total_pages;
-                }
+            <!-- Pagination -->
+            <?php if ($total_pages > 1 && $total_records > 0): ?>
+            <ul class="pagination">
+                <?php if ($page > 1): ?>
+                    <li><a href="PT_ViewAttendance.php?page=<?php echo $page - 1; ?>">&laquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                <?php endif; ?>
 
-                if ($start_page > 1) {
-                    echo '<a href="PT_ViewAttendance.php?page=1">1</a>';
-                    if ($start_page > 2) {
-                        echo '<span>...</span>';
-                    }
-                }
+                <?php foreach ($pagination_range as $p): ?>
+                    <?php if ($p == $page): ?>
+                        <li class="active"><a href="#"><?php echo $p; ?></a></li>
+                    <?php else: ?>
+                        <li><a href="PT_ViewAttendance.php?page=<?php echo $p; ?>"><?php echo $p; ?></a></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
 
-                for ($i = $start_page; $i <= $end_page; $i++):
-                    ?>
-                    <a href="PT_ViewAttendance.php?page=<?php echo $i; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
-                <?php endfor;
-
-                if ($end_page < $total_pages) {
-                    if ($end_page < $total_pages - 1) {
-                        echo '<span>...</span>';
-                    }
-                    echo '<a href="PT_ViewAttendance.php?page=' . $total_pages . '">' . $total_pages . '</a>';
-                }
-                ?>
-
-                <a href="PT_ViewAttendance.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
-            </div>
+                <?php if ($page < $total_pages): ?>
+                    <li><a href="PT_ViewAttendance.php?page=<?php echo $page + 1; ?>">&raquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&raquo;</a></li>
+                <?php endif; ?>
+            </ul>
             <?php endif; ?>
         </div>
     </div>
