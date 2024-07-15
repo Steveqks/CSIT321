@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 12, 2024 at 07:58 AM
+-- Generation Time: Jul 15, 2024 at 07:54 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -38,7 +38,14 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `TotalHours` float DEFAULT NULL,
   PRIMARY KEY (`AttendanceID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `attendance`
+--
+
+INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `StartBreak`, `EndBreak`, `TotalHours`) VALUES
+(1, 30, '2024-07-15 11:46:18', '2024-07-15 11:51:04', '2024-07-15 11:47:26', '2024-07-15 11:48:19', 0.0647222);
 
 -- --------------------------------------------------------
 
@@ -54,6 +61,27 @@ CREATE TABLE IF NOT EXISTS `availability` (
   `IsAvailable` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`UserID`,`WeekStartDate`,`DayOfWeek`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `availability`
+--
+
+INSERT INTO `availability` (`UserID`, `WeekStartDate`, `DayOfWeek`, `IsAvailable`) VALUES
+(30, '2024-07-15', 'Friday', 1),
+(30, '2024-07-15', 'Monday', 1),
+(30, '2024-07-15', 'Saturday', 1),
+(30, '2024-07-15', 'Sunday', 1),
+(30, '2024-07-15', 'Thursday', 1),
+(30, '2024-07-15', 'Tuesday', 1),
+(30, '2024-07-15', 'Wednesday', 1),
+(30, '2024-07-22', 'Friday', 0),
+(30, '2024-07-22', 'Monday', 0),
+(30, '2024-07-22', 'Saturday', 1),
+(30, '2024-07-22', 'Sunday', 0),
+(30, '2024-07-22', 'Thursday', 1),
+(30, '2024-07-22', 'Tuesday', 1),
+(30, '2024-07-22', 'Wednesday', 0),
+(31, '2024-07-15', 'Thursday', 1);
 
 -- --------------------------------------------------------
 
@@ -95,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`CompanyID`),
   KEY `PlanID` (`PlanID`)
-) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
@@ -119,7 +147,8 @@ INSERT INTO `company` (`CompanyID`, `CompanyName`, `CompanyUEN`, `PlanID`, `Stat
 (67, 'ffflllemail', '1234567890', 1, 1),
 (68, 'emale', '1234567890', 3, 1),
 (69, 'Company1', '1234567890', 1, 1),
-(82, '123123333', '1233312', 3, 1);
+(82, '123123333', '1233312', 3, 1),
+(83, 'Prem Company', '12345678A', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -138,16 +167,17 @@ CREATE TABLE IF NOT EXISTS `companyadmin` (
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`CAdminID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `companyadmin`
 --
 
 INSERT INTO `companyadmin` (`CAdminID`, `CompanyID`, `FirstName`, `LastName`, `Email`, `Password`, `Status`) VALUES
-(32, 3, 'abc', 'canteenman', 'foodguy@mail.com', '123', 0),
-(35, 82, '123123', '231231', 'email.ca', '123', 0),
-(36, 3, 'canteen', 'man 68', 'canteen@blkB', '123', 0);
+(32, 3, 'abc', 'canteenman', 'foodguy@mail.com', '123', 1),
+(35, 82, '123123', '231231', 'email@ca', '123', 1),
+(36, 3, 'canteen', 'man 68', 'canteen@blkB', '123', 1),
+(37, 83, 'Prem', 'P', 'premp@email.com', '123', 0);
 
 -- --------------------------------------------------------
 
@@ -180,7 +210,7 @@ INSERT INTO `existinguser` (`UserID`, `CompanyID`, `SpecialisationID`, `Role`, `
 (27, 82, 77, 'Manager', 'manager', '1', 'T', 'manager1@email.com', '123', 1),
 (28, 82, 77, 'FT', 'FT', '1', '1', 'FT1@email.com', '123', 1),
 (29, 82, 78, 'FT', 'FT', '2', 'M', 'FT2@email.com', '123', 1),
-(30, 82, 78, 'PT', 'PT', '1', 'M', 'PT1@email.com', '31', 1),
+(30, 82, 78, 'PT', 'PT', '1', 'M', 'PT1@email.com', '123', 1),
 (31, 82, 79, 'PT', 'PT', '2', 'A', 'PT2@email.com', '123', 1),
 (32, 82, 78, 'Manager', 'Manager', '2', 'F', 'manager2@email.com', '123', 1);
 
@@ -227,7 +257,18 @@ CREATE TABLE IF NOT EXISTS `newsfeed` (
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`NewsFeedID`),
   KEY `ManagerID` (`ManagerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `newsfeed`
+--
+
+INSERT INTO `newsfeed` (`NewsFeedID`, `ManagerID`, `NewsTitle`, `NewsDesc`, `DatePosted`) VALUES
+(1, 28, 'newsfeed1', 'newsfeed1 desc', '2024-07-14'),
+(2, 27, 'newsfeed1 made by manager', 'newsfeed1 made by manager desc', '2024-07-14'),
+(3, 27, 'newsfeed2mademanager', 'newsfeed2mademanager desc', '2024-07-14'),
+(4, 27, 'newsfeed3manager', 'newsfeed3manager desc', '2024-07-14'),
+(5, 27, 'managerteam1', 'managerteam1 desc', '2024-07-14');
 
 -- --------------------------------------------------------
 
@@ -266,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`ProjectID`),
   KEY `TeamID` (`MainTeamID`),
   KEY `project_ibfk_2` (`MainProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -285,14 +326,15 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
   PRIMARY KEY (`MainProjectID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ProjectManagerID` (`ProjectManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `projectinfo`
 --
 
 INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
-(6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01');
+(6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01'),
+(8, 27, 82, 'Project 1', '2024-07-01', '2024-07-31');
 
 -- --------------------------------------------------------
 
@@ -309,7 +351,14 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   `EndWork` datetime NOT NULL,
   PRIMARY KEY (`ScheduleID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`ScheduleID`, `UserID`, `WorkDate`, `StartWork`, `EndWork`) VALUES
+(1, 30, '2024-07-15', '2024-07-15 08:00:00', '2024-07-15 21:00:00');
 
 -- --------------------------------------------------------
 
@@ -324,7 +373,7 @@ CREATE TABLE IF NOT EXISTS `specialisation` (
   `CompanyID` int NOT NULL,
   PRIMARY KEY (`SpecialisationID`),
   KEY `specialisation_ibfk_1` (`CompanyID`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `specialisation`
@@ -333,7 +382,8 @@ CREATE TABLE IF NOT EXISTS `specialisation` (
 INSERT INTO `specialisation` (`SpecialisationID`, `SpecialisationName`, `CompanyID`) VALUES
 (77, 'Specialisation1', 82),
 (78, 'Specialisation2', 82),
-(79, 'Specialisation3', 82);
+(79, 'Specialisation3', 82),
+(80, 'Manager', 83);
 
 -- --------------------------------------------------------
 
@@ -397,7 +447,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   KEY `UserID` (`UserID`),
   KEY `task_ibfk_2` (`MainTaskID`),
   KEY `task_ibfk_3` (`MainTeamID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -418,7 +468,16 @@ CREATE TABLE IF NOT EXISTS `taskinfo` (
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`MainTaskID`),
   KEY `SpecialisationID` (`SpecialisationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `taskinfo`
+--
+
+INSERT INTO `taskinfo` (`MainTaskID`, `SpecialisationID`, `TaskName`, `TaskDesc`, `StartDate`, `DueDate`, `NumStaff`, `Priority`, `Status`) VALUES
+(19, 78, 'Task 1', 'task 1', '2024-07-01', '2024-07-05', 1, 3, 1),
+(20, 77, 'specialisation 1', 'specialisation 1 desc here', '2024-07-16', '2024-07-23', 1, 3, 1),
+(21, 77, 'specialisation1', 'specialisation1 desc', '2024-07-16', '2024-07-17', 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -434,20 +493,15 @@ CREATE TABLE IF NOT EXISTS `team` (
   PRIMARY KEY (`TeamID`),
   KEY `MainTeamID` (`MainTeamID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=381 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=389 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `team`
 --
 
 INSERT INTO `team` (`TeamID`, `MainTeamID`, `UserID`) VALUES
-(372, 15, 28),
-(373, 15, 31),
-(375, 16, 30),
-(376, 16, 28),
-(378, 17, 30),
-(379, 17, 28),
-(380, 18, 29);
+(387, 19, 28),
+(388, 19, 29);
 
 -- --------------------------------------------------------
 
@@ -458,23 +512,20 @@ INSERT INTO `team` (`TeamID`, `MainTeamID`, `UserID`) VALUES
 DROP TABLE IF EXISTS `teaminfo`;
 CREATE TABLE IF NOT EXISTS `teaminfo` (
   `MainTeamID` int NOT NULL AUTO_INCREMENT,
-  `ManagerID` int NOT NULL,
+  `SpecialisationID` int NOT NULL,
   `CompanyID` int NOT NULL,
   `TeamName` varchar(32) NOT NULL,
   PRIMARY KEY (`MainTeamID`),
-  KEY `ManagerID` (`ManagerID`),
-  KEY `CompanyID` (`CompanyID`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `CompanyID` (`CompanyID`),
+  KEY `SpecialisationID` (`SpecialisationID`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `teaminfo`
 --
 
-INSERT INTO `teaminfo` (`MainTeamID`, `ManagerID`, `CompanyID`, `TeamName`) VALUES
-(15, 27, 82, 'Team A'),
-(16, 27, 82, 'Team B'),
-(17, 27, 82, 'Team C'),
-(18, 32, 82, 'Team D');
+INSERT INTO `teaminfo` (`MainTeamID`, `SpecialisationID`, `CompanyID`, `TeamName`) VALUES
+(19, 77, 82, 'Team Specialisation 1');
 
 -- --------------------------------------------------------
 
@@ -494,7 +545,7 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
   `PlanID` int NOT NULL,
   PRIMARY KEY (`ApplicationID`),
   KEY `PlanID` (`PlanID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `unregisteredusers`
@@ -504,7 +555,8 @@ INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyN
 (1, 'bobworlds@hotmail.com', '', 'bobsworld', '', 'bobby', 'lee', 2),
 (2, 'michelleangelo@yahoo.com', '', 'cookhouse', '', 'michelle', 'angelo', 2),
 (3, 'mt@yawee.com', '', 'fightingco', '', 'tyson', 'mike', 2),
-(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', 3);
+(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', 3),
+(8, 'premp@email.com', '123', 'Prem Company', '12345678A', 'Prem', 'P', 1);
 
 --
 -- Constraints for dumped tables
@@ -616,7 +668,7 @@ ALTER TABLE `team`
 -- Constraints for table `teaminfo`
 --
 ALTER TABLE `teaminfo`
-  ADD CONSTRAINT `teaminfo_ibfk_1` FOREIGN KEY (`ManagerID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `teaminfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `teaminfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
