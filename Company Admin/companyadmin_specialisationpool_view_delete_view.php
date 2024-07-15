@@ -3,23 +3,29 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
-	$_SESSION['message1'] = '';
+	$_SESSION['message'] = '';
 
-	if (isset($_POST['AddMember'])) {
+	if (isset($_POST['addTeamMember'])) {
+		$_SESSION['poolID'] = $_POST['poolID'];
+		
+		header('Location: companyadmin_specialisationpool_view_delete_view_addMember.php');
+		exit;
+	}
 
+	if (isset($_POST['removeUser']) == 'yes') {
+		$poolID = $_SESSION['poolID'];
 		$userID = $_POST['userID'];
-		$teamID = $_SESSION['teamID'];
 		$fullname = $_POST['fullname'];
-
 		
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = 	mysqli_query($db, "
-			INSERT INTO team(TeamID, MainTeamID, UserID)
-			VALUES (Null, '$teamID', '$userID');
-				") or die("Select Error");
-								
-		$_SESSION['message1'] = $fullname . " is added to team";
+									DELETE FROM specialisationpool
+									WHERE UserID = '$userID' AND MainPoolID = $poolID;
+									") or die("Select Error");
+		
+		$_SESSION['message'] = $fullname . " is removed from pool";
 	}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,55 +56,53 @@ session_start();
             <!-- Add more content as needed -->
 			<?php   
 
-				$companyID = $_SESSION['companyID'];;
-				$teamID = $_SESSION['teamID'];
-				$teamName = $_SESSION['teamName'];
-				
-				echo "<h2>Add Member to Team: ". $teamName . " </h2>";
-				
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = 	mysqli_query($db, "
-					SELECT 
-						eu.UserID,
-						eu.FirstName,
-						eu.LastName,
-						s.SpecialisationName
-					FROM 
-						existinguser eu
-					JOIN 
-						specialisation s ON eu.SpecialisationID = s.SpecialisationID
-					WHERE 
-						eu.CompanyID = '$companyID'
-						AND eu.Role IN ('PT', 'FT')
-						AND NOT EXISTS (
-							SELECT 1 
-							FROM team t 
-							WHERE t.UserID = eu.UserID AND t.MainTeamID = $teamID
-						);
 
-						") 
-							or die("Select Error");
+				$companyID = $_SESSION['companyID'];;
+				$poolID = $_SESSION['poolID'];
+				$poolName = $_SESSION['poolName'];
+				$specialisationName = $_SESSION['specialisationName'];
+				
+				echo "<h2>View Pool: ". $poolName . " </h2>";
+				echo "<p> Specialisation : " . $specialisationName."</p>"; 
+
+				echo $_SESSION['message'];
+
+				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+				$result = mysqli_query($db,	
+					"
+					SELECT 
+						sp.*,
+						eu.FirstName,
+						eu.LastName
+					FROM 
+						specialisationpool sp
+					JOIN 
+						existinguser eu ON sp.UserID = eu.UserID
+					WHERE 
+						sp.MainPoolID = '$poolID';
+					") 
+				or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
 					$accountsTable .= "	<tr>
 											<th>First Name</th>
 											<th>Last Name</th>
-											<th>Specialisation Name</th>
+											<th></th>
 											</tr>\n";
 					$accountsTable .= "<br/>";
 					}
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
 					."<td>" . $Row['FirstName'] . "</td>" 
-					."<td>" . $Row['LastName'] . "</td>" 
-					."<td>" . $Row['SpecialisationName'] . "</td>";
+					."<td>" . $Row['LastName'] . "</td>" ;
 
 	
 					$accountsTable .= "<td><form action'' method='POST'>
 						<input type='hidden' name='fullname' value='" . $Row['FirstName'] .' '. $Row['LastName']  . "'/>
 						<input type='hidden' name='userID' value='" . $Row['UserID'] . "'/>
-						<input type='submit' name='AddMember' value='Add'>
+						<input type='hidden' name='removeUser' value='yes'/>
+						<input type='button' value='Remove' onclick='confirmDiag(this.form)'>
 						</form></td>";
 
 					$accountsTable.= "</tr>";
@@ -115,15 +119,29 @@ session_start();
 				}
 				$accountsTable.= "</table> <br>";
 				
-			
+				$accountsTable.= "</table> <br>";
+				
+				$accountsTable .= "<td><form action'' method='POST'>
+						<input type='hidden' name='poolID' value='" . $poolID . "'/>
+						<input type='submit' name='addTeamMember' value='Add Users to Pool'>
+						</form></td>";
 				echo  $accountsTable;
 				
-				if(@$_SESSION['message1'])
-					echo $_SESSION['message1'];
 			?>
         </div>
     </div>
-
+			<script>
+				function confirmDiag(form){
+					console.log('confirmDiag() executing');
+					let result = confirm("Remove User from Pool?");
+					if (result)
+					{
+						form.submit();
+						console.log('result = pos');	
+					}else console.log('result = neg');
+					console.log('confirmDiag() executed');
+				}
+			</script>
 </body>
 </html>
 
