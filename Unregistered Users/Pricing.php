@@ -42,16 +42,20 @@
         <h2>Choose the best plan for your team</h2>
     </div>
     <div id = "PricingContainer">
-		<?php foreach ($plans as $plan): ?>
-			<div id = "PlanBox" style = "background-color: lightblue">
-				<h3><?php echo htmlspecialchars($plan['PlanName']); ?></h3>
-				<h4>($<?php echo htmlspecialchars($plan['Price']); ?>/month)</h4>
-				<h3>User Access</h3>
-				<h4>Up to <?php echo htmlspecialchars($plan['UserAccess']); ?> Users</h4>
-				<h3>Customer Support</h3>
-				<h4><?php echo htmlspecialchars($plan['CustomerSupport']); ?></h4>
-			</div>
-		<?php endforeach ?>
+		<?php if (count($plans) > 0): ?>
+			<?php foreach ($plans as $plan): ?>
+				<div id = "PlanBox" style = "background-color: lightblue">
+					<h3><?php echo htmlspecialchars($plan['PlanName']); ?></h3>
+					<h4>($<?php echo htmlspecialchars($plan['Price']); ?>/month)</h4>
+					<h3>User Access</h3>
+					<h4>Up to <?php echo htmlspecialchars($plan['UserAccess']); ?> Users</h4>
+					<h3>Customer Support</h3>
+					<h4><?php echo htmlspecialchars($plan['CustomerSupport']); ?></h4>
+				</div>
+			<?php endforeach ?>
+		    <?php else: ?>
+				<h2 style = "text-align:center"> No Plans Available </h2>
+		    <?php endif; ?>
     </div>
     <footer>
         
