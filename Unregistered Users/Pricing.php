@@ -1,3 +1,23 @@
+<?php
+	session_start();
+	include 'db_connection.php';
+			
+	// Connect to the database
+	$conn = OpenCon();
+
+	// Fetch all the available plans from the plans database
+	$sql = "SELECT PlanName, Price, UserAccess, CustomerSupport from plans";
+	
+	$stmt = $conn->prepare($sql);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$plans = $result->fetch_all(MYSQLI_ASSOC);
+
+	// Close the database connection
+	$stmt->close();
+	CloseCon($conn);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,30 +42,16 @@
         <h2>Choose the best plan for your team</h2>
     </div>
     <div id = "PricingContainer">
-        <div id = "Pricing1">
-            <h3>Tier 1</h3>
-            <h4>($9.99/month)</h4>
-            <h3>User Access</h3>
-            <h4>Up to 100 Users</h4>
-            <h3>Customer Support</h3>
-            <h4>Email support</h4>
-        </div>
-        <div id = "Pricing2">
-            <h3>Tier 2</h3>
-            <h4>($29.99/month)</h4>
-            <h3>User Access</h3>
-            <h4>Up to 1000 Users</h4>
-            <h3>Customer Support</h3>
-            <h4>Email and Phone support</h4>
-        </div>
-        <div id = "Pricing3">
-            <h3>Tier 3</h3>
-            <h4>($59.99/month)</h4>
-            <h3>User Access</h3>
-            <h4>Up to 5000 Users</h4>
-            <h3>Customer Support</h3>
-            <h4>24/7 Priority support</h4>
-        </div>
+		<?php foreach ($plans as $plan): ?>
+			<div id = "PlanBox" style = "background-color: lightblue">
+				<h3><?php echo htmlspecialchars($plan['PlanName']); ?></h3>
+				<h4>($<?php echo htmlspecialchars($plan['Price']); ?>/month)</h4>
+				<h3>User Access</h3>
+				<h4>Up to <?php echo htmlspecialchars($plan['UserAccess']); ?> Users</h4>
+				<h3>Customer Support</h3>
+				<h4><?php echo htmlspecialchars($plan['CustomerSupport']); ?></h4>
+			</div>
+		<?php endforeach ?>
     </div>
     <footer>
         

@@ -49,6 +49,13 @@ button a{
     font-size: 15px;
 }
 
+#teamlogo{
+    height: 20vh;
+    width: auto;
+}
+
+/* Pricing Related Functions */
+
 #PricingTitleContainer
 {
     width:100%;
@@ -65,23 +72,11 @@ h2{
     font-size: 40px;
 }
 
-#Pricing1, #Pricing2, #Pricing3{
+#PlanBox{
     width: 513px;
     height: 571px;
 }
 
-#Pricing1
-{
-    background-color: lightblue;
-}
-
-#Pricing2{
-    background-color: lightgreen;
-}
-
-#Pricing3{
-    background-color: lightpink;
-}
 
 #PricingContainer{
     display: flex;
@@ -101,8 +96,4 @@ h3{
 h4{
     text-align: center;
     font-size: 24px;
-}
-#teamlogo{
-    height: 20vh;
-    width: auto;
 }
