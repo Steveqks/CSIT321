@@ -3,13 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
 	<link rel = "stylesheet" href="HomePage.css">
 </head>
 <body>
    <!-- PHP CODE HERE -->
    <?php
-   
 		session_start();
    	
 		//connect to the database
@@ -27,8 +25,13 @@
 			     </ul>
             </div>
     </nav>
-    <footer>
-        
-    </footer>
+	<div id = "AdvertisingContainer1">
+        <h2>Project Management, Simplified</h2>
+		<h3>Create Projects with the best people for the role</h3>
+		<button class = "EnterCredBtn"><a href="EnterCredentials.php">Get Started</a></button>
+    </div>
+	<div id = "AdvertisingContainer2">
+		<h2>Why TrackMySchedule?</h2>
+	</div>
 </body>
 </html>

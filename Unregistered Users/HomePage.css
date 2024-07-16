@@ -21,6 +21,11 @@
     font-weight: 600; 
     color: black;
 }
+
+#teamlogo{
+    height: 20vh;
+    width: auto;
+}
 li{
     list-style: none; display: inline-block;
 }
@@ -47,3 +52,42 @@ button a{
     font-weight: bold; 
     font-size: 15px;
 }
+
+/*Container for Advertising*/
+#AdvertisingContainer1
+{
+    width:100%;
+    height: 280px;
+    background:lightgray;
+	text-align:center;
+}
+
+#AdvertisingContainer2
+{
+	text-align:center;
+}
+h2
+{
+	font-size: 48px;
+	padding-top: 20px;
+}
+
+h3
+{
+	font-size: 32px;
+}
+
+.EnterCredBtn
+{
+	width: 600px;
+	height: 50px;
+	background-color:orange;
+	border:none;
+}
+
+.EnterCredBtn:hover
+{
+	background-color:darkorange;
+}
+
+
