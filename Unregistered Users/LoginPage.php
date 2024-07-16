@@ -100,7 +100,8 @@
    <nav class="navbar">
             <div class="navdiv">
               <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
-			     <ul>
+			      <ul>
+					<li><a href="#">Features</a></li>
 				    <li><a href="AboutUs.php">About Us</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
