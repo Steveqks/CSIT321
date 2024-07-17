@@ -15,33 +15,46 @@
 	
 	function sendEmail($email, $firstname)
 	{
-		//New PHPMailer instance
+		// New PHPMailer instance
 		$mail = new PHPMailer(true);
 		
-		//Server settings
-		$mail->isSMTP();                            //Send using SMTP
-		$mail->Host       = 'smtp.gmail.com';       //Set the SMTP server to send through
-		$mail->SMTPAuth   = true;                   //Enable SMTP authentication
-		$mail->Username   = 'TrackMySchedule@gmail.com';   //SMTP write your email
-		$mail->Password   = 'bovpwkukeknivlgu';      //SMTP password
-		$mail->SMTPSecure = 'tls';                   //Enable implicit SSL encryption
-		$mail->Port       = 587;                                    
+		try {
+			// Server settings
+			$mail->isSMTP();                            // Send using SMTP
+			$mail->Host       = 'smtp.gmail.com';       // Set the SMTP server to send through
+			$mail->SMTPAuth   = true;                   // Enable SMTP authentication
+			$mail->Username   = 'TrackMySchedule@gmail.com';   // SMTP email
+			$mail->Password   = 'bovpwkukeknivlgu';      // SMTP password
+			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
+			$mail->Port       = 587;                    // TCP port to connect to
 
-		//Recipients
-		$mail->setFrom( 'TrackMySchedule@gmail.com', 'TMS Admin'); // Sender Email and name
-		$mail->addAddress($email);     //Add a recipient email  
-		$mail->addReplyTo($email, $firstname); // reply to sender email
+			// Disable SSL certificate verification
+			$mail->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true
+				)
+			);
 
-		//Content
-		$mail->isHTML(true);               //Set email format to HTML
-		$mail->Subject = "Credentials Successfully Submitted!";   // email subject headings
-		$mail->Body    = "Dear $firstname, your credentials have been successfully submitted!"; //email message
+			// Recipients
+			$mail->setFrom('TrackMySchedule@gmail.com', 'TMS Admin'); // Sender Email and name
+			$mail->addAddress($email);     // Add a recipient email  
+			$mail->addReplyTo($email, $firstname); // Reply to sender email
 
-		// Success sent message alert
-		$mail->send();
-		echo" <script>alert('Message was sent successfully!'); </script>";
+			// Content
+			$mail->isHTML(true);               // Set email format to HTML
+			$mail->Subject = "Credentials Successfully Submitted!";   // Email subject headings
+			$mail->Body    = "Dear $firstname, your credentials have been successfully submitted!"; // Email message
+
+			// Success sent message alert
+			$mail->send();
+			echo "<script>alert('Message was sent successfully!'); </script>";
+		} catch (Exception $e) {
+			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
+		}
 	}
-
+	
 	//Other Session Related Stuff here
 	session_start();
 
