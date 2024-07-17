@@ -23,9 +23,9 @@
 		$mail->Host       = 'smtp.gmail.com';       //Set the SMTP server to send through
 		$mail->SMTPAuth   = true;                   //Enable SMTP authentication
 		$mail->Username   = 'TrackMySchedule@gmail.com';   //SMTP write your email
-		$mail->Password   = 'hxxjphuxakeeztno';      //SMTP password
-		$mail->SMTPSecure = 'ssl';                   //Enable implicit SSL encryption
-		$mail->Port       = 465;                                    
+		$mail->Password   = 'bovpwkukeknivlgu';      //SMTP password
+		$mail->SMTPSecure = 'tls';                   //Enable implicit SSL encryption
+		$mail->Port       = 587;                                    
 
 		//Recipients
 		$mail->setFrom( 'TrackMySchedule@gmail.com', 'TMS Admin'); // Sender Email and name
