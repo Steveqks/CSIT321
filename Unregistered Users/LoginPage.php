@@ -31,6 +31,7 @@
 				$_SESSION['Email'] = $row['Email'];
 				$_SESSION['FirstName'] = $row['FirstName'];
 				$_SESSION['Role']= $row['Role'];
+				$_SESSION['SpecialisationID'] = $row['SpecialisationID'];
 				
 				if($row['Role'] == "FT")
 				{
@@ -45,7 +46,7 @@
 				if($row['Role'] == "Manager")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Manager/Manager_viewTasks.php");
+					header("Location:../Manager/Manager_viewTasksList.php");
 				}
 				
 			}
@@ -99,7 +100,8 @@
    <nav class="navbar">
             <div class="navdiv">
               <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
-			     <ul>
+			      <ul>
+					<li><a href="#">Features</a></li>
 				    <li><a href="AboutUs.php">About Us</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
@@ -111,7 +113,7 @@
                <div id = "LoginForm">
 					<form action = "", method = "post">
 						<h2>Login for Existing Users</h2>
-						<input id = "email" name = "email" type = "text" placeholder = "Email Address" required>
+						<input id = "email" name = "email" type = "email" placeholder = "Email Address" required>
 						<input id = "password" name = "password" type = "password" placeholder = "Password" required>  
 						<button id = "submitBtn" name = "submit">Login</button>
 					</form>
