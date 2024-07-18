@@ -7,21 +7,13 @@
 	$navigation .=	"<a id='myButton1' class='myButton1' onClick='showLinks1()' > Manage Company ➕</a>
 						<div id='linkContainer1'>
 							<div class='show'>
-								<a href='superadmin_manageCompany_create.php'> - Create Company </a>
 								<a href='superadmin_manageCompany_view.php'> - View Companies </a>
 								<a href='superadmin_manageCAdmin_approve_unreg_user.php'> - Approve New Company (Create New Company & Company Admin) </a>
 							</div>
 						</div>";
 					
 	// second group link
-	$navigation .=	"<a id='myButton2' class='myButton2' onClick='showLinks2()' > Manage Company Admin ➕ </a>
-						<div id='linkContainer2'>
-							<div class='show'>
-								<a href='superadmin_manageCAdmin_create.php'> - Create Company Admin </a>
-								<a href='superadmin_manageCAdmin_view_delete.php'> - View Company Admins</a>
-							</div>
-						</div> 
-					
+	$navigation .= "<a href='superadmin_manageCAdmin_view_delete.php'> Manage Company Admins</a>
 					<a href='Logout.php'>Logout</a>
 					</div>";
 	echo $navigation;

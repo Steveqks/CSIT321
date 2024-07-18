@@ -23,11 +23,11 @@
 					</div>";
 					
 	// third group link
-	$navigation .=	"<a id='myButton3' class='myButton3' onClick='showLinks3()' > Manage Team ➕ </a>
+	$navigation .=	"<a id='myButton3' class='myButton3' onClick='showLinks3()' > Manage Specialisation Pool ➕ </a>
 					<div id='linkContainer3'>
 						<div class='show'>
-							<a href='companyadmin_teamManagement_create.php'> - Create Team </a>
-							<a href='companyadmin_teamManagement_view_delete.php'> - View Team </a>
+							<a href='companyadmin_specialisationpool_create.php'> - Create Specialisation Pool </a>
+							<a href='companyadmin_specialisationpool_view_delete.php'> - View Specialisation Pool </a>
 						</div>
 					</div>";
 					

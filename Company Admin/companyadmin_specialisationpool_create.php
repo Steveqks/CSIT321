@@ -6,33 +6,33 @@ session_start();
 	$_SESSION['message'] = '';
 	
 	//create company
-	if(isset($_POST['tname'])){
+	if(isset($_POST['pname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-		$tname = $_POST['tname'];
-		$managerID = $_POST['managerID'];
+		$pname = $_POST['pname'];
+		$specialisationID = $_POST['specialisationID'];
 	
 		
-		//check if team exists
-		if(isTeamExists($companyID, $tname, $db)){
+		//check if pool exists
+		if(isPoolExists($companyID, $pname, $db)){
 			//exist already
-			$_SESSION['message'] = "<p>Team name \"". $tname . "\" in use.</p>";
+			$_SESSION['message'] = "<p>Specialisation Pool name \"". $pname . "\" is already in use.</p>";
 		}
 		
 		//doesn't exist, add to db
 		else
 		{
 			$result = mysqli_query($db,"
-										INSERT INTO teaminfo(MainTeamID, ManagerID, CompanyID, TeamName)
-										VALUES (NULL, '$managerID', '$companyID', '$tname')
+										INSERT INTO specialisationpoolinfo(MainPoolID, SpecialisationID, CompanyID, PoolName)
+										VALUES (NULL, '$specialisationID', '$companyID', '$pname')
 										") or die("Select Error");
 			
-			$_SESSION['message'] = "<p>Team \"". $tname . "\" Created.</p>";
+			$_SESSION['message'] = "<p>Specialisation Pool \"". $pname . "\" Created.</p>";
 		}		
 	}
 		
-	function isTeamExists(string $companyID, string $tname, mysqli $db):bool{
-		$sql = "SELECT * FROM teaminfo WHERE CompanyID = '$companyID' AND TeamName = '$tname'";
+	function isPoolExists(string $companyID, string $pname, mysqli $db):bool{
+		$sql = "SELECT * FROM specialisationpoolinfo WHERE CompanyID = '$companyID' AND PoolName = '$pname'";
 		$qres = mysqli_query($db, $sql); 
 
 		$num_rows=mysqli_num_rows($qres);
@@ -72,11 +72,11 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "" id='createTeam' method = "post">
-				<h2>Create Team</h2>
+            <form action = "" id='createPool' method = "post">
+				<h2>Create Specialisation Pool</h2>
 				
 					
-					<h4>Team Name: <input name = "tname" type = "text" placeholder = "team name" required maxlength='32'>
+					<h4>Specialisation Pool Name: <input name = "pname" type = "text" placeholder = "Specialisation Pool Name" required maxlength='32'>
 					</h4>
 
 					<h4>
@@ -84,13 +84,13 @@ session_start();
 					$companyID = $_SESSION['companyID'];
 					
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$sql = "SELECT * FROM existinguser WHERE Role = 'Manager' AND CompanyID = '$companyID' ";
+						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
 						$qres = mysqli_query($db, $sql); 
 						
-						$select = 	"<label for='Manager'>Manager:</label>
-									<select name='managerID' id=''>";		
+						$select = 	"<label for='Specialisation'>Specialisation:</label>
+									<select name='specialisationID' id=''>";		
 						while ($Row = $qres->fetch_assoc()) {
-							$select .= "<option value ='".$Row['UserID']."'> ". $Row['FirstName'] . " " . $Row['LastName']  ." </option>";
+							$select .= "<option value ='".$Row['SpecialisationID']."'> ". $Row['SpecialisationName'] . " </option>";
 						}
 						$select .= "</select>";
 						echo $select;
@@ -111,10 +111,10 @@ session_start();
 			<script>
 				function confirmDiag(){
 					console.log('confirmDiag() executing');
-					let result = confirm("Create Team?");
+					let result = confirm("Create Specialisation Pool?");
 					if (result)
 					{
-						document.getElementById('createTeam').submit();
+						document.getElementById('createPool').submit();
 						console.log('result = pos');	
 					}else console.log('result = neg');
 					console.log('confirmDiag() executed');
