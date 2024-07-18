@@ -1,6 +1,15 @@
 <?php
 session_start();
 
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
+
+	//required files
+	require 'phpmailer/src/Exception.php';
+	require 'phpmailer/src/PHPMailer.php';
+	require 'phpmailer/src/SMTP.php';
+
+
 	include_once('superadmin_manageCAdmin_view_functions.php');
 
 	$_SESSION['message'] = '';
@@ -32,6 +41,7 @@ session_start();
 
 	if (isset($_POST['resetPassword']) == 'yes') {
 
+
 		$cAdminID = $_POST['cAdminID'];
 		$currentDateTime = date('YmdHis');
 		//$currentDateTime = date('Y-m-d H-i-s');
@@ -43,8 +53,50 @@ session_start();
 		$_SESSION['pwmessage'] = "yes";
 		//$abc = "new password is: " . $currentDateTime;
 		$_SESSION['pwcontent'] =  $currentDateTime;
-		header('Location: superadmin_manageCAdmin_view_delete.php');
-		exit;
+		//header('Location: superadmin_manageCAdmin_view_delete.php');
+		//exit;
+	}
+	
+	function sendEmail($email, $_SESSION['pwcontent'])
+	{
+		// New PHPMailer instance
+		$mail = new PHPMailer(true);
+		
+		try {
+			// Server settings
+			$mail->isSMTP();                            // Send using SMTP
+			$mail->Host       = 'smtp.gmail.com';       // Set the SMTP server to send through
+			$mail->SMTPAuth   = true;                   // Enable SMTP authentication
+			$mail->Username   = 'TrackMySchedule@gmail.com';   // SMTP email
+			$mail->Password   = 'bovpwkukeknivlgu';      // SMTP password
+			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
+			$mail->Port       = 587;                    // TCP port to connect to
+
+			// Disable SSL certificate verification
+			$mail->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true
+				)
+			);
+
+			// Recipients
+			$mail->setFrom('TrackMySchedule@gmail.com', 'TMS Admin'); // Sender Email and name
+			$mail->addAddress($email);     // Add a recipient email  
+			$mail->addReplyTo($email, $firstname); // Reply to sender email
+
+			// Content
+			$mail->isHTML(true);               // Set email format to HTML
+			$mail->Subject = "Password has Successfully been Reset!";   // Email subject headings
+			$mail->Body    = "Good day TrackMySchedule User, your password have been successfully reset, your new password is \"" . $_SESSION['pwcontent'] . \"" . "."; // Email message
+
+			// Success sent message alert
+			$mail->send();
+			echo "<script>alert('Password has successfully been reset!'); </script>";
+		} catch (Exception $e) {
+			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
+		}
 	}
 
 ?>
@@ -172,7 +224,6 @@ session_start();
 					{
 						form.submit();
 						console.log('result = pos');
-						alertpw('abc');
 					}else console.log('result = neg');
 					console.log('confirmDiag() executed');
 				}
