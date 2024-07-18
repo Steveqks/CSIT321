@@ -206,7 +206,7 @@ session_start();
 				echo  $accountsTable;
 				
 				// if password has been reset, show message.
-				if ($_SESSION['pwmessage'] == 'yes') {
+				if (@$_SESSION['pwmessage'] == 'yes') {
 					echo"<script>alert('Password has successfully been reset! New Password have been sent via email to user.');</script>";
 				}
 
