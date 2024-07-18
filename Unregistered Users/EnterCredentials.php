@@ -44,12 +44,54 @@
 
 			// Content
 			$mail->isHTML(true);               // Set email format to HTML
-			$mail->Subject = "Credentials Successfully Submitted!";   // Email subject headings
-			$mail->Body    = "Dear $firstname, your credentials have been successfully submitted!"; // Email message
+			$mail->Subject = "Application Successfully Submitted!";   // Email subject headings
+			$mail->Body    = "Dear $firstname," . "<br>" . "your application has been successfully submitted."; // Email message
 
 			// Success sent message alert
 			$mail->send();
-			echo "<script>alert('Message was sent successfully!'); </script>";
+			echo "<script>alert('Application was submitted successfully!'); </script>";
+			sendAdmin($email);
+		} catch (Exception $e) {
+			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
+		}
+	}
+	
+	function sendAdmin($email)
+	{
+		// New PHPMailer instance
+		$mail = new PHPMailer(true);
+		
+		try {
+			// Server settings
+			$mail->isSMTP();                            // Send using SMTP
+			$mail->Host       = 'smtp.gmail.com';       // Set the SMTP server to send through
+			$mail->SMTPAuth   = true;                   // Enable SMTP authentication
+			$mail->Username   = 'TrackMySchedule@gmail.com';   // SMTP email
+			$mail->Password   = 'bovpwkukeknivlgu';      // SMTP password
+			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
+			$mail->Port       = 587;                    // TCP port to connect to
+
+			// Disable SSL certificate verification
+			$mail->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true
+				)
+			);
+
+			// Recipients / Admin
+			$mail->setFrom('TrackMySchedule@gmail.com', 'TMS Admin'); // Admin Email and name
+			$mail->addAddress('TrackMySchedule@gmail.com');     // Add a recipient email  
+			$mail->addReplyTo('TrackMySchedule@gmail.com', 'SYSTEM'); // Reply to sender email
+
+			// Content
+			$mail->isHTML(true);               // Set email format to HTML
+			$mail->Subject = "New Company Application Submitted!";   // Email subject headings
+			$mail->Body    = "From System," . "<br>" . " A new company application has been submitted!" . "<br>". "Applicant Email: " . $email; // Email message
+
+			// Success sent message alert
+			$mail->send();
 		} catch (Exception $e) {
 			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
 		}
