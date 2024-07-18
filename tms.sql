@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 15, 2024 at 08:46 AM
--- Server version: 8.0.31
--- PHP Version: 8.0.26
+-- Generation Time: Jul 18, 2024 at 12:38 PM
+-- Server version: 8.3.0
+-- PHP Version: 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -280,7 +280,9 @@ DROP TABLE IF EXISTS `plans`;
 CREATE TABLE IF NOT EXISTS `plans` (
   `PlanID` int NOT NULL AUTO_INCREMENT,
   `PlanName` varchar(16) NOT NULL,
-  `PlanDesc` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Price` double NOT NULL,
+  `UserAccess` int NOT NULL,
+  `CustomerSupport` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`PlanID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -288,10 +290,10 @@ CREATE TABLE IF NOT EXISTS `plans` (
 -- Dumping data for table `plans`
 --
 
-INSERT INTO `plans` (`PlanID`, `PlanName`, `PlanDesc`) VALUES
-(1, 'Basic', 'this is a basic plan'),
-(2, 'Premium', 'this is a premium plan'),
-(3, 'Super', 'This is a Super Plan');
+INSERT INTO `plans` (`PlanID`, `PlanName`, `Price`, `UserAccess`, `CustomerSupport`) VALUES
+(1, 'Tier 1', 9.99, 50, 'Email Support'),
+(2, 'Tier 2', 29.99, 100, 'Email and Phone Support'),
+(3, 'Tier 3', 59.99, 200, '24/7 Priority Support');
 
 -- --------------------------------------------------------
 
@@ -335,6 +337,25 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
 INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
 (6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01'),
 (8, 27, 82, 'Project 1', '2024-07-01', '2024-07-31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `ReviewID` int NOT NULL AUTO_INCREMENT,
+  `FirstName` varchar(16) NOT NULL,
+  `LastName` varchar(16) NOT NULL,
+  `Company` varchar(16) NOT NULL,
+  `ReviewTitle` varchar(16) NOT NULL,
+  `Rating` int NOT NULL,
+  `Comments` text NOT NULL,
+  `DatePosted` date NOT NULL,
+  PRIMARY KEY (`ReviewID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
