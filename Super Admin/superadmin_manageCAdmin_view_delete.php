@@ -5,9 +5,9 @@ session_start();
 	use PHPMailer\PHPMailer\Exception;
 
 	//required files
-	require 'phpmailer/src/Exception.php';
-	require 'phpmailer/src/PHPMailer.php';
-	require 'phpmailer/src/SMTP.php';
+	require '../Unregistered Users/phpmailer/src/Exception.php';
+	require '../Unregistered Users/phpmailer/src/PHPMailer.php';
+	require '../Unregistered Users/phpmailer/src/SMTP.php';
 
 
 	include_once('superadmin_manageCAdmin_view_functions.php');
@@ -43,21 +43,20 @@ session_start();
 
 
 		$cAdminID = $_POST['cAdminID'];
+		$email = $_POST['email'];
 		$currentDateTime = date('YmdHis');
 		//$currentDateTime = date('Y-m-d H-i-s');
 		//echo $currentDateTime;
+		
+		sendEmail($email, $currentDateTime);
 		
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"UPDATE companyadmin SET Password = '$currentDateTime' WHERE CAdminID = '$cAdminID' ") or die("Select Error");
 
 		$_SESSION['pwmessage'] = "yes";
-		//$abc = "new password is: " . $currentDateTime;
-		$_SESSION['pwcontent'] =  $currentDateTime;
-		//header('Location: superadmin_manageCAdmin_view_delete.php');
-		//exit;
 	}
 	
-	function sendEmail($email, $_SESSION['pwcontent'])
+	function sendEmail($email , $currentDateTime)
 	{
 		// New PHPMailer instance
 		$mail = new PHPMailer(true);
@@ -84,16 +83,15 @@ session_start();
 			// Recipients
 			$mail->setFrom('TrackMySchedule@gmail.com', 'TMS Admin'); // Sender Email and name
 			$mail->addAddress($email);     // Add a recipient email  
-			$mail->addReplyTo($email, $firstname); // Reply to sender email
+			$mail->addReplyTo($email, 'TrackMySchedule User'); // Reply to sender email
 
 			// Content
 			$mail->isHTML(true);               // Set email format to HTML
 			$mail->Subject = "Password has Successfully been Reset!";   // Email subject headings
-			$mail->Body    = "Good day TrackMySchedule User, your password have been successfully reset, your new password is \"" . $_SESSION['pwcontent'] . \"" . "."; // Email message
+			$mail->Body    = "Good day TrackMySchedule User, your password have been successfully reset, your new password is \"" . $currentDateTime . "\"" . "."; // Email message
 
 			// Success sent message alert
 			$mail->send();
-			echo "<script>alert('Password has successfully been reset!'); </script>";
 		} catch (Exception $e) {
 			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
 		}
@@ -173,6 +171,7 @@ session_start();
 							</form></td>";
 						$accountsTable .= "<td><form action'' method='POST'>
 							<input type='hidden' name='cAdminID' value='" . $Row['CAdminID'] . "'/>
+							<input type='hidden' name='email' value='" . $Row['Email'] . "'/>
 							<input type='hidden' name='resetPassword' value='yes'/>
 							<input type='button' value='Reset Password' onclick='confirmDiag2(event, this.form);'>
 							</form></td>";
@@ -193,10 +192,7 @@ session_start();
 					
 					// if password has been reset, show message.
 					if ($_SESSION['pwmessage'] == 'yes') {
-						$pwcontent = $_SESSION['pwcontent'];
-						echo"<script>alert('New Password is: ' + $pwcontent);</script>";
-						$msg = 'password';
-						mail("steveqks@gmail.com","My subject",$msg);
+						echo"<script>alert('Password has successfully been reset! New Password have been sent via email to user.');</script>";
 					}
 
 					$_SESSION['pwmessage'] = 'no';
