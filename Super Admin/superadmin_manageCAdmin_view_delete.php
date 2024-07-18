@@ -224,9 +224,7 @@ session_start();
 					console.log('confirmDiag() executed');
 				}
 				
-				function alertpw(stringx){
-					alert('new password is ' + stringx);
-				}
+
 			</script>
 </body>
 </html>
