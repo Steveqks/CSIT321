@@ -92,11 +92,11 @@
 
 		if (show3 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Manage Team ➖';
+			myButton.innerHTML = 'Manage Specialisation Pool ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Manage Team ➕';
+			myButton.innerHTML = 'Manage Specialisation Pool ➕';
 			linkContainer.style.display = 'none';
 		}
 		show3 = !show3;
