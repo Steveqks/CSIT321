@@ -96,7 +96,7 @@ class userAccount{
 	}
 	
 	public function createCompanyAdmin(string $companyID, string $fname, string $lname, string $email, string $password):bool{
-		$sql = "INSERT INTO companyadmin (CAdminID, CompanyID, FirstName, LastName, Email, Password) VALUES (NULL, '$companyID', '$fname', '$lname', '$email', '$password');";
+		$sql = "INSERT INTO companyadmin (CAdminID, CompanyID, FirstName, LastName, Email, Password, Status) VALUES (NULL, '$companyID', '$fname', '$lname', '$email', '$password', '1');";
 		$qres = mysqli_query($this->conn, $sql); 
 		if($qres === false){
 		    return false; 
