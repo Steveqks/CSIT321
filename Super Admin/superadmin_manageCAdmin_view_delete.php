@@ -41,7 +41,6 @@ session_start();
 
 	if (isset($_POST['resetPassword']) == 'yes') {
 
-
 		$cAdminID = $_POST['cAdminID'];
 		$email = $_POST['email'];
 		$currentDateTime = date('YmdHis');
@@ -191,17 +190,11 @@ session_start();
 					echo  $accountsTable;
 					
 					// if password has been reset, show message.
-<<<<<<< HEAD
-					if ($_SESSION['pwmessage'] == 'yes') {
-						echo"<script>alert('Password has successfully been reset! New Password have been sent via email to user.');</script>";
-					}
 
-=======
 					if (@$_SESSION['pwmessage'] == 'yes') {
 						echo"<script>alert('Password has successfully been reset! New Password have been sent via email to user.');</script>";
 					}
 					
->>>>>>> steve
 					$_SESSION['pwmessage'] = 'no';
 					$_SESSION['pwcontent'] = '';
 

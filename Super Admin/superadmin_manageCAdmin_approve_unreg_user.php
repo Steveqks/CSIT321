@@ -3,8 +3,7 @@ session_start();
 	
 	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 	
-<<<<<<< HEAD
-=======
+
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 
@@ -13,7 +12,6 @@ session_start();
 	require '../Unregistered Users/phpmailer/src/PHPMailer.php';
 	require '../Unregistered Users/phpmailer/src/SMTP.php';
 	
->>>>>>> steve
 	$_SESSION['message'] = '';
 	
 	if(isset($_POST['approve']) == 'yes')
@@ -55,8 +53,7 @@ session_start();
 		$result = mysqli_query($db,	"DELETE FROM unregisteredusers  WHERE ApplicationID = '$applicationID' ") or die("Select Error");
 		
 		$_SESSION['message'] = "Application  for \"" .$_POST['cname']. "\" deleted successfully";
-<<<<<<< HEAD
-=======
+
 	}
 	
 	function sendEmail($email, $fname, $cname)
@@ -98,7 +95,6 @@ session_start();
 		} catch (Exception $e) {
 			echo "<script>alert('Message could not be sent. Mailer Error: {$mail->ErrorInfo}'); </script>";
 		}
->>>>>>> steve
 	}
 ?>
 <!DOCTYPE html>
@@ -178,14 +174,10 @@ session_start();
 						}
 						$accountsTable.= "</table>";
 						echo $accountsTable;
-<<<<<<< HEAD
-						
-=======
->>>>>>> steve
-						
+
 					// show alert
 					if (@$_SESSION['approvemsg'] == 'yes') {
-						echo"<script>alert('Application approved email sent to Applicant.');</script>";
+						echo"<script>alert('Application approved, email sent to Applicant.');</script>";
 					}
 					
 					$_SESSION['approvemsg'] = 'no';
