@@ -12,9 +12,19 @@
 							</div>
 						</div>";
 					
+	$navigation .= "<a href='superadmin_manageCAdmin_view_delete.php'> Manage Company Admins</a>";
+					
 	// second group link
-	$navigation .= "<a href='superadmin_manageCAdmin_view_delete.php'> Manage Company Admins</a>
-					<a href='Logout.php'>Logout</a>
+	$navigation .= "<a id='myButton2' class='myButton2' onClick='showLinks2()'> Manage Web Pages ➕</a>
+						<div id='linkContainer2'>
+							<div class='show'>
+								<a href='superadmin_manageCAdmin_approve_unreg_user.php'> - Edit Home Page </a>
+								<a href='superadmin_manageCAdmin_approve_unreg_user.php'> - Edit About Us </a>
+								<a href='superadmin_SubscriptionPlans_View.php'> - View Subscription Plans </a>
+							</div>
+						</div>
+						
+						<a href='Logout.php'>Logout</a>
 					</div>";
 	echo $navigation;
 ?>
@@ -47,11 +57,11 @@
 
 		if (show2 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Manage Company Admin ➖';
+			myButton.innerHTML = 'Manage Web Pages ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Manage Company Admin ➕';
+			myButton.innerHTML = 'Manage Web Pages ➕';
 			linkContainer.style.display = 'none';
 		}
 		show2 = !show2;

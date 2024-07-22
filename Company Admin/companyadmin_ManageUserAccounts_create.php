@@ -27,13 +27,6 @@ session_start();
 		}
 		//doesn't exist, add to db
 		else
-<<<<<<< HEAD
-		{
-			$result = mysqli_query($db,"INSERT INTO existinguser 
-										(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
-								VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Select Error");
-			$_SESSION['message1'] = "<p>User Account for \"".$fname." ".$lname."\" created.</p>";
-=======
 		{	
 			//check if company has reach maximum limit of user accounts
 			$result = mysqli_query($db, "SELECT 
@@ -67,7 +60,6 @@ session_start();
 				$_SESSION['message1'] = "<p>User Account for \"".$fname." ".$lname."\" created.</p>";
 			}
 			else $_SESSION['message1'] = "<p>Company has reached maximum allowed user accounts. Delete unnecessary accounts or upgrade subscription plan.</p>";
->>>>>>> steve
 		}
 	}
 		

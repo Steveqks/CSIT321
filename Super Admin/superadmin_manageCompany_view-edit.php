@@ -1,6 +1,75 @@
 <?php
 session_start();
+	$_SESSION['message1'] = '';
+	$_SESSION['message2'] = '';
+	$_SESSION['message3'] = '';
 
+	if(isset($_POST['newCompanyUEN'])){
+		$companyName = $_POST['companyName'];			
+		$companyID = $_POST['companyID'];
+		$newCompanyUEN = $_POST['newCompanyUEN'];
+		$planID = $_POST['planID'];
+		
+		if ($_POST['oldCompanyName'] != $_POST['companyName']){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+			//check if companyName exists.
+			$result = mysqli_query($db,	"SELECT CompanyName FROM company WHERE company.CompanyName = '$companyName'") or die("Select Error");
+
+			$num_rows=mysqli_num_rows($result);
+			// dont exists
+			if($num_rows == 0){
+				$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName' WHERE company.CompanyID = '$companyID'") or die("update Error");
+				$_SESSION['message1'] = "<p >Company new name ->\"". $companyName. "\"</p>";							
+				$_SESSION['companyName'] = $companyName;
+			}
+			else{
+				$_SESSION['message1'] = "Company name already exists";
+				$_POST['companyName'] = $_POST['oldCompanyName'];
+			}
+		}else $_SESSION['message1'] = "";
+		
+		
+		if($_POST['oldPlanID'] != $planID){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+			//check if planID exists already.
+			$result3 = mysqli_query($db, "SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
+
+			$num_rows=mysqli_num_rows($result3);
+			// dont exists
+			if($num_rows > 0){
+				$result2 = mysqli_query($db,"UPDATE company SET PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
+				$_SESSION['message2'] = "<p >Company subscription plan updated.</p>";
+				$_SESSION['planID'] = $planID;
+			}
+			else{
+				$_SESSION['message2'] = "Subscription plan does not exists";
+			}
+		}else $_SESSION['message2'] = "";
+		
+		
+		if($_POST['oldCompanyUEN'] != $newCompanyUEN){
+			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+			//check if planID exists already.
+			$result3 = mysqli_query($db, "SELECT * FROM company WHERE CompanyUEN = '$newCompanyUEN' ") or die("Select Error");
+
+			$num_rows=mysqli_num_rows($result3);
+			// dont exists
+			if($num_rows > 0){
+				$_SESSION['message3'] = "Company UEN already exists";
+			}
+			else{
+				$result2 = mysqli_query($db,"UPDATE company SET CompanyUEN = '$newCompanyUEN' WHERE company.CompanyID = '$companyID'") or die("update Error");
+				$_SESSION['message3'] = "<p >Company UEN updated.</p>";
+				$_SESSION['companyUEN'] = $newCompanyUEN;
+				
+			}
+		}else $_SESSION['message3'] = "";
+		
+
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,73 +137,7 @@ session_start();
 				echo @$_SESSION['message3'];
 				}
 				
-				if(isset($_POST['newCompanyUEN'])){
-					$companyName = $_POST['companyName'];			
-					$companyID = $_POST['companyID'];
-					$newCompanyUEN = $_POST['newCompanyUEN'];
-					$planID = $_POST['planID'];
-					
-					if ($_POST['oldCompanyName'] != $_POST['companyName']){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-						//check if companyName exists.
-						$result = mysqli_query($db,	"SELECT CompanyName FROM company WHERE company.CompanyName = '$companyName'") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result);
-						// dont exists
-						if($num_rows == 0){
-							$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message1'] = "<p style='color: green;'>Company new name ->\"". $companyName. "\"</p>";							
-							$_SESSION['companyName'] = $companyName;
-						}
-						else{
-							$_SESSION['message1'] = "Company name already exists";
-							$_POST['companyName'] = $_POST['oldCompanyName'];
-						}
-					}else $_SESSION['message1'] = "";
-					
-					
-					if($_POST['oldPlanID'] != $planID){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-						//check if planID exists already.
-						$result3 = mysqli_query($db, "SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result3);
-						// dont exists
-						if($num_rows > 0){
-							$result2 = mysqli_query($db,"UPDATE company SET PlanID = '$planID' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message2'] = "<p style='color: green;'>Company subscription plan updated.</p>";
-							$_SESSION['planID'] = $planID;
-						}
-						else{
-							$_SESSION['message2'] = "Subscription plan does not exists";
-						}
-					}else $_SESSION['message2'] = "";
-					
-					
-					if($_POST['oldCompanyUEN'] != $newCompanyUEN){
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-						//check if planID exists already.
-						$result3 = mysqli_query($db, "SELECT * FROM company WHERE CompanyUEN = '$newCompanyUEN' ") or die("Select Error");
-			
-						$num_rows=mysqli_num_rows($result3);
-						// dont exists
-						if($num_rows > 0){
-							$_SESSION['message3'] = "Company UEN already exists";
-						}
-						else{
-							$result2 = mysqli_query($db,"UPDATE company SET CompanyUEN = '$newCompanyUEN' WHERE company.CompanyID = '$companyID'") or die("update Error");
-							$_SESSION['message3'] = "<p style='color: green;'>Company UEN updated.</p>";
-							$_SESSION['companyUEN'] = $newCompanyUEN;
-							
-						}
-					}else $_SESSION['message3'] = "";
-					
-					header('Location: superadmin_manageCompany_view-edit.php');
-					exit;
-				}
+				
 				
 			?>
         </div>
