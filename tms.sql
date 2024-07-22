@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 18, 2024 at 12:38 PM
+-- Generation Time: Jul 22, 2024 at 08:04 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `Comments` varchar(100) NOT NULL,
   PRIMARY KEY (`LeaveID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `leaves`
@@ -240,7 +240,8 @@ CREATE TABLE IF NOT EXISTS `leaves` (
 
 INSERT INTO `leaves` (`LeaveID`, `UserID`, `LeaveType`, `StartDate`, `EndDate`, `HalfDay`, `Status`, `Comments`) VALUES
 (1, 28, 'Personal', '2024-07-04', '2024-07-04', 1, 1, ''),
-(2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, '');
+(2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, ''),
+(3, 28, '', '0000-00-00', '0000-00-00', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -347,15 +348,21 @@ INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `Pr
 DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `ReviewID` int NOT NULL AUTO_INCREMENT,
-  `FirstName` varchar(16) NOT NULL,
-  `LastName` varchar(16) NOT NULL,
-  `Company` varchar(16) NOT NULL,
+  `UserID` int NOT NULL,
   `ReviewTitle` varchar(16) NOT NULL,
   `Rating` int NOT NULL,
   `Comments` text NOT NULL,
   `DatePosted` date NOT NULL,
-  PRIMARY KEY (`ReviewID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`ReviewID`),
+  KEY `UserID` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`ReviewID`, `UserID`, `ReviewTitle`, `Rating`, `Comments`, `DatePosted`) VALUES
+(6, 28, 'Good Website', 5, 'very good', '2024-07-22');
 
 -- --------------------------------------------------------
 
