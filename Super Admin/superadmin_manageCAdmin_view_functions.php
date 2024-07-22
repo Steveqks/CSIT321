@@ -1,4 +1,5 @@
 <?php    
+include '../Session/session_check_superadmin.php';
 
 class userAccount{
 	public $conn;

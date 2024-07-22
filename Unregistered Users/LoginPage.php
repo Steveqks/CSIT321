@@ -72,7 +72,7 @@
 				}
 				else
 				{
-					//Check for Company Admin
+					//Check for Super Admin
 					$result2 = mysqli_query($db,"SELECT * FROM superadmin WHERE Email='$email' AND Password='$password' ") or die("Select Error");
 					$row2 = mysqli_fetch_array($result2,MYSQLI_ASSOC);
 					$count2 = mysqli_num_rows($result2);

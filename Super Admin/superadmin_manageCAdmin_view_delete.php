@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	include '../Session/session_check_superadmin.php';
+
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 

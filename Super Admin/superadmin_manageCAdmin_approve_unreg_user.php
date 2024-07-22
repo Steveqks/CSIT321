@@ -1,6 +1,8 @@
 <?php
 session_start();
 	
+	include '../Session/session_check_superadmin.php';
+
 	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 	
 

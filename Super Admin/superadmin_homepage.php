@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include '../Session/session_check_superadmin.php';
+
 $_SESSION['message'] = "";
 $_SESSION['message1'] = "";
 $_SESSION['message2'] = "";

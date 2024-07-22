@@ -1,9 +1,6 @@
 <?php
-	//array is empty 
-	if (!isset($_SESSION['cadminID']) || empty($_SESSION['cadminID']) || !isset($_SESSION['companyID']) || empty($_SESSION['companyID']) || $_SESSION['Role'] != 'Company Admin')
+	if (!isset($_SESSION['UserID']) || empty($_SESSION['UserID']) || !isset($_SESSION['CompanyID']) || empty($_SESSION['CompanyID'] || $_SESSION['Role'] != 'FT')) 
 	{
-		// Initialize the session.
-		// If you are using session_name("something"), don't forget it now!
 		session_start();
 
 		// Unset all of the session variables.
@@ -24,31 +21,29 @@
 		header("Location:../Session/illegal_access.php"); 
 		exit;
 	} 
-	else {
-		
-		$cadminID = $_SESSION['cadminID'];
-		$companyID = $_SESSION['companyID'];
+	else 
+	{
+		$UserID = $_SESSION['UserID'];
+		$CompanyID = $_SESSION['CompanyID'];
 		
 		//check company status
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-		$sql = "SELECT * FROM company WHERE Status = '1' AND CompanyID = $companyID";
+		$sql = "SELECT * FROM company WHERE Status = '1' AND CompanyID = $CompanyID";
 		$qres = mysqli_query($db, $sql); 
 		
 		$num_rows=mysqli_num_rows($qres);
 				
 		// company not suspended
 		if($num_rows == 1){
-			//check for CAdmin status
-			$sql = "SELECT * FROM companyadmin WHERE Status = '1' AND CAdminID = $cadminID";
+			//check for user status
+			$sql = "SELECT * FROM existinguser WHERE Status = '1' AND UserID = $UserID";
 			$qres = mysqli_query($db, $sql); 
 			
 			$num_rows=mysqli_num_rows($qres);
 					
-				// suspended companyadmin
+				// suspended user
 				if($num_rows == 0)
 				{
-					// Initialize the session.
-					// If you are using session_name("something"), don't forget it now!
 					session_start();
 
 					// Unset all of the session variables.
@@ -66,14 +61,12 @@
 
 					// Finally, destroy the session.
 					session_destroy();
-					header("Location:../Session/suspended_companyadmin.php"); 
+					header("Location:../Session/suspended_user.php"); 
 					exit;
 				}
 		}
-		else 	//suspended company
+		else 	// suspended company
 		{
-			// Initialize the session.
-			// If you are using session_name("something"), don't forget it now!
 			session_start();
 
 			// Unset all of the session variables.
@@ -94,8 +87,5 @@
 			header("Location:../Session/suspended_company.php"); 
 			exit;
 		}
-		if ($_SESSION['cadminID'] == NULL) echo "no id";
 	}
-
-	
 ?>
