@@ -26,12 +26,26 @@
 		$dateposted = date('Y-m-d');
 		
 		$sql = "INSERT INTO reviews(UserID,ReviewTitle,Rating,Comments,DatePosted) VALUES ('$user_id','$reviewTitle','$reviewrating','$reviewcomments','$dateposted')";
-		mysqli_query($conn,$sql)or die("Error Occured");
 		
-		echo "<div class='message'>
-			  <p>Review Successfully submitted!</p>
-		  </div> <br>";
+		//Ensure user can only submit 1 review
+		$dupechecksql = "SELECT * FROM reviews WHERE USERID = $user_id";
+		$dupecheckQuery = mysqli_query($conn, $dupechecksql);
 		
+		if(mysqli_num_rows($dupecheckQuery) >= 1)
+		{
+			echo "<div class='message'>
+				<p>1 Review already submitted, please edit your existing review!</p>
+			</div> <br>";
+		}
+		
+		else
+		{
+			mysqli_query($conn,$sql)or die("Error Occured");
+		
+			echo "<div class='message'>
+				<p>Review Successfully submitted!</p>
+			</div> <br>";
+		}
 	}
 	
 	CloseCon($conn);
@@ -160,6 +174,7 @@
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
                 <li><a href="FT_TimeManagement.php">Time Management</a></li>
                 <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
+				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </div>
