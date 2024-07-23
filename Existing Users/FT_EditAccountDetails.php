@@ -1,32 +1,28 @@
 <?php
-session_start();
-include 'db_connection.php';
+	session_start();
+	include 'db_connection.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['Email'])) 
-{
-	header("Location: ../Unregistered Users/LoginPage.php");
-	exit();
-}
+	// Check if user is logged in
+	include '../Session/session_check_user_FT.php';
 
-$user_id = $_SESSION['UserID'];
-$Email = $_SESSION['Email'];
-$FirstName = $_SESSION['FirstName'];
+	$user_id = $_SESSION['UserID'];
+	$Email = $_SESSION['Email'];
+	$FirstName = $_SESSION['FirstName'];
 
-// Connect to the database
-$conn = OpenCon();
+	// Connect to the database
+	$conn = OpenCon();
 
-// Fetch user details
-$sql = "SELECT FirstName, LastName, Email, Password FROM existinguser WHERE UserID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+	// Fetch user details
+	$sql = "SELECT FirstName, LastName, Email, Password FROM existinguser WHERE UserID = ?";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$user = $result->fetch_assoc();
 
-// Close the database connection
-$stmt->close();
-CloseCon($conn);
+	// Close the database connection
+	$stmt->close();
+	CloseCon($conn);
 ?>
 
 <!DOCTYPE html>

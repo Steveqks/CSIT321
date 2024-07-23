@@ -3,53 +3,49 @@
 session_start();
 include 'db_connection.php';
 
-// Check if user is logged in
-	if (!isset($_SESSION['Email'])) 
-	{
-		header("Location: ../Unregistered Users/LoginPage.php");
-		exit();
-	}
-
+	// Check if user is logged in
+	include '../Session/session_check_user_FT.php';
+	
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
 	$FirstName = $_SESSION['FirstName'];
 			
-// Connect to the database
-$conn = OpenCon();
+	// Connect to the database
+	$conn = OpenCon();
 
-// Pagination logic
-$limit = 10; // Number of entries to show in a page
-$page = isset($_GET["page"]) ? $_GET["page"] : 1;
-$start_from = ($page - 1) * $limit;
+	// Pagination logic
+	$limit = 10; // Number of entries to show in a page
+	$page = isset($_GET["page"]) ? $_GET["page"] : 1;
+	$start_from = ($page - 1) * $limit;
 
-// Fetch total number of tasks
-$sql_total = "SELECT COUNT(t.TaskID) 
-              FROM task t
-              JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-              WHERE t.UserID = $user_id";
-$stmt_total = $conn->prepare($sql_total);
-$stmt_total->execute();
-$stmt_total->bind_result($total_records);
-$stmt_total->fetch();
-$stmt_total->close();
+	// Fetch total number of tasks
+	$sql_total = "SELECT COUNT(t.TaskID) 
+				  FROM task t
+				  JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+				  WHERE t.UserID = $user_id";
+	$stmt_total = $conn->prepare($sql_total);
+	$stmt_total->execute();
+	$stmt_total->bind_result($total_records);
+	$stmt_total->fetch();
+	$stmt_total->close();
 
-$total_pages = ceil($total_records / $limit);
+	$total_pages = ceil($total_records / $limit);
 
-// Fetch tasks for the current page
-$sql = "SELECT t.TaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.TaskDesc 
-        FROM task t
-        JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
-        WHERE t.UserID = $user_id
-        LIMIT ?, ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $start_from, $limit);
-$stmt->execute();
-$result = $stmt->get_result();
-$tasks = $result->fetch_all(MYSQLI_ASSOC);
+	// Fetch tasks for the current page
+	$sql = "SELECT t.TaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.TaskDesc 
+			FROM task t
+			JOIN taskinfo ti ON t.MainTaskID = ti.MainTaskID
+			WHERE t.UserID = $user_id
+			LIMIT ?, ?";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param("ii", $start_from, $limit);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$tasks = $result->fetch_all(MYSQLI_ASSOC);
 
-// Close the database connection
-$stmt->close();
-CloseCon($conn);
+	// Close the database connection
+	$stmt->close();
+	CloseCon($conn);
 ?>
 
 <!DOCTYPE html>

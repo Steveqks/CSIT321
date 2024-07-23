@@ -117,11 +117,7 @@
         include 'db_connection.php';
 
         // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
+        include '../Session/session_check_user_FT.php';
 
         $userID = $_SESSION['UserID'];
         $FirstName = $_SESSION['FirstName'];

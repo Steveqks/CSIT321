@@ -1,20 +1,17 @@
 
 <?php
-session_start();
-include 'db_connection.php';
+	session_start();
+	include 'db_connection.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['Email'])) {
-    header("Location: ../Unregistered Users/LoginPage.php");
-    exit();
-}
+	// Check if user is logged in
+	include '../Session/session_check_user_FT.php';
 
-$user_id = $_SESSION['UserID'];
-$Email = $_SESSION['Email'];
-$FirstName = $_SESSION['FirstName'];
+	$user_id = $_SESSION['UserID'];
+	$Email = $_SESSION['Email'];
+	$FirstName = $_SESSION['FirstName'];
 
-// Connect to the database
-$conn = OpenCon();
+	// Connect to the database
+	$conn = OpenCon();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize form inputs

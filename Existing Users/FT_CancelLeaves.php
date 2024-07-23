@@ -3,12 +3,8 @@
 	include 'db_connection.php';
 
 	// Check if user is logged in
-	if (!isset($_SESSION['Email'])) 
-	{
-		header("Location: ../Unregistered Users/LoginPage.php");
-		exit();
-	}
-
+	include '../Session/session_check_user_FT.php';
+	
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
 	$FirstName = $_SESSION['FirstName'];
@@ -28,9 +24,6 @@
 	// Close the database connection
 	$stmt->close();
 	CloseCon($conn);
-
-
-	
 ?>
 
 
