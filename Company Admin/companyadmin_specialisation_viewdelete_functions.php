@@ -1,5 +1,8 @@
 <?php    
 
+	include '../Session/session_check_companyadmin.php';
+
+
 class userAccount{
 	public $conn;
 	function __construct(){

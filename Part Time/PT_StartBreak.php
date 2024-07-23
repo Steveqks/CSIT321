@@ -1,15 +1,10 @@
 <?php
 session_start();
 include 'db_connection.php';
+include '../Session/session_check_user_PT.php';
 
 // Set the timezone to Singapore
 date_default_timezone_set('Asia/Singapore');
-
-// Check if user is logged in
-if (!isset($_SESSION['Email'])) {
-    header("Location: ../Unregistered Users/LoginPage.php");
-    exit();
-}
 
 $user_id = $_SESSION['UserID'];
 

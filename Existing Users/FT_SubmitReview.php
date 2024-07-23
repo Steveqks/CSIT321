@@ -16,18 +16,40 @@
 	// Connect to the database
 	$conn = OpenCon();
 
-	// Fetch Leaves(Start Date, End Date, Leave Type, Half Day, Comments)
-	$sql = "SELECT StartDate,EndDate,LeaveType,HalfDay,Comments FROM leaves WHERE UserID = $user_id";
+	if(isset($_POST['submit']))
+	{
+		//store form variables
+		$user_id = $_SESSION['UserID'];
+		$reviewTitle = $_POST['reviewtitle'];
+		$reviewrating = $_POST['rating'];
+		$reviewcomments = $_POST['reviewcomments'];
+		$dateposted = date('Y-m-d');
+		
+		$sql = "INSERT INTO reviews(UserID,ReviewTitle,Rating,Comments,DatePosted) VALUES ('$user_id','$reviewTitle','$reviewrating','$reviewcomments','$dateposted')";
+		
+		//Ensure user can only submit 1 review
+		$dupechecksql = "SELECT * FROM reviews WHERE USERID = $user_id";
+		$dupecheckQuery = mysqli_query($conn, $dupechecksql);
+		
+		if(mysqli_num_rows($dupecheckQuery) >= 1)
+		{
+			echo "<div class='message'>
+				<p>1 Review already submitted, please edit your existing review!</p>
+			</div> <br>";
+		}
+		
+		else
+		{
+			mysqli_query($conn,$sql)or die("Error Occured");
+		
+			echo "<div class='message'>
+				<p>Review Successfully submitted!</p>
+			</div> <br>";
+		}
+	}
 	
-	$stmt = $conn->prepare($sql);
-	// $stmt->bind_param("i", $user_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$leaves = $result->fetch_all(MYSQLI_ASSOC);
-
-	// Close the database connection
-	$stmt->close();
 	CloseCon($conn);
+
 
 ?>
 
@@ -101,27 +123,12 @@
 			border: 0.5px solid black;
 		}
 
-		.view-leaves-table {
-			width: 100%;
-			border-collapse: collapse;
-		}
-
-		.view-leaves-table th, .view-leaves-table td {
-			border: 1px solid #ddd;
-			padding: 8px;
-			text-align: left;
-		}
-
-		.view-leaves-table th {
-			background-color: #f2f2f2;
-		}
-
-		.view-leaves-section {
+		.review-section {
 			padding: 20px;
 			flex-grow: 1;
 		}
 
-		.view-leaves-header {
+		.review-header {
 			display: inline-flex;
 			align-items: center;
 			border-bottom: 1px solid black;
@@ -129,8 +136,25 @@
 			margin-bottom: 20px;
 		}
 
-		.view-leaves-header i {
+		.review-header i {
 			margin-right: 10px;
+		}
+		
+		.rating {
+			margin: 10px 0;
+			display: flex;
+			/*justify-content: center;*/
+		}
+
+		.star {
+			font-size: 30px;
+			cursor: pointer;
+			color: #ccc;
+		}
+
+		.star:hover,
+		.star.selected {
+			color: gold;
 		}
 	</style>
 </head>
@@ -156,44 +180,52 @@
         </div>
         
         <!-- RIGHT SECTION (TASK TABLE) -->
-        <div class="view-leaves-section">
-            <div class="view-leaves-header">
+        <div class="review-section">
+            <div class="review-header">
                 <i class="fas fa-user"></i>
-                <h2>View My Leaves</h2>
+                <h2>Submit A Review</h2>
+			</div>
+			<div class = "review-form">
+				<form action = "" method = "post">
+					<label for "reviewtitle">Title: </label>
+					<input id = "reviewtitle" name = "reviewtitle" type = "text"><br><br>
+					
+					<label for "rating">Rating: </label>
+					<div class="rating">
+						<span class="star" data-value="1">&#9733;</span>
+						<span class="star" data-value="2">&#9733;</span>
+						<span class="star" data-value="3">&#9733;</span>
+						<span class="star" data-value="4">&#9733;</span>
+						<span class="star" data-value="5">&#9733;</span>
+					</div>
+					
+					<input type="hidden" name="rating" id="rating" required>
+					
+					<label for "reviewcomments">Comments: </label><br>
+					<input id = "reviewcomments" name = "reviewcomments" type = "textarea"><br><br>
+					<button id = "submitBtn" name = "submit">Submit Review</button>
+				</form>
             </div>
-			
-			<table class="view-leaves-table">
-                <thead>
-                    <tr>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Leave Type</th>
-						<th>Half Day</th>
-						<th>Comments</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (count($leaves) > 0): ?>
-                        <?php foreach ($leaves as $leave): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($leave['StartDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['EndDate']); ?></td>
-                                <td><?php echo htmlspecialchars($leave['LeaveType']); ?></td>
-								<td><?php echo htmlspecialchars($leave['HalfDay']); ?></td>
-								<td><?php echo htmlspecialchars($leave['Comments']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5">No Leaves Applied.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
         </div>
-		
-		
     </div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const stars = document.querySelectorAll('.star');
+			const ratingInput = document.getElementById('rating');
+
+			stars.forEach(star => {
+				star.addEventListener('click', () => {
+					const value = star.getAttribute('data-value');
+					ratingInput.value = value;
+
+					stars.forEach(s => s.classList.remove('selected'));
+					for (let i = 0; i < value; i++) {
+						stars[i].classList.add('selected');
+					}
+				});
+			});
+		})
+	</script>
 </body>
 
 </html>

@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	include '../Session/session_check_superadmin.php';
+
 	$_SESSION['message'] ='';
 
 	if(isset($_POST['delete']) == 'yes')

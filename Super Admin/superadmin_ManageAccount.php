@@ -1,6 +1,8 @@
 <?php
 session_start();
 				
+	include '../Session/session_check_superadmin.php';
+				
 	$SAdminID = $_SESSION['SAdminID'];
 	
 	$_SESSION['message1'] ='';

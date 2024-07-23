@@ -1,6 +1,8 @@
 <?php
 	session_start();
 
+	include '../Session/session_check_superadmin.php';
+
 	$PlanID = $_SESSION['PlanID'];
 
 	$_SESSION['message1'] = '';
