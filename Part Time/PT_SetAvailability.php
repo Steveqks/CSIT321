@@ -1,12 +1,7 @@
 <?php
 session_start();
 include 'db_connection.php';
-
-// Check if user is logged in
-if (!isset($_SESSION['Email'])) {
-    header("Location: ../Unregistered Users/LoginPage.php");
-    exit();
-}
+include '../Session/session_check_user_PT.php';
 
 $user_id = $_SESSION['UserID'];
 $FirstName = $_SESSION['FirstName'];
