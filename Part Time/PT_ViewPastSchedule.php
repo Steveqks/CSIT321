@@ -1,12 +1,7 @@
 <?php
 session_start();
 include 'db_connection.php';
-
-// Check if user is logged in
-if (!isset($_SESSION['Email'])) {
-    header("Location: ../Unregistered Users/LoginPage.php");
-    exit();
-}
+include '../Session/session_check_user_PT.php';
 
 $user_id = $_SESSION['UserID'];
 $FirstName = $_SESSION['FirstName'];
@@ -142,7 +137,8 @@ $pagination_range = getPaginationRange($page, $total_pages);
         }
 
         .header {
-            display: block;
+            display: inline-flex;
+            align-items: center;
             border-bottom: 1px solid black;
             padding-bottom: 5px;
             margin-bottom: 20px;
@@ -151,6 +147,10 @@ $pagination_range = getPaginationRange($page, $total_pages);
         .header h2 {
             margin: 0;
             display: inline-block;
+        }
+		
+		.header i {
+            margin-right: 10px;
         }
 
         .view-past-schedule-link {
