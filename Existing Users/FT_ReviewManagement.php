@@ -165,7 +165,7 @@
             </div>
 			<div class="review-buttons">
                 <a href="FT_SubmitReview.php" class="review-button">Submit a Review</a>
-                <a href="#" class="review-button">Edit a Review</a>
+                <a href="FT_EditReview.php" class="review-button">Edit a Review</a>
             </div>
         </div>
     </div>
