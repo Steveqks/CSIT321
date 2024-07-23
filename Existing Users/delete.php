@@ -1,4 +1,7 @@
 <?php 
+	// Check if user is logged in
+	include '../Session/session_check_user_FT.php';
+	
 	$id = $_POST['id'];
 
 
