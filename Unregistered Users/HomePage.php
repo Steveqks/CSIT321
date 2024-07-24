@@ -1,3 +1,32 @@
+<!-- PHP CODE HERE -->
+<?php
+	session_start();
+	include 'db_connection.php';
+			
+	// Connect to the database
+	$conn = OpenCon();
+
+	// Select the Top 3 5* reviews ordered by latest review time
+	$sql = "SELECT a.UserID, a.ReviewTitle, a.Rating, a.comments, a.DatePosted, b.UserID, b.CompanyID, b.FirstName, b.LastName, c.CompanyID, c.CompanyName FROM reviews a
+		   INNER JOIN existinguser as b
+		   ON a.UserID = b.UserID
+		   INNER JOIN company as c
+           ON b.CompanyID = c.CompanyID
+		   WHERE a.Rating = 5
+           ORDER BY a.DatePosted DESC
+           LIMIT 3";
+
+	
+	$stmt = $conn->prepare($sql);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$top3reviews = $result->fetch_all(MYSQLI_ASSOC);
+
+	// Close the database connection
+	$stmt->close();
+	CloseCon($conn);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,14 +35,6 @@
 	<link rel = "stylesheet" href="HomePage.css">
 </head>
 <body>
-   <!-- PHP CODE HERE -->
-   <?php
-		session_start();
-   	
-		//connect to the database
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-   ?>
    <nav class="navbar">
             <div class="navdiv">
                 <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
@@ -32,6 +53,43 @@
     </div>
 	<div id = "AdvertisingContainer2">
 		<h2>Why TrackMySchedule?</h2>
+	</div>
+	<div id = "AdvertisingContainer3">
+		<h2>Unsure how to Allocate Tasks to team members?</h2>
+		<h3>TrackMySchedule has you covered!</h3>
+	</div>
+	<div id = "AdvertisingContainer4">
+		<h2>Dont just listen to us, hear from our users!</h2>
+		<?php if (count($top3reviews) > 0): ?>
+			<?php foreach ($top3reviews as $review): ?>
+				<div class = 'displayReview'>
+					<p><?php echo htmlspecialchars($review['ReviewTitle']); ?></p>
+					<p>"<?php echo htmlspecialchars($review['comments']); ?>"</p>
+					<!-- Store the user rating, convert to stars -->
+					<?php
+						$rating = (int)$review['Rating'];
+						echo "<div class = 'rating'>";
+						for($i = 1; $i <= 5; $i++)
+						{
+							if ($i <= $rating)
+							{
+								 echo "<span class='filled'>&#9733;</span>"; // Filled star
+							}
+							else
+							{
+								echo "<span class='unfilled'>&#9733;</span>"; // Unfilled star
+							}
+						}
+						echo "</div>";
+					?>
+					<!-- FirstName, LastName, Company -->
+					<p><?php echo htmlspecialchars($review['FirstName']); ?> <?php echo htmlspecialchars($review['LastName']); ?> , <?php echo htmlspecialchars($review['CompanyName']); ?></p>
+				</div>
+			<?php endforeach ?>
+		    <?php else: ?>
+				<h2 style = "text-align:center"> No Reviews Available </h2>
+		    <?php endif; ?>
+			
 	</div>
 </body>
 </html>

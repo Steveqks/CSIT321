@@ -54,18 +54,20 @@ button a{
 }
 
 /*Container for Advertising*/
-#AdvertisingContainer1
+#AdvertisingContainer1, #AdvertisingContainer2, #AdvertisingContainer3
 {
     width:100%;
-    height: 280px;
     background:lightgray;
 	text-align:center;
 }
 
-#AdvertisingContainer2
+#AdvertisingContainer4
 {
-	text-align:center;
+	width:100%;
+    background:lightgray;
+	text-align: center;
 }
+
 h2
 {
 	font-size: 48px;
@@ -90,4 +92,24 @@ h3
 	background-color:darkorange;
 }
 
+/*ID's and classes specific to displaying the review form*/
+
+.displayReview
+{
+	text-align:center;
+	background: #99A3A4;
+}
+
+.rating
+{
+	font-size: 32px;
+}
+.rating .filled 
+{
+	color: #ffd700; /* Gold color */
+}
+.rating .unfilled 
+{
+	color: #d3d3d3; /* Light gray color */
+}
 
