@@ -1,3 +1,95 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+
+    $sql = "SELECT * FROM projectinfo
+            WHERE ProjectManagerID = ".$userID."
+            AND EndDate > CURRENT_TIMESTAMP
+            ORDER BY EndDate ASC;";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+
+    if (isset($_GET['mainprojectid'])) {
+        $mainProjectID = $_GET['mainprojectid'];
+
+        // Check if the number of Tasks related to Project
+        $sql = "SELECT a.MainProjectID, (SELECT COUNT(IFNULL(b.MainTaskID,0)) AS noOfTasks FROM taskinfo b WHERE b.MainProjectID = a.MainProjectID) AS noOfTasks
+                FROM project a
+                WHERE a.MainProjectID = ".$mainProjectID;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $taskExist = $result->fetch_assoc();
+
+
+        if ($taskExist > 0) {
+
+            $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
+
+            $stmt->bind_param("i",$mainTaskID);
+
+            if ($stmt->execute()) {
+
+                // Delete project
+                $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
+    
+                $stmt->bind_param("i",$mainTaskID);
+
+                $stmt->execute();
+            }
+        }
+
+
+        // Delete project
+        $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
+
+        $stmt->bind_param("i",$mainProjectID);
+
+        if ($stmt->execute()) {
+
+            // Delete project
+            $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
+
+            $stmt->bind_param("i",$mainProjectID);
+
+            if ($stmt->execute()) {
+
+                $sql = "SELECT ProjectName FROM projectinfo WHERE MainProjectID = ".$mainProjectID;
+        
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $projectName = $result->fetch_assoc();
+
+                // Close the statement and connection
+                $stmt->close();
+                CloseCon($conn);
+
+                header("Location: Manager_viewProjectList.php?message=Project ".$projectName['ProjectName']." has been deleted.");
+                exit();
+            }
+        }
+    }
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,72 +98,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        // get teams for the team option in form
-/*        $sql = "SELECT a.MainProjectID, a.ProjectName, concat(c.FirstName, ' ', c.LastName) AS fullName FROM projectinfo a
-                INNER JOIN project d ON d.MainProjectID = a.MainProjectID
-                LEFT JOIN teaminfo b ON d.MainTeamID = b.MainTeamID
-                LEFT JOIN existinguser c ON b.ManagerID = c.UserID
-                WHERE a.ProjectManagerID = ".$userID."
-                AND a.EndDate > CURRENT_TIMESTAMP
-                GROUP BY a.MainProjectID, a.ProjectName;";
-*/
-
-        $sql = "SELECT *FROM projectinfo
-                WHERE ProjectManagerID = ".$userID."
-                AND EndDate > CURRENT_TIMESTAMP;";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $projects = $result->fetch_all(MYSQLI_ASSOC);
-
-        $stmt->close();
-
-        if (isset($_GET['mainprojectid'])) {
-            $mainProjectID = $_GET['mainprojectid'];
-
-            // Delete project
-            $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
-
-            $stmt->bind_param("i",$mainProjectID);
-
-            if ($stmt->execute()) {
-
-                // Delete project
-                $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
-    
-                $stmt->bind_param("i",$mainProjectID);
-
-                if ($stmt->execute()) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Project has been deleted.');";
-                    echo "window.location = 'Manager_viewProjectList.php';";
-                    echo "</script>";
-                }
-            }
-        }
-        
-    ?>
 </head>
 <body>
     <!-- Top Section -->
@@ -88,11 +114,19 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
-                    <h2>View Projects</h2>
+                <h2>View Projects</h2>
             </div>
 
             <div class="innerContent">
+                                
+                <?php
+                    if (isset($_GET['message'])) {
+                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                    } elseif (isset($_GET['error'])) {
+                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                    }
+                ?>
+
                 <table class="tasks">
 
                     <tr>
@@ -110,7 +144,7 @@
                                 </td>
                                 <td><?php echo date('F j, Y',strtotime($project['StartDate'])); ?></td>
                                 <td><?php echo date('F j, Y',strtotime($project['EndDate'])); ?></td>
-                                <td><a href="Manager_viewProjectList.php?mainprojectid=<?php echo $project['MainProjectID']; ?>">Delete</a></td>
+                                <td><a href="#" onclick="confirmDelete()">Delete</a></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -123,4 +157,17 @@
         </div>
     </div>
 </body>
+
+<script type="text/javascript">
+    function confirmDelete() {
+
+        let text = "All tasks related to this project will be deleted.\nConfirm to delete?";
+        
+        if (confirm(text) == true) {
+            window.location = "Manager_viewProjectList.php?mainprojectid=<?php echo $project['MainProjectID']; ?>";
+        } else {
+            window.location = "Manager_viewProjectList.php";
+        }
+    }
+</script>
 </html>
