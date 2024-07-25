@@ -1,3 +1,81 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    $taskStatus = 1;
+    $userStatus = 1;
+
+
+    if (isset($_GET['maintaskid'])) {
+        $mainTaskID = $_GET['maintaskid'];
+    
+        // get task detail of the specific task
+        $sql = "SELECT a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainPoolID, f.PoolName
+                FROM taskinfo a
+                INNER JOIN task b ON a.MainTaskID = b.MainTaskID
+                INNER JOIN specialisationpoolinfo f ON f.MainPoolID = b.MainPoolID
+                INNER JOIN existinguser c ON b.UserID = c.UserID
+                INNER JOIN specialisation e ON e.SpecialisationID = f.SpecialisationID
+                WHERE a.MainTaskID = ".$mainTaskID."
+                GROUP BY a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainPoolID, f.PoolName;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $taskDetails = $result->fetch_assoc();
+
+        $sql = "SELECT a.MainTaskID, a.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                FROM task a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.MainTaskID = ".$mainTaskID."
+                GROUP BY a.MainTaskID, a.UserID, fullName;";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $usersTask = $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    
+
+    if (isset($_GET['deletemaintaskid'])) {
+
+        $mainTaskID = $_GET['deletemaintaskid'];
+
+        $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
+
+        $stmt->bind_param("i",$mainTaskID);
+
+        if ($stmt->execute()) {
+
+            // Delete project
+            $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
+
+            $stmt->bind_param("i",$mainTaskID);
+
+            if ($stmt->execute()) {
+
+                header("Location: Manager_viewTasksList.php?message=Task has been deleted.");
+                exit();
+            }
+        }
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,83 +84,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-    
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        $taskStatus = 1;
-        $userStatus = 1;
-
-
-        if (isset($_GET['maintaskid'])) {
-            $mainTaskID = $_GET['maintaskid'];
-
-            if (isset($_GET['delete']) && $_GET['delete'] == "true") {
-
-                $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
-
-                $stmt->bind_param("i",$mainTaskID);
-
-                if ($stmt->execute()) {
-
-                    // Delete project
-                    $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
-        
-                    $stmt->bind_param("i",$mainTaskID);
-
-                    if ($stmt->execute()) {
-                        echo "<script type='text/javascript'>";
-                        echo "alert('Task has been deleted.');";
-                        echo "window.location = 'Manager_viewTasksList.php';";
-                        echo "</script>";
-                    }
-                }
-            }
-        
-            // get task detail of the specific task
-            $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
-                    FROM taskinfo a
-                    INNER JOIN task b ON a.MainTaskID = b.MainTaskID
-                    INNER JOIN teaminfo f ON f.MainTeamID = b.MainTeamID
-                    INNER JOIN existinguser c ON b.UserID = c.UserID
-                    INNER JOIN specialisation e ON e.SpecialisationID = a.SpecialisationID
-                    WHERE a.MainTaskID = ".$mainTaskID."
-                    GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $taskDetails = $result->fetch_assoc();
-
-            $sql = "SELECT a.MainTaskID, a.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                    FROM task a
-                    INNER JOIN existinguser b ON a.UserID = b.UserID
-                    WHERE a.MainTaskID = ".$mainTaskID."
-                    GROUP BY a.MainTaskID, a.UserID, fullName;";
-            
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $usersTask = $result->fetch_all(MYSQLI_ASSOC);
-        }
-    ?>
-
 </head>
 <body>
 
@@ -100,7 +101,6 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
                 <h2>View Task</h2>
             </div>
 
@@ -122,8 +122,8 @@
                                         <span class="details">Specialisation</span>
                                         <p><?php echo $taskDetails['SpecialisationName']; ?></p>
 
-                                        <span class="details">Team</span>
-                                        <p><?php echo $taskDetails['TeamName']; ?></p>
+                                        <span class="details">Specialisation Pool</span>
+                                        <p><?php echo $taskDetails['PoolName']; ?></p>
 
                                         <span class="details">Staff Involved</span>
                                         <?php foreach ($usersTask as $taskDetail): echo "<p>".$taskDetail['fullName']."</p>"; endforeach; ?>
@@ -167,17 +167,13 @@
                                 <?php } ?>
 
                                 <div class="col-50">
-                                    <a href="Manager_viewTask.php?delete=true&maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="deleteTask" class="delbtn">Delete</button></a>
+                                    <button name="deleteTask" class="delbtn" onclick="confirmDelete()">Delete</button></>
                                 </div>
 
                                 <div class="col-50">
                                     <a href="Manager_editTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Edit</button></a>
                                 </div>
                             </div>
-
-                                
-                                
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -187,4 +183,17 @@
     </div>
 
 </body>
+
+<script type="text/javascript">
+    function confirmDelete() {
+
+        let text = "All tasks related to this project will be deleted.\nConfirm to delete?";
+        
+        if (confirm(text) == true) {
+            window.location = "Manager_viewTask.php?deletemaintaskid=<?php echo $taskDetails['MainTaskID'] ?>";
+        } else {
+            window.location = "Manager_viewTask.php?maintaskid=<?php echo $taskDetails['MainTaskID'] ?>";
+        }
+    }
+</script>
 </html>
