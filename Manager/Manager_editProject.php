@@ -127,7 +127,6 @@
                                         <label for="enddate">End Date</label>
                                         <input type="date" id="enddate" name="enddate" value="<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['EndDate']; endforeach; ?>">
                                         
-                                </div>
                                 
                                 <?php
                                     if (isset($_GET['message'])) {
@@ -136,6 +135,7 @@
                                         echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
                                     }
                                 ?>
+                                </div>
 
                                 <button name="editProject" type="submit" class="btn">Update</button>
                                 <?php } ?>

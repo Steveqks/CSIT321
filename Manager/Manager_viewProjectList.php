@@ -24,69 +24,6 @@
     $projects = $result->fetch_all(MYSQLI_ASSOC);
 
     $stmt->close();
-
-    if (isset($_GET['mainprojectid'])) {
-        $mainProjectID = $_GET['mainprojectid'];
-
-        // Check if the number of Tasks related to Project
-        $sql = "SELECT a.MainProjectID, (SELECT COUNT(IFNULL(b.MainTaskID,0)) AS noOfTasks FROM taskinfo b WHERE b.MainProjectID = a.MainProjectID) AS noOfTasks
-                FROM project a
-                WHERE a.MainProjectID = ".$mainProjectID;
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $taskExist = $result->fetch_assoc();
-
-
-        if ($taskExist > 0) {
-
-            $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
-
-            $stmt->bind_param("i",$mainTaskID);
-
-            if ($stmt->execute()) {
-
-                // Delete project
-                $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
-    
-                $stmt->bind_param("i",$mainTaskID);
-
-                $stmt->execute();
-            }
-        }
-
-
-        // Delete project
-        $stmt = $conn->prepare("DELETE FROM projectinfo WHERE MainProjectID = ?");
-
-        $stmt->bind_param("i",$mainProjectID);
-
-        if ($stmt->execute()) {
-
-            // Delete project
-            $stmt = $conn->prepare("DELETE FROM project WHERE MainProjectID = ?");
-
-            $stmt->bind_param("i",$mainProjectID);
-
-            if ($stmt->execute()) {
-
-                $sql = "SELECT ProjectName FROM projectinfo WHERE MainProjectID = ".$mainProjectID;
-        
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $projectName = $result->fetch_assoc();
-
-                // Close the statement and connection
-                $stmt->close();
-                CloseCon($conn);
-
-                header("Location: Manager_viewProjectList.php?message=Project ".$projectName['ProjectName']." has been deleted.");
-                exit();
-            }
-        }
-    }
     
 ?>
 
@@ -133,7 +70,6 @@
                         <th>Project Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Delete</th>
                     </tr>
 
                     <?php if (count($projects) > 0): ?>
@@ -144,12 +80,11 @@
                                 </td>
                                 <td><?php echo date('F j, Y',strtotime($project['StartDate'])); ?></td>
                                 <td><?php echo date('F j, Y',strtotime($project['EndDate'])); ?></td>
-                                <td><a href="#" onclick="confirmDelete()">Delete</a></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4">No projects created.</td>
+                            <td colspan="3">No projects created.</td>
                         </tr>
                     <?php endif; ?>
                 </table>
@@ -157,17 +92,4 @@
         </div>
     </div>
 </body>
-
-<script type="text/javascript">
-    function confirmDelete() {
-
-        let text = "All tasks related to this project will be deleted.\nConfirm to delete?";
-        
-        if (confirm(text) == true) {
-            window.location = "Manager_viewProjectList.php?mainprojectid=<?php echo $project['MainProjectID']; ?>";
-        } else {
-            window.location = "Manager_viewProjectList.php";
-        }
-    }
-</script>
 </html>
