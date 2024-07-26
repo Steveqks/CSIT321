@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 22, 2024 at 08:04 AM
+-- Generation Time: Jul 25, 2024 at 02:55 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -310,7 +310,14 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`ProjectID`),
   KEY `MainPoolID` (`MainPoolID`),
   KEY `project_ibfk_2` (`MainProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `project`
+--
+
+INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainPoolID`) VALUES
+(21, 10, 19);
 
 -- --------------------------------------------------------
 
@@ -329,15 +336,14 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
   PRIMARY KEY (`MainProjectID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ProjectManagerID` (`ProjectManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `projectinfo`
 --
 
 INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
-(6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01'),
-(8, 27, 82, 'Project 1', '2024-07-01', '2024-07-31');
+(10, 27, 82, 'Resident Evil Village', '2024-07-01', '2024-08-31');
 
 -- --------------------------------------------------------
 
@@ -534,7 +540,7 @@ CREATE TABLE IF NOT EXISTS `task` (
 DROP TABLE IF EXISTS `taskinfo`;
 CREATE TABLE IF NOT EXISTS `taskinfo` (
   `MainTaskID` int NOT NULL AUTO_INCREMENT,
-  `SpecialisationID` int NOT NULL,
+  `MainProjectID` int NOT NULL,
   `TaskName` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `TaskDesc` varchar(100) NOT NULL,
   `StartDate` date NOT NULL,
@@ -543,17 +549,8 @@ CREATE TABLE IF NOT EXISTS `taskinfo` (
   `Priority` tinyint(1) NOT NULL,
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`MainTaskID`),
-  KEY `SpecialisationID` (`SpecialisationID`)
+  KEY `MainProjectID` (`MainProjectID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `taskinfo`
---
-
-INSERT INTO `taskinfo` (`MainTaskID`, `SpecialisationID`, `TaskName`, `TaskDesc`, `StartDate`, `DueDate`, `NumStaff`, `Priority`, `Status`) VALUES
-(19, 78, 'Task 1', 'task 1', '2024-07-01', '2024-07-05', 1, 3, 1),
-(20, 77, 'specialisation 1', 'specialisation 1 desc here', '2024-07-16', '2024-07-23', 1, 3, 1),
-(21, 77, 'specialisation1', 'specialisation1 desc', '2024-07-16', '2024-07-17', 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -697,7 +694,7 @@ ALTER TABLE `task`
 -- Constraints for table `taskinfo`
 --
 ALTER TABLE `taskinfo`
-  ADD CONSTRAINT `taskinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `taskinfo_ibfk_1` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `unregisteredusers`
