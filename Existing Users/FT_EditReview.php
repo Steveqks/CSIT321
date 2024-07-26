@@ -128,6 +128,14 @@
 		.star.selected {
 			color: gold;
 		}
+		
+		.error-message {
+            color: red;
+        }
+		
+		.success-message {
+			color: green;
+		}
 	</style>
 </head>
 <body>
@@ -177,7 +185,7 @@
 						
 						<label for "reviewcomments">Comments: </label><br>
 						<input id = "reviewcomments" name = "reviewcomments" type = "textarea" value="<?php echo htmlspecialchars($review['Comments']); ?>"><br><br>
-						<button id = "submitBtn" name = "submit">Submit Review</button>
+						<button id = "submitBtn" name = "submit">Edit Review</button>
 						<?php
 						if (isset($_GET['message'])) {
 							echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
