@@ -10,6 +10,9 @@ session_start();
 	$_SESSION['message3'] ='';
 	$_SESSION['message4'] ='';
 	
+	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+
+	
 	if(isset($_POST['newEmail'])){
 		$newFirstName = $_POST['newFirstName'];			
 		$newLastName = $_POST['newLastName'];			
