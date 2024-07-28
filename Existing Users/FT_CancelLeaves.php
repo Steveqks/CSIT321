@@ -134,6 +134,7 @@
 			height: 40px;
 			background-color:red;
 			border-radius: 4px;
+			border: none;
 			font-size: 20px;
 		}
 		
@@ -141,11 +142,13 @@
 		{
 			background-color: maroon;
 		}
+		
 		#cancel a
 		{
 			text-decoration: none;
 			color: white;
 		}
+		
 		
 		
 	</style>
@@ -201,7 +204,7 @@
 								<td>
 									<form action = "delete.php" method = "post">
 										<input type = "hidden" name = "id" value = "<?php echo $leave['LeaveID']; ?>">
-										<input type = "submit" name = "Cancel" value = "Cancel">
+										<input id = "cancel" type = "submit" name = "Cancel" value = "Cancel">
 									</form>
 								</td>
                             </tr>

@@ -141,9 +141,15 @@
 			display: flex;
 			/*justify-content: center;*/
 		}
-
+		
+		label
+		{
+			font-weight: bold;
+		}
+		
 		.star {
-			font-size: 30px;
+			width: 32px;
+			font-size: 32px;
 			cursor: pointer;
 			color: #ccc;
 		}
@@ -152,6 +158,29 @@
 		.star.selected {
 			color: gold;
 		}
+		
+		#reviewtitle
+		{
+			width: 200px;
+		}
+		
+		#reviewcomments
+		{
+			width: 200px;
+			height: 40px;
+		}
+		#submitBtn
+		{
+			width: 150px;
+			height: 50px;
+			border: none;
+			background-color: #28a745;
+            color: white;
+		}
+        #submitBtn:hover {
+            background-color: #218838;
+            color: white;
+        }
 	</style>
 </head>
 <body>
@@ -183,7 +212,7 @@
 			</div>
 			<div class = "review-form">
 				<form action = "" method = "post">
-					<label for "reviewtitle">Title: </label>
+					<label for "reviewtitle">Title: </label><br>
 					<input id = "reviewtitle" name = "reviewtitle" type = "text"><br><br>
 					
 					<label for "rating">Rating: </label>

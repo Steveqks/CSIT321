@@ -142,6 +142,35 @@
 		.apply-leaves-header i {
 			margin-right: 10px;
 		}
+		
+		#startdate, #enddate, #leavetype
+		{
+			width: 200px;
+		}
+		
+		label
+		{
+			font-weight: bold;
+		}
+		
+		#comments_tb
+		{
+			width: 200px;
+			height: 40px;
+		}
+		
+		#submitBtn
+		{
+			width: 150px;
+			height: 50px;
+			border: none;
+			background-color: #28a745;
+            color: white;
+		}
+        #submitBtn:hover {
+            background-color: #218838;
+            color: white;
+        }
 	</style>
 </head>
 <body>
@@ -174,11 +203,11 @@
 			
 			<div class = "apply-leave-form">
 				<form action = "" method = "post">
-						<label for "startdate">Start Date: </label>
+						<label for "startdate">Start Date: </label><br>
 						<input id = "startdate" name = "startdate" type = "date" placeholder = "Start Date"><br><br>
-						<label for "enddate">End Date: </label>
-						<input id = "enddate" name = "enddate" type = "date" placeholder = "End Date"><br><br>
-						<label for "leavetype">Leave Type: </label>
+						<label for "enddate">End Date: </label><br>
+						<input id = "enddate" name = "enddate" type = "date" placeholder = "End Date "><br><br>
+						<label for "leavetype">Leave Type: </label><br>
 						<select id = "leavetype" name = "leavetype">
 							<option value = "Vacation">Vacation</option>
 							<option value = "Sick Leave">Sick Leave</option>
@@ -186,8 +215,8 @@
 						</select><br><br>
 						<input id = "HalfDay" type = "checkbox" name = "HalfDay" value = "1">
 						<label for "HalfDay">Half Day Leave</label><br><br>
-						<label for "comments_tb">Comments: </label>
-						<input id = "comments_tb" type = "textarea" name = "Comments" placeholder = "Comments"><br><br>
+						<label for "comments_tb">Comments: </label><br>
+						<input id = "comments_tb" type = "textarea" name = "Comments" placeholder = "Comments" rows = "5" cols = "30"><br><br>
 						<button id = "submitBtn" name = "submit">Apply Leave</button>
 					</form>
             </div>
