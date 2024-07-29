@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `StartBreak` datetime DEFAULT NULL,
   `EndBreak` datetime DEFAULT NULL,
   `TotalHours` float DEFAULT NULL,
+  `NumOfOverTimeHours` float DEFAULT NULL,
   PRIMARY KEY (`AttendanceID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -44,8 +45,8 @@ CREATE TABLE IF NOT EXISTS `attendance` (
 -- Dumping data for table `attendance`
 --
 
-INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `StartBreak`, `EndBreak`, `TotalHours`) VALUES
-(1, 30, '2024-07-15 11:46:18', '2024-07-15 11:51:04', '2024-07-15 11:47:26', '2024-07-15 11:48:19', 0.0647222);
+INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `StartBreak`, `EndBreak`, `TotalHours`, `NumOfOverTimeHours`) VALUES
+(1, 30, '2024-07-15 11:46:18', '2024-07-15 11:51:04', '2024-07-15 11:47:26', '2024-07-15 11:48:19', 0.0647222, NULL);
 
 -- --------------------------------------------------------
 
