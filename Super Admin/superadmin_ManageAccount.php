@@ -13,40 +13,23 @@ session_start();
 	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 	
-	if(isset($_POST['newEmail'])){
-		$newFirstName = $_POST['newFirstName'];			
-		$newLastName = $_POST['newLastName'];			
+	if(isset($_POST['Password'])){
+		$FirstName = $_POST['FirstName'];			
+		$LastName = $_POST['LastName'];			
 		$newEmail = $_POST['newEmail'];			
-		$newPassword = $_POST['newPassword'];			
+		$oldEmail = $_POST['oldEmail'];
+		$Password = $_POST['Password'];			
 		
-		//check if there are changes in first name
-		if ($_POST['oldFirstName'] != $_POST['newFirstName']){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result2 = mysqli_query($db,"UPDATE superadmin SET FirstName = '$newFirstName' WHERE SAdminID = '$SAdminID' ") or die("update Error");
-				$_SESSION['message1'] = "<p>First name has been changed.</p>";
-			
-		}
-		else $_SESSION['message1'] = "";
-		
-		//check if there are changes in last name
-		if(@$_POST['oldLastName'] != $newLastName){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-			$result2 = mysqli_query($db,"UPDATE superadmin SET LastName = '$newLastName' WHERE SAdminID = '$SAdminID'") or die("update Error");
-			$_SESSION['message2'] = "<p>Last name has been changed.</p>";
-		}
-		else $_SESSION['message2'] = "";
-		
-		//if email is changed
-		if(@$_POST['oldEmail'] != $newEmail){
-			
-			$sql = "SELECT * FROM companyadmin WHERE Email = '$newEmail'";
+		//email has changes
+		if($newEmail != $oldEmail)
+		{
+			$sql = "SELECT * FROM companyadmin WHERE Email = '$oldEmail'";
 			$qres = mysqli_query($db, $sql); 
 			$num_rows=mysqli_num_rows($qres);
 
-			// exists
+			// email exists
 			if($num_rows > 0){
-				//return error
-				$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
+				$_SESSION['message1'] = "<p>Email Address is already in use.</p>";
 			}
 			// dont exists
 			else{
@@ -57,45 +40,38 @@ session_start();
 				// exists
 				if($num_rows > 0){
 					//return error
-					$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
+					$_SESSION['message1'] = "<p>Email Address is already in use.</p>";
 				}
 				// dont exists
-				else{
-					// exists
+				else
+				{
+					$sql = "SELECT * FROM existinguser WHERE Email = '$newEmail'";
+					$qres = mysqli_query($db, $sql); 
+					$num_rows=mysqli_num_rows($qres);
+				
 					if($num_rows > 0){
-						//return error
-						$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
+					//return error
+					$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
 					}
 					// dont exists
 					else{
-						$sql = "SELECT * FROM existinguser WHERE Email = '$newEmail'";
-						$qres = mysqli_query($db, $sql); 
-						$num_rows=mysqli_num_rows($qres);
-					
-						if($num_rows > 0){
-						//return error
-						$_SESSION['message3'] = "<p>Email Address is already in use.</p>";
-						}
-						// dont exists
-						else{
-							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-							$result2 = mysqli_query($db,"UPDATE superadmin SET Email = '$newEmail' WHERE SAdminID = '$SAdminID'") or die("update Error");
-							$_SESSION['message3'] = "<p>Email Address has been changed.</p>";
-						}
+						$result2 = mysqli_query($db,"UPDATE superadmin SET Email = '$newEmail' WHERE SAdminID = '$SAdminID'") or die("update Error");
+						$result2 = mysqli_query($db,"UPDATE superadmin SET FirstName = '$FirstName' WHERE SAdminID = '$SAdminID' ") or die("update Error");
+						$result2 = mysqli_query($db,"UPDATE superadmin SET LastName = '$LastName' WHERE SAdminID = '$SAdminID'") or die("update Error");
+						$result2 = mysqli_query($db,"UPDATE superadmin SET Password = '$Password' WHERE SAdminID = '$SAdminID'") or die("update Error");
+						$_SESSION['message3'] = "<p>Account settings has been changed.</p>";
 					}
 				}
 			}
 		}
-		else $_SESSION['message3'] = "";
-		
-		//check if there are changes in password
-		if(@$_POST['oldPassword'] != $newPassword){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-			$result2 = mysqli_query($db,"UPDATE superadmin SET Password = '$newPassword' WHERE SAdminID = '$SAdminID'") or die("update Error");
-			$_SESSION['message4'] = "<p>Password has been changed.</p>";
+		else
+		{
+						$result2 = mysqli_query($db,"UPDATE superadmin SET FirstName = '$FirstName' WHERE SAdminID = '$SAdminID' ") or die("update Error");
+						$result2 = mysqli_query($db,"UPDATE superadmin SET LastName = '$LastName' WHERE SAdminID = '$SAdminID'") or die("update Error");
+						$result2 = mysqli_query($db,"UPDATE superadmin SET Password = '$Password' WHERE SAdminID = '$SAdminID'") or die("update Error");
+						$_SESSION['message3'] = "<p>Account settings has been changed.</p>";
+
 		}
-		else $_SESSION['message4'] = "";
-	
 	}
 ?>
 <!DOCTYPE html>
@@ -132,31 +108,42 @@ session_start();
 				$result = mysqli_query($db,	"SELECT * FROM superadmin WHERE SAdminID = '$SAdminID'") or die("Select Error");
 			
 				while($Row = $result->fetch_assoc()){
-				$form = "<form  action='' id='ModifyAccount'  method='POST'>
+				$form = "<form  action='' id='ModifyAccount'  method='POST' style='
+            flex: 0 0 48%;
+            display: inline-flex;
+            justify-content: space-between;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 80%;
+            margin-bottom: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+				'>
 						<br>
 							<table >
 								<tr>
-									<td style='border: 2px solid black; border-collapse: collapse;'>
-										FROM 
-										<br><br>
-										
-										First Name: <input type='text' name='oldFirstName' value='" . $Row['FirstName'] . "' readonly><br>
-										Last Name: <input type='text' name='oldLastName' value='" . $Row['LastName'] . "' readonly> <br>
-										Email Address: <input type='text' name='oldEmail' value=" . $Row['Email'] . " readonly> <br>
-										Password: <input type='password' name='oldPassword' value=" . $Row['Password'] . " readonly> <br>
-									<br></td>
-											
-									<td style='border: 2px solid black; border-collapse: collapse;'> 
-										TO
-										<br><br>
-										First Name: <input type='text' name='newFirstName' value='" . $Row['FirstName'] . "' maxlength='16'> <br>
-										Last Name: <input type='text' name='newLastName' value='" . $Row['LastName'] . "' maxlength='16'><br>
-										Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . " maxlength='32'><br>
-										Password: <input type='password' name='newPassword' value=" . $Row['Password'] . " > <br>
-										<input type='button' value='Update' onclick='confirmDiag();'>
+									<td>
+										First Name: <input type='text' name='FirstName' value='" . $Row['FirstName'] . "' ><br>
+										Last Name: <input type='text' name='LastName' value='" . $Row['LastName'] . "' > <br>
+										<input type='hidden' name='oldEmail' value=" . $Row['Email'] . " readonly> 
 									</td>
+										<td>
+										Email Address: <input type='text' name='newEmail' value=" . $Row['Email'] . " > <br>
+										Password: <input type='password' name='Password' value=" . $Row['Password'] . " > <br>
+										</td>
 								</tr>
 							</table>
+							<input type='button' value='Save Changes' onclick='confirmDiag();' style='horizontal-align: right; width: 20%;'>
 						</form>
 							";
 				}
