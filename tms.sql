@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 25, 2024 at 02:55 PM
+-- Generation Time: Jul 30, 2024 at 08:39 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -218,6 +218,31 @@ INSERT INTO `existinguser` (`UserID`, `CompanyID`, `SpecialisationID`, `Role`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `features`
+--
+
+DROP TABLE IF EXISTS `features`;
+CREATE TABLE IF NOT EXISTS `features` (
+  `FeatureID` int NOT NULL AUTO_INCREMENT,
+  `Name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Image` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`FeatureID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `features`
+--
+
+INSERT INTO `features` (`FeatureID`, `Name`, `Description`, `Icon`, `Image`) VALUES
+(1, 'Feature 1', 'Description 1', 'Images/tasks.png', 'Images/Placeholder.jpeg'),
+(2, 'Feature 2', 'Description 2', 'Images/attendance.png', 'Images/Placeholder.jpeg'),
+(3, 'Feature 3', 'Description 3', 'Images/project-management.png', 'Images/Placeholder.jpeg');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `leaves`
 --
 
@@ -356,20 +381,23 @@ DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `ReviewID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
-  `ReviewTitle` varchar(16) NOT NULL,
+  `ReviewTitle` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Rating` int NOT NULL,
-  `Comments` text NOT NULL,
+  `Comments` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`ReviewID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `reviews`
 --
 
 INSERT INTO `reviews` (`ReviewID`, `UserID`, `ReviewTitle`, `Rating`, `Comments`, `DatePosted`) VALUES
-(6, 28, 'Good Website', 5, 'very good', '2024-07-22');
+(8, 28, 'Good Website', 5, 'very good', '2024-07-23'),
+(9, 27, 'fun website', 5, 'would use again', '2024-07-24'),
+(10, 31, 'had fun using website', 5, 'need user manual', '2024-07-24'),
+(11, 29, 'BOOOO', 1, 'Shit', '2024-07-24');
 
 -- --------------------------------------------------------
 
@@ -423,49 +451,49 @@ INSERT INTO `specialisation` (`SpecialisationID`, `SpecialisationName`, `Company
 -- --------------------------------------------------------
 
 --
--- Table structure for table `specialisationpool`
+-- Table structure for table `specialisationgroup`
 --
 
-DROP TABLE IF EXISTS `specialisationpool`;
-CREATE TABLE IF NOT EXISTS `specialisationpool` (
-  `PoolID` int NOT NULL AUTO_INCREMENT,
-  `MainPoolID` int NOT NULL,
+DROP TABLE IF EXISTS `specialisationgroup`;
+CREATE TABLE IF NOT EXISTS `specialisationgroup` (
+  `GroupID` int NOT NULL AUTO_INCREMENT,
+  `MainGroupID` int NOT NULL,
   `UserID` int NOT NULL,
-  PRIMARY KEY (`PoolID`),
-  KEY `MainPoolID` (`MainPoolID`),
+  PRIMARY KEY (`GroupID`),
+  KEY `MainGroupID` (`MainGroupID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=389 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `specialisationpool`
+-- Dumping data for table `specialisationgroup`
 --
 
-INSERT INTO `specialisationpool` (`PoolID`, `MainPoolID`, `UserID`) VALUES
+INSERT INTO `specialisationgroup` (`GroupID`, `MainGroupID`, `UserID`) VALUES
 (387, 19, 28),
 (388, 19, 29);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `specialisationpoolinfo`
+-- Table structure for table `specialisationgroupinfo`
 --
 
-DROP TABLE IF EXISTS `specialisationpoolinfo`;
-CREATE TABLE IF NOT EXISTS `specialisationpoolinfo` (
-  `MainPoolID` int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `specialisationgroupinfo`;
+CREATE TABLE IF NOT EXISTS `specialisationgroupinfo` (
+  `MainGroupID` int NOT NULL AUTO_INCREMENT,
   `SpecialisationID` int NOT NULL,
   `CompanyID` int NOT NULL,
-  `PoolName` varchar(32) NOT NULL,
-  PRIMARY KEY (`MainPoolID`),
+  `GroupName` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`MainGroupID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `SpecialisationID` (`SpecialisationID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `specialisationpoolinfo`
+-- Dumping data for table `specialisationgroupinfo`
 --
 
-INSERT INTO `specialisationpoolinfo` (`MainPoolID`, `SpecialisationID`, `CompanyID`, `PoolName`) VALUES
+INSERT INTO `specialisationgroupinfo` (`MainGroupID`, `SpecialisationID`, `CompanyID`, `GroupName`) VALUES
 (19, 77, 82, 'Team Specialisation 1');
 
 -- --------------------------------------------------------
@@ -523,13 +551,13 @@ CREATE TABLE IF NOT EXISTS `swap_requests` (
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE IF NOT EXISTS `task` (
   `TaskID` int NOT NULL AUTO_INCREMENT,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   `MainTaskID` int NOT NULL,
   `UserID` int NOT NULL,
   PRIMARY KEY (`TaskID`),
   KEY `UserID` (`UserID`),
-  KEY `task_ibfk_2` (`MainTaskID`),
-  KEY `task_ibfk_3` (`MainPoolID`)
+  KEY `MainTaskID` (`MainTaskID`),
+  KEY `MainGroupID` (`MainGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -641,7 +669,7 @@ ALTER TABLE `newsfeed`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
@@ -664,18 +692,18 @@ ALTER TABLE `specialisation`
   ADD CONSTRAINT `specialisation_ibfk_1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `specialisationpool`
+-- Constraints for table `specialisationgroup`
 --
-ALTER TABLE `specialisationpool`
-  ADD CONSTRAINT `specialisationpool_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `specialisationpool_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `specialisationgroup`
+  ADD CONSTRAINT `specialisationgroup_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `specialisationgroup_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
--- Constraints for table `specialisationpoolinfo`
+-- Constraints for table `specialisationgroupinfo`
 --
-ALTER TABLE `specialisationpoolinfo`
-  ADD CONSTRAINT `specialisationpoolinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `specialisationpoolinfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
+ALTER TABLE `specialisationgroupinfo`
+  ADD CONSTRAINT `specialisationgroupinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `specialisationgroupinfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `swap_requests`
@@ -689,7 +717,7 @@ ALTER TABLE `swap_requests`
 ALTER TABLE `task`
   ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`MainTaskID`) REFERENCES `taskinfo` (`MainTaskID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `taskinfo`

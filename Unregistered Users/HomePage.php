@@ -21,9 +21,18 @@
 	$stmt->execute();
 	$result = $stmt->get_result();
 	$top3reviews = $result->fetch_all(MYSQLI_ASSOC);
-
-	// Close the database connection
 	$stmt->close();
+	
+	#Limit the first 3 features for home page
+	$features_sql = "SELECT Name, Icon from Features LIMIT 3";
+	
+	$stmts = $conn->prepare($features_sql);
+	$stmts->execute();
+	$results = $stmts->get_result();
+	$features = $results->fetch_all(MYSQLI_ASSOC);
+	$stmts->close();
+	
+	// Close the database connection
 	CloseCon($conn);
 
 ?>
@@ -46,18 +55,36 @@
 			     </ul>
             </div>
     </nav>
+	
 	<div id = "AdvertisingContainer1">
         <h2>Project Management, Simplified</h2>
 		<h3>Create Projects with the best people for the role</h3>
 		<button class = "EnterCredBtn"><a href="EnterCredentials.php">Get Started</a></button>
     </div>
+	
 	<div id = "AdvertisingContainer2">
 		<h2>Why TrackMySchedule?</h2>
+		<div id = "Features">
+			<?php if (count($features) > 0): ?>
+				<?php foreach ($features as $feature): ?>
+					<div id = "FeatureBox">
+						<img src = <?php echo htmlspecialchars($feature['Icon'])?> width = "256px" height = "256px">
+						<h2><?php echo htmlspecialchars($feature['Name'])?></h2>
+					</div>
+				<?php endforeach ?>
+			<?php else: ?>
+				<h2 style = "text-align:center"> No Plans Available </h2>
+		    <?php endif; ?>
+		</div>
 	</div>
+	
 	<div id = "AdvertisingContainer3">
 		<h2>Unsure how to Allocate Tasks to team members?</h2>
 		<h3>TrackMySchedule has you covered!</h3>
+		<img src = "Images/Placeholder.jpeg" width = "948px" height = "710px">
 	</div>
+	
+		<!-- Display reviews section -->
 	<div id = "AdvertisingContainer4">
 		<h2>Dont just listen to us, hear from our users!</h2>
 		<?php if (count($top3reviews) > 0): ?>
@@ -91,5 +118,8 @@
 		    <?php endif; ?>
 			
 	</div>
+
+
+	
 </body>
 </html>

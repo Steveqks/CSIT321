@@ -54,29 +54,17 @@ button a{
 }
 
 /*Container for Advertising*/
-#AdvertisingContainer1, #AdvertisingContainer2, #AdvertisingContainer3
+#AdvertisingContainer1, #AdvertisingContainer2, #AdvertisingContainer3, #AdvertisingContainer4
 {
     width:100%;
     background:lightgray;
 	text-align:center;
 }
 
-#AdvertisingContainer4
+/* Container with the "Get started" button --> Enter credentials form */
+#AdvertisingContainer1
 {
-	width:100%;
-    background:lightgray;
-	text-align: center;
-}
-
-h2
-{
-	font-size: 48px;
-	padding-top: 20px;
-}
-
-h3
-{
-	font-size: 32px;
+	height: 275px;
 }
 
 .EnterCredBtn
@@ -91,6 +79,33 @@ h3
 {
 	background-color:darkorange;
 }
+
+/* Related to Advertising Container 2 aka features*/
+#Features
+{
+	display: flex;
+    justify-content: center;
+}
+
+
+#FeatureBox{
+	margin-top: 50px;
+    width: 513px;
+    height: 571px;
+}
+
+
+h2
+{
+	font-size: 48px;
+	padding-top: 20px;
+}
+
+h3
+{
+	font-size: 32px;
+}
+
 
 /*ID's and classes specific to displaying the review form*/
 
