@@ -30,11 +30,11 @@
 
     
         // get team project details
-        $sql = "SELECT a.PoolName, b.SpecialisationName FROM specialisationpoolinfo a
-                INNER JOIN project d ON d.MainPoolID = a.MainPoolID
+        $sql = "SELECT a.GroupName, b.SpecialisationName FROM specialisationgroupinfo a
+                INNER JOIN project d ON d.MainGroupID = a.MainGroupID
                 LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
                 WHERE d.MainProjectID = ".$mainProjectID."
-                GROUP BY a.PoolName, b.SpecialisationName;";
+                GROUP BY a.GroupName, b.SpecialisationName;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -49,30 +49,35 @@
         $mainProjectID = $_GET['deletemainprojectid'];
 
         // Check if the number of Tasks related to Project
-        $sql = "SELECT a.MainProjectID, (SELECT COUNT(IFNULL(b.MainTaskID,0)) AS noOfTasks FROM taskinfo b WHERE b.MainProjectID = a.MainProjectID) AS noOfTasks
-                FROM project a
+        $sql = "SELECT b.MainTaskID FROM taskinfo b
+                INNER JOIN project a ON b.MainProjectID = a.MainProjectID
                 WHERE a.MainProjectID = ".$mainProjectID;
         
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $taskExist = $result->fetch_assoc();
+        $taskExist = $result->fetch_all(MYSQLI_ASSOC);
 
 
-        if ($taskExist > 0) {
+        // Delete tasks
+        if (count($taskExist) > 0) {
 
             $stmt = $conn->prepare("DELETE FROM task WHERE MainTaskID = ?");
 
-            $stmt->bind_param("i",$mainTaskID);
+            foreach ($taskExist as $mainTaskID) {
 
-            if ($stmt->execute()) {
+                $stmt->bind_param("i",$mainTaskID['MainTaskID']);
 
-                // Delete project
-                $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
-    
-                $stmt->bind_param("i",$mainTaskID);
+                if ($stmt->execute()) {
 
-                $stmt->execute();
+                    // Delete project
+                    $stmt = $conn->prepare("DELETE FROM taskinfo WHERE MainTaskID = ?");
+        
+                    $stmt->bind_param("i",$mainTaskID['MainTaskID']);
+
+                    $stmt->execute();
+                }
+
             }
         }
 
@@ -161,16 +166,16 @@
                                     <span class="details">Specialisation(s)</span>
                                     <p><?php
                                         for ($i = 0; $i < count($teamProjectDetails); $i++) {
-                                            echo $i+1 .". ".$teamProjectDetails[$i]['SpecialisationName'];
+                                            echo "<p>".$i+1 .". ".$teamProjectDetails[$i]['SpecialisationName']."</p>";
                                         }
                                     ?></p>
                                         
-                                    <span class="details">Specialisation Pool(s)</span>
-                                    <p><?php
+                                    <span class="details">Specialisation Group(s)</span>
+                                    <?php
                                         for ($i = 0; $i < count($teamProjectDetails); $i++) {
-                                            echo $i+1 .". ".$teamProjectDetails[$i]['PoolName'];
+                                            echo "<p>".$i+1 .". ".$teamProjectDetails[$i]['GroupName']."</p>";
                                         }
-                                    ?></p>
+                                    ?>
 
                                 </div>
 

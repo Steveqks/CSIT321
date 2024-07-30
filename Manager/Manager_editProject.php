@@ -28,28 +28,28 @@
         $projectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
     
-        // get team project details
-        $sql = "SELECT b.SpecialisationID, b.SpecialisationName FROM specialisationpoolinfo a
-                INNER JOIN project d ON d.MainPoolID = a.MainPoolID
+        // get group project details
+        $sql = "SELECT b.SpecialisationID, b.SpecialisationName FROM specialisationgroupinfo a
+                INNER JOIN project d ON d.MainGroupID = a.MainGroupID
                 LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
                 WHERE d.MainProjectID = ".$mainProjectID."
-                GROUP BY a.PoolName, b.SpecialisationName;";
+                GROUP BY b.SpecialisationID, b.SpecialisationName;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $teamProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
+        $groupProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
         $stmt->close();
 
     
         // get Specialisation for the select option
         $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID
-            . " AND SpecialisationID NOT IN (".$teamProjectDetails[0]['SpecialisationID'];
+            . " AND SpecialisationID NOT IN (".$groupProjectDetails[0]['SpecialisationID'];
 
-        if (count($teamProjectDetails) > 1) {
-            for ($i = 1; $i < count($teamProjectDetails); $i++) {
-                $sql .= ", ".$teamProjectDetails[$i]['SpecialisationID'];
+        if (count($groupProjectDetails) > 1) {
+            for ($i = 1; $i < count($groupProjectDetails); $i++) {
+                $sql .= ", ".$groupProjectDetails[$i]['SpecialisationID'];
             }
         }
 
@@ -97,22 +97,22 @@
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="editProject" action="Manager_editProjectPool.php" method="POST">
+                            <form name="editProject" action="Manager_editProjectGroup.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
 
-                                    <?php if (isset($_GET['mainprojectid'])) { ?>
+                                    
                                         <input type="hidden" name="mainprojectid" value="<?php echo $mainProjectID; ?>">
 
                                         <label for="projectname">Project Name</label>
                                         <input type="text" id="projectname" name="projectname" value="<?php foreach ($projectDetails as $projectDetail): echo $projectDetail['ProjectName']; endforeach; ?>">
 
-                                        <label for="teams">Team</label>
+                                        <label for="specialisationgroup">Group</label>
                                         <div class="checkbox-container">
                                             <?php
-                                            foreach ($teamProjectDetails as $projectTeam):
-                                                echo "<div class='checkbox-team'><input type='checkbox' name='specialisation[]' value='". $projectTeam['SpecialisationID']."' checked>". $projectTeam['SpecialisationName']."</div>";
+                                            foreach ($groupProjectDetails as $projectGroup):
+                                                echo "<div class='checkbox-team'><input type='checkbox' name='specialisation[]' value='". $projectGroup['SpecialisationID']."' checked>". $projectGroup['SpecialisationName']."</div>";
                                             endforeach;
 
                                             foreach ($specialisations as $specialisation):
@@ -138,7 +138,6 @@
                                 </div>
 
                                 <button name="editProject" type="submit" class="btn">Update</button>
-                                <?php } ?>
                             </form>
                         </div>
                     </div>

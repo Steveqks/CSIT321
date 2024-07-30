@@ -17,14 +17,14 @@
 
     $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
             (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-            spi.PoolName, ti.Status
+            sgi.GroupName, ti.Status
             FROM projectinfo pi
             JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
             JOIN task t ON t.MainTaskID = ti.MainTaskID
-            JOIN specialisationpool sp ON sp.MainPoolID = t.MainPoolID
-            JOIN specialisationpoolinfo spi ON spi.MainPoolID = sp.MainPoolID
+            JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+            JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
             WHERE pi.ProjectManagerID = ".$userID."
-            GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, spi.PoolName
+            GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
             ORDER BY ti.Status DESC, ti.DueDate ASC;";
 /*
         // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
@@ -80,7 +80,7 @@
         
         <!-- Right Section (Activity) -->
         <div class="content">
-            <h2 class="contentHeader">View Tasks</h2>
+            <h2 class="contentHeader">View Tasks List</h2>
 
             <div class="innerContent">
                 
@@ -111,7 +111,7 @@
                                 </td>
                                 <td><?php echo date('F j, Y',strtotime($task['StartDate'])); ?></td>
                                 <td><?php echo date('F j, Y',strtotime($task['DueDate'])); ?></td>
-                                <td><?php echo htmlspecialchars($task['PoolName']); ?></td>
+                                <td><?php echo htmlspecialchars($task['GroupName']); ?></td>
                                 <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
 
                                 <?php

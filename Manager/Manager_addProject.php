@@ -56,7 +56,7 @@
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="addProject" action="Manager_addProjectPool.php" method="POST">
+                            <form name="addProject" action="Manager_addProjectGroup.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">

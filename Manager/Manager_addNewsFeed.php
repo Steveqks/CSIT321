@@ -1,3 +1,41 @@
+<?php
+    session_start();
+
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+
+    if (isset($_POST['addNewsFeed'])) {
+
+        $title = $_POST['title'];
+        $desc = $_POST['desc'];
+
+        $stmt = $conn->prepare("INSERT INTO newsfeed (ManagerID,NewsTitle,NewsDesc,DatePosted) VALUES (?,?,?,CURRENT_TIMESTAMP)");
+
+        $stmt->bind_param("iss",$userID,$title,$desc);
+
+        if ($stmt->execute()) {
+            header("Location: Manager_addNewsFeed.php?message=News Feed has been posted.");
+            exit();
+        } else {
+            header("Location: Manager_addNewsFeed.php?error=Error updating account details.");
+            exit();
+        }
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,45 +44,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-
-        if (isset($_POST['addNewsFeed'])) {
-
-            $title = $_POST['title'];
-            $desc = $_POST['desc'];
-
-            $stmt = $conn->prepare("INSERT INTO newsfeed (ManagerID,NewsTitle,NewsDesc,DatePosted) VALUES (?,?,?,CURRENT_TIMESTAMP)");
-
-            $stmt->bind_param("iss",$userID,$title,$desc);
-
-            if ($stmt->execute()) {
-                                
-                echo "<script type='text/javascript'>";
-                echo "alert('News Feed has been posted.');";
-                echo "window.location = 'Manager_viewNewsFeed.php';";
-                echo "</script>";
-            }
-        }
-    ?>
 </head>
 <body>
     <!-- Top Section -->
@@ -61,8 +60,7 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
-                    <h2>Post News Feed</h2>
+                <h2>Post News Feed</h2>
             </div>
 
             <div class="innerContent">
@@ -81,6 +79,14 @@
                                         
                                     </div>
                                 </div>
+                                
+                                <?php
+                                    if (isset($_GET['message'])) {
+                                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                                    } elseif (isset($_GET['error'])) {
+                                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                                    }
+                                ?>
 
                                 <button name="addNewsFeed" type="submit" class="btn">Save</button>
                                 

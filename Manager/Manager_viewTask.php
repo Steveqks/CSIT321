@@ -20,14 +20,14 @@
         $mainTaskID = $_GET['maintaskid'];
     
         // get task detail of the specific task
-        $sql = "SELECT a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainPoolID, f.PoolName
+        $sql = "SELECT a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainGroupID, f.GroupName
                 FROM taskinfo a
                 INNER JOIN task b ON a.MainTaskID = b.MainTaskID
-                INNER JOIN specialisationpoolinfo f ON f.MainPoolID = b.MainPoolID
+                INNER JOIN specialisationgroupinfo f ON f.MainGroupID = b.MainGroupID
                 INNER JOIN existinguser c ON b.UserID = c.UserID
                 INNER JOIN specialisation e ON e.SpecialisationID = f.SpecialisationID
                 WHERE a.MainTaskID = ".$mainTaskID."
-                GROUP BY a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainPoolID, f.PoolName;";
+                GROUP BY a.MainTaskID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainGroupID, f.GroupName;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

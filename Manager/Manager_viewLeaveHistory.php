@@ -1,3 +1,65 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    $userStatusID = 1;
+
+    $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+            FROM leaves a
+            INNER JOIN team c ON a.UserID = c.UserID
+            INNER JOIN teaminfo d ON c.MainTeamID = d.MainTeamID
+            LEFT JOIN existinguser b ON c.UserID = b.UserID
+            WHERE d.ManagerID = ".$userID."
+            AND b.Status = ".$userStatusID."
+            GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status;";
+
+
+    //echo $sql;
+
+    $stmt = $conn->prepare($sql);
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $leaves = $result->fetch_all(MYSQLI_ASSOC);
+    
+    if (isset($_GET['approve'])) {
+
+        $leaveID = $_GET['leaveid'];
+
+        if ($_GET['approve'] == "yes") {
+
+            $leaveStatus = 1;
+
+        } else if ($_GET['approve'] == "no") {
+
+            $leaveStatus = 0;
+
+        }
+
+        $stmt = $conn->prepare("UPDATE leaves SET Status=? WHERE LeaveID=?");
+
+        $stmt->bind_param("ii",$leaveStatus,$leaveID);
+
+        if ($stmt->execute()) {
+            header('Location: Manager_viewLeaveHistory.php');
+        }
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,70 +68,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        $userStatusID = 1;
-
-        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
-                FROM leaves a
-                INNER JOIN team c ON a.UserID = c.UserID
-                INNER JOIN teaminfo d ON c.MainTeamID = d.MainTeamID
-                LEFT JOIN existinguser b ON c.UserID = b.UserID
-                WHERE d.ManagerID = ".$userID."
-                AND b.Status = ".$userStatusID."
-                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status;";
-
-
-        //echo $sql;
-
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $leaves = $result->fetch_all(MYSQLI_ASSOC);
-        
-        if (isset($_GET['approve'])) {
-
-            $leaveID = $_GET['leaveid'];
-
-            if ($_GET['approve'] == "yes") {
-
-                $leaveStatus = 1;
-
-            } else if ($_GET['approve'] == "no") {
-
-                $leaveStatus = 0;
-
-            }
-
-            $stmt = $conn->prepare("UPDATE leaves SET Status=? WHERE LeaveID=?");
-
-            $stmt->bind_param("ii",$leaveStatus,$leaveID);
-
-            if ($stmt->execute()) {
-                header('Location: Manager_viewLeaveHistory.php');
-            }
-        }
-    ?>
-
 </head>
 <body>
 
