@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 30, 2024 at 07:24 AM
+-- Generation Time: Jul 30, 2024 at 07:35 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `specialisationgroup` (
   `MainGroupID` int NOT NULL,
   `UserID` int NOT NULL,
   PRIMARY KEY (`GroupID`),
-  KEY `MainPoolID` (`MainGroupID`),
+  KEY `MainGroupID` (`MainGroupID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=389 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -523,13 +523,13 @@ CREATE TABLE IF NOT EXISTS `swap_requests` (
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE IF NOT EXISTS `task` (
   `TaskID` int NOT NULL AUTO_INCREMENT,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   `MainTaskID` int NOT NULL,
   `UserID` int NOT NULL,
   PRIMARY KEY (`TaskID`),
   KEY `UserID` (`UserID`),
-  KEY `task_ibfk_2` (`MainTaskID`),
-  KEY `task_ibfk_3` (`MainPoolID`)
+  KEY `MainTaskID` (`MainTaskID`),
+  KEY `MainGroupID` (`MainGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -689,7 +689,7 @@ ALTER TABLE `swap_requests`
 ALTER TABLE `task`
   ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`MainTaskID`) REFERENCES `taskinfo` (`MainTaskID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `taskinfo`
