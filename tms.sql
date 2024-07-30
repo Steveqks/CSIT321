@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 30, 2024 at 08:47 AM
+-- Generation Time: Jul 30, 2024 at 08:50 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -218,6 +218,31 @@ INSERT INTO `existinguser` (`UserID`, `CompanyID`, `SpecialisationID`, `Role`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `features`
+--
+
+DROP TABLE IF EXISTS `features`;
+CREATE TABLE IF NOT EXISTS `features` (
+  `FeatureID` int NOT NULL AUTO_INCREMENT,
+  `Name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Image` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`FeatureID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `features`
+--
+
+INSERT INTO `features` (`FeatureID`, `Name`, `Description`, `Icon`, `Image`) VALUES
+(1, 'Feature 1', 'Description 1', 'Images/tasks.png', 'Images/Placeholder.jpeg'),
+(2, 'Feature 2', 'Description 2', 'Images/attendance.png', 'Images/Placeholder.jpeg'),
+(3, 'Feature 3', 'Description 3', 'Images/project-management.png', 'Images/Placeholder.jpeg');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `leaves`
 --
 
@@ -307,17 +332,17 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE IF NOT EXISTS `project` (
   `ProjectID` int NOT NULL AUTO_INCREMENT,
   `MainProjectID` int NOT NULL,
-  `MainGroupID` int NOT NULL,
+  `MainPoolID` int NOT NULL,
   PRIMARY KEY (`ProjectID`),
-  KEY `MainGroupID` (`MainGroupID`),
-  KEY `MainProjectID` (`MainProjectID`)
+  KEY `MainPoolID` (`MainPoolID`),
+  KEY `project_ibfk_2` (`MainProjectID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `project`
 --
 
-INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainGroupID`) VALUES
+INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainPoolID`) VALUES
 (21, 10, 19);
 
 -- --------------------------------------------------------
@@ -356,20 +381,23 @@ DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `ReviewID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
-  `ReviewTitle` varchar(16) NOT NULL,
+  `ReviewTitle` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Rating` int NOT NULL,
-  `Comments` text NOT NULL,
+  `Comments` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`ReviewID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `reviews`
 --
 
 INSERT INTO `reviews` (`ReviewID`, `UserID`, `ReviewTitle`, `Rating`, `Comments`, `DatePosted`) VALUES
-(6, 28, 'Good Website', 5, 'very good', '2024-07-22');
+(8, 28, 'Good Website', 5, 'very good', '2024-07-23'),
+(9, 27, 'fun website', 5, 'would use again', '2024-07-24'),
+(10, 31, 'had fun using website', 5, 'need user manual', '2024-07-24'),
+(11, 29, 'BOOOO', 1, 'Shit', '2024-07-24');
 
 -- --------------------------------------------------------
 
@@ -641,7 +669,7 @@ ALTER TABLE `newsfeed`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
