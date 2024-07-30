@@ -131,7 +131,17 @@ session_start();
 					
 						<?php
 							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
+							
+							//find manager specialisation id
+							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+							$qres = mysqli_query($db, $sql); 
+							while ($Row = $qres->fetch_assoc()) 
+							{
+								$mid = $Row['SpecialisationID'];
+							}
+							
+							//find all specialisation and omit manager
+							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
 							$qres = mysqli_query($db, $sql); 
 							
 							$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
@@ -183,8 +193,9 @@ session_start();
 					var RSelect = document.getElementById("RoleSelect");
 					var SSelect = document.getElementById('SelectSpecialisation');
 					var spantag = document.getElementById('span tag');
-					var specialisationID2 = <?php echo $mid; ?>; 
+					var specialisationID2 = <?php echo json_encode($mid); ?>; 
 					
+					//show specialisation option if role is not manager
 					if(RSelect.value != "Manager")
 					{
 						spantag.innerHTML = <?php echo $encodedselect; ?>;
