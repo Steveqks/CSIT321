@@ -84,7 +84,16 @@ session_start();
 					$companyID = $_SESSION['companyID'];
 					
 						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
+						
+						//find manager specialisation id
+						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+						$qres = mysqli_query($db, $sql); 
+						while ($Row = $qres->fetch_assoc()) 
+						{
+							$mid = $Row['SpecialisationID'];
+						}
+						
+						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
 						$qres = mysqli_query($db, $sql); 
 						
 						$select = 	"<label for='Specialisation'>Specialisation:</label>
