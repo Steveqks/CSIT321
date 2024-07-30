@@ -109,26 +109,26 @@ session_start();
 			
 				while($Row = $result->fetch_assoc()){
 				$form = "<form  action='' id='ModifyAccount'  method='POST' style='
-            flex: 0 0 48%;
-            display: inline-flex;
-            justify-content: space-between;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            width: 80%;
-            margin-bottom: 15px;
-            margin-bottom: 5px;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 5px;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-				'>
+																			flex: 0 0 48%;
+																			display: inline-flex;
+																			justify-content: space-between;
+																			padding: 8px;
+																			border: 1px solid #ddd;
+																			border-radius: 4px;
+																			box-sizing: border-box;
+																			width: 80%;
+																			margin-bottom: 15px;
+																			margin-bottom: 5px;
+																			display: flex;
+																			flex-direction: column;
+																			margin-bottom: 15px;
+																			background-color: #f0f0f0;
+																			padding: 20px;
+																			border-radius: 5px;
+																			max-width: 500px;
+																			display: flex;
+																			flex-direction: column;
+																				'>
 						<br>
 							<table >
 								<tr>
