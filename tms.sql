@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 30, 2024 at 07:35 AM
+-- Generation Time: Jul 30, 2024 at 08:47 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -307,17 +307,17 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE IF NOT EXISTS `project` (
   `ProjectID` int NOT NULL AUTO_INCREMENT,
   `MainProjectID` int NOT NULL,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   PRIMARY KEY (`ProjectID`),
-  KEY `MainPoolID` (`MainPoolID`),
-  KEY `project_ibfk_2` (`MainProjectID`)
+  KEY `MainGroupID` (`MainGroupID`),
+  KEY `MainProjectID` (`MainProjectID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `project`
 --
 
-INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainPoolID`) VALUES
+INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainGroupID`) VALUES
 (21, 10, 19);
 
 -- --------------------------------------------------------
@@ -641,7 +641,7 @@ ALTER TABLE `newsfeed`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
