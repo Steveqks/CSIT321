@@ -5,35 +5,35 @@ session_start();
 
 	$_SESSION['message1'] = '';
 
-	if (isset($_POST['viewPool'])) {
-		$_SESSION['poolName'] = $_POST['poolName'];
-		$_SESSION['poolID'] = $_POST['poolID'];
+	if (isset($_POST['viewGroup'])) {
+		$_SESSION['groupName'] = $_POST['groupName'];
+		$_SESSION['groupID'] = $_POST['groupID'];
 		$_SESSION['specialisationName'] = $_POST['specialisationName'];
 		
-		header('Location: companyadmin_specialisationpool_view_delete_view.php');
+		header('Location: companyadmin_specialisationgroup_view_delete_view.php');
 		exit;
 	}
 
-	if (isset($_POST['editPool'])) {
-		$_SESSION['poolID'] = $_POST['poolID'];
-		header('Location: companyadmin_specialisationpool_view_delete_edit.php');
+	if (isset($_POST['editGroup'])) {
+		$_SESSION['groupID'] = $_POST['groupID'];
+		header('Location: companyadmin_specialisationgroup_view_delete_edit.php');
 		exit;
 	}
 
 	if(isset($_POST['delete']) == 'yes')
 	{
-		$poolID = $_POST['poolID'];
-		$poolName = $_POST['poolName'];
+		$groupID = $_POST['groupID'];
+		$groupName = $_POST['groupName'];
 		
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		
 									
 		$result2 = 	mysqli_query($db, "
-									DELETE FROM specialisationpoolinfo
-									WHERE MainPoolID = '$poolID';
+									DELETE FROM specialisationgroupinfo
+									WHERE MainGroupID = '$groupID';
 									") or die("Select Error");
 		
-		$_SESSION['message1'] =  "Specialisation Pool \"". $poolName ."\" deleted.";
+		$_SESSION['message1'] =  "Specialisation Pool \"". $groupName ."\" deleted.";
 	}
 
 
@@ -63,7 +63,7 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-			<h2>View Specialisation Pool</h2>
+			<h2>View Specialisation Group</h2>
 
   
 			<?php     
@@ -75,28 +75,28 @@ session_start();
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db,	
 								"SELECT 
-									spi.PoolName,
-									spi.MainPoolID,
+									spi.GroupName,
+									spi.MainGroupID,
 									s.SpecialisationName,
-									COUNT(sp.MainPoolID) AS Capacity
+									COUNT(sp.MainGroupID) AS Capacity
 								FROM 
 									(SELECT @row_number := 0) AS init,
-									specialisationpoolinfo spi
+									specialisationgroupinfo spi
 								JOIN 
 									specialisation s ON spi.SpecialisationID = s.SpecialisationID
 								LEFT JOIN 
-									specialisationpool sp ON spi.MainPoolID = sp.MainPoolID
+									specialisationgroup sp ON spi.MainGroupID = sp.MainGroupID
 								WHERE 
 									spi.CompanyID = '$companyID'
 								GROUP BY 
-									spi.MainPoolID, spi.PoolName, s.SpecialisationName;
+									spi.MainGroupID, spi.GroupName, s.SpecialisationName;
 								") 
 							or die("Select Error");
 				
 				if($result){
 					$accountsTable = "<table border = 1 class='center'>";
 					$accountsTable .= "	<tr>
-											<th>Pool Name</th>
+											<th>Group Name</th>
 											<th>Specialisation Name</th>
 											<th>Capacity</th>
 											</tr>\n";
@@ -104,27 +104,27 @@ session_start();
 					}
 				while ($Row = $result->fetch_assoc()) {
 					$accountsTable.= "<tr>\n"
-					."<td>" . $Row['PoolName'] . "</td>" 
+					."<td>" . $Row['GroupName'] . "</td>" 
 					."<td>" . $Row['SpecialisationName'] . "</td>"
 					."<td>" . $Row['Capacity'] . "</td>";
 
 					
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='poolName' value='" . $Row['PoolName'] . "'/>
-						<input type='hidden' name='poolID' value='" . $Row['MainPoolID'] . "'/>
+						<input type='hidden' name='groupName' value='" . $Row['GroupName'] . "'/>
+						<input type='hidden' name='groupID' value='" . $Row['MainGroupID'] . "'/>
 						<input type='hidden' name='specialisationName' value='" . $Row['SpecialisationName'] . "'/>
-						<input type='submit' name='viewPool' value='View'>
+						<input type='submit' name='viewGroup' value='View'>
 						</form></td>";
 						
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='poolID' value='" . $Row['MainPoolID'] . "'/>
-						<input type='submit' name='editPool' value='Edit'>
+						<input type='hidden' name='groupID' value='" . $Row['MainGroupID'] . "'/>
+						<input type='submit' name='editGroup' value='Edit'>
 						</form></td>";
 
 					$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='MainPoolID' value='" . $Row['MainPoolID'] . "'/>
-						<input type='hidden' name='poolName' value='" . $Row['PoolName'] . "'/>
-						<input type='hidden' name='poolID' value='" . $Row['MainPoolID'] . "'/>
+						<input type='hidden' name='MainGroupID' value='" . $Row['MainGroupID'] . "'/>
+						<input type='hidden' name='groupName' value='" . $Row['GroupName'] . "'/>
+						<input type='hidden' name='groupID' value='" . $Row['MainGroupID'] . "'/>
 						<input type='hidden' name='delete' value='yes'/>
 						<input type='button' value='Delete' onclick='confirmDiag(this.form)'>
 						</form></td>";
@@ -151,7 +151,7 @@ session_start();
 			<script>
 				function confirmDiag(form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Specialisation Pool?");
+					let result = confirm("Delete Specialisation Group?");
 					if (result)
 					{
 						form.submit();

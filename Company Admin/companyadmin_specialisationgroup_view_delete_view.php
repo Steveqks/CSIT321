@@ -6,24 +6,24 @@ session_start();
 	$_SESSION['message'] = '';
 
 	if (isset($_POST['addTeamMember'])) {
-		$_SESSION['poolID'] = $_POST['poolID'];
+		$_SESSION['groupID'] = $_POST['groupID'];
 		
-		header('Location: companyadmin_specialisationpool_view_delete_view_addMember.php');
+		header('Location: companyadmin_specialisationgroup_view_delete_view_addMember.php');
 		exit;
 	}
 
 	if (isset($_POST['removeUser']) == 'yes') {
-		$poolID = $_SESSION['poolID'];
+		$groupID = $_SESSION['groupID'];
 		$userID = $_POST['userID'];
 		$fullname = $_POST['fullname'];
 		
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = 	mysqli_query($db, "
-									DELETE FROM specialisationpool
-									WHERE UserID = '$userID' AND MainPoolID = $poolID;
+									DELETE FROM specialisationgroup
+									WHERE UserID = '$userID' AND MainGroupID = $groupID;
 									") or die("Select Error");
 		
-		$_SESSION['message'] = $fullname . " is removed from pool";
+		$_SESSION['message'] = $fullname . " is removed from group";
 	}
 
 ?>
@@ -58,11 +58,11 @@ session_start();
 
 
 				$companyID = $_SESSION['companyID'];;
-				$poolID = $_SESSION['poolID'];
-				$poolName = $_SESSION['poolName'];
+				$groupID = $_SESSION['groupID'];
+				$groupName = $_SESSION['groupName'];
 				$specialisationName = $_SESSION['specialisationName'];
 				
-				echo "<h2>View Pool: ". $poolName . " </h2>";
+				echo "<h2>View Group: ". $groupName . " </h2>";
 				echo "<p> Specialisation : " . $specialisationName."</p>"; 
 
 				echo $_SESSION['message'];
@@ -75,11 +75,11 @@ session_start();
 						eu.FirstName,
 						eu.LastName
 					FROM 
-						specialisationpool sp
+						specialisationgroup sp
 					JOIN 
 						existinguser eu ON sp.UserID = eu.UserID
 					WHERE 
-						sp.MainPoolID = '$poolID';
+						sp.MainGroupID = '$groupID';
 					") 
 				or die("Select Error");
 				
@@ -122,8 +122,8 @@ session_start();
 				$accountsTable.= "</table> <br>";
 				
 				$accountsTable .= "<td><form action'' method='POST'>
-						<input type='hidden' name='poolID' value='" . $poolID . "'/>
-						<input type='submit' name='addTeamMember' value='Add Users to Pool'>
+						<input type='hidden' name='groupID' value='" . $groupID . "'/>
+						<input type='submit' name='addTeamMember' value='Add Users to Group'>
 						</form></td>";
 				echo  $accountsTable;
 				

@@ -6,33 +6,33 @@ session_start();
 	$_SESSION['message'] = '';
 	
 	//create company
-	if(isset($_POST['pname'])){
+	if(isset($_POST['groupname'])){
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
-		$pname = $_POST['pname'];
+		$groupname = $_POST['groupname'];
 		$specialisationID = $_POST['specialisationID'];
 	
 		
-		//check if pool exists
-		if(isPoolExists($companyID, $pname, $db)){
+		//check if group exists
+		if(isPoolExists($companyID, $groupname, $db)){
 			//exist already
-			$_SESSION['message'] = "<p>Specialisation Pool name \"". $pname . "\" is already in use.</p>";
+			$_SESSION['message'] = "<p>Specialisation Group name \"". $groupname . "\" is already in use.</p>";
 		}
 		
 		//doesn't exist, add to db
 		else
 		{
 			$result = mysqli_query($db,"
-										INSERT INTO specialisationpoolinfo(MainPoolID, SpecialisationID, CompanyID, PoolName)
-										VALUES (NULL, '$specialisationID', '$companyID', '$pname')
+										INSERT INTO specialisationgroupinfo(MainGroupID, SpecialisationID, CompanyID, GroupName)
+										VALUES (NULL, '$specialisationID', '$companyID', '$groupname')
 										") or die("Select Error");
 			
-			$_SESSION['message'] = "<p>Specialisation Pool \"". $pname . "\" Created.</p>";
+			$_SESSION['message'] = "<p>Specialisation Group \"". $groupname . "\" Created.</p>";
 		}		
 	}
 		
-	function isPoolExists(string $companyID, string $pname, mysqli $db):bool{
-		$sql = "SELECT * FROM specialisationpoolinfo WHERE CompanyID = '$companyID' AND PoolName = '$pname'";
+	function isPoolExists(string $companyID, string $groupname, mysqli $db):bool{
+		$sql = "SELECT * FROM specialisationgroupinfo WHERE CompanyID = '$companyID' AND GroupName = '$groupname'";
 		$qres = mysqli_query($db, $sql); 
 
 		$num_rows=mysqli_num_rows($qres);
@@ -73,10 +73,10 @@ session_start();
         <div style="width: 80%; padding: 10px;">
 		
             <form action = "" id='createPool' method = "post">
-				<h2>Create Specialisation Pool</h2>
+				<h2>Create Specialisation Group</h2>
 				
 					
-					<h4>Specialisation Pool Name: <input name = "pname" type = "text" placeholder = "Specialisation Pool Name" required maxlength='32'>
+					<h4>Specialisation Group Name: <input name = "groupname" type = "text" placeholder = "Specialisation Pool Name" required maxlength='32'>
 					</h4>
 
 					<h4>

@@ -23,11 +23,11 @@
 					</div>";
 					
 	// third group link
-	$navigation .=	"<a id='myButton3' class='myButton3' onClick='showLinks3()' > Manage Specialisation Pool ➕ </a>
+	$navigation .=	"<a id='myButton3' class='myButton3' onClick='showLinks3()' > Manage Specialisation Group ➕ </a>
 					<div id='linkContainer3'>
 						<div class='show'>
-							<a href='companyadmin_specialisationpool_create.php'> - Create Specialisation Pool </a>
-							<a href='companyadmin_specialisationpool_view_delete.php'> - View Specialisation Pool </a>
+							<a href='companyadmin_specialisationgroup_create.php'> - Create Specialisation Group </a>
+							<a href='companyadmin_specialisationgroup_view_delete.php'> - View Specialisation Group </a>
 						</div>
 					</div>";
 					
@@ -92,11 +92,11 @@
 
 		if (show3 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Manage Specialisation Pool ➖';
+			myButton.innerHTML = 'Manage Specialisation Group ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Manage Specialisation Pool ➕';
+			myButton.innerHTML = 'Manage Specialisation Group ➕';
 			linkContainer.style.display = 'none';
 		}
 		show3 = !show3;

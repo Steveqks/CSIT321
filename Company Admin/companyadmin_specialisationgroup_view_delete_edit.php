@@ -6,30 +6,30 @@ session_start();
 	$_SESSION['message1'] = "";
 	$_SESSION['message2'] = "";
 
-	if(isset($_POST['newPoolName']))
+	if(isset($_POST['newGroupName']))
 		{
-			$newPoolName = $_POST['newPoolName'];
-			$poolID= $_SESSION['poolID'];
+			$newGroupName = $_POST['newGroupName'];
+			$groupID= $_SESSION['groupID'];
 
 
 
 			
-			// if pool name changed
-			if(@$_POST['oldPoolName'] != $_POST['newPoolName']){
+			// if group name changed
+			if(@$_POST['oldGroupName'] != $_POST['newGroupName']){
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 				//check if team name exists
-				$result = mysqli_query($db,	"SELECT * FROM specialisationpoolinfo WHERE PoolName = '$newPoolName' AND CompanyID = '$companyID' ") or die("Select Error");
+				$result = mysqli_query($db,	"SELECT * FROM specialisationgroupinfo WHERE GroupName = '$newGroupName' AND CompanyID = '$companyID' ") or die("Select Error");
 	
 				$num_rows=mysqli_num_rows($result);
 				// dont exists
 				if($num_rows == 0){
-					$result2 = mysqli_query($db,"UPDATE specialisationpoolinfo SET PoolName = '$newPoolName' WHERE MainPoolID = '$poolID'") or die("update Error");
-					$_SESSION['message2'] = "<p>Specialisation Pool name has been changed to " . $newPoolName . "</p>";
+					$result2 = mysqli_query($db,"UPDATE specialisationgroupinfo SET GroupName = '$newGroupName' WHERE MainGroupID = '$groupID'") or die("update Error");
+					$_SESSION['message2'] = "<p>Specialisation Group name has been changed to " . $newGroupName . "</p>";
 				}
 				// exists
 				else{
-					$_SESSION['message2'] = "<p>Specialisation Pool name is already in use </p>";
+					$_SESSION['message2'] = "<p>Specialisation Group name is already in use </p>";
 				}
 			}
 			else $_SESSION['message2'] = "";
@@ -60,27 +60,27 @@ session_start();
         
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
-			<h2>Edit Specialisation Pool</h2>
+			<h2>Edit Specialisation Group</h2>
 								
   
 			<?php     
 				
 				$companyID = $_SESSION['companyID'];;
-				$poolID= $_SESSION['poolID'];
+				$groupID= $_SESSION['groupID'];
 								
-				$poolName = '';
+				$groupName = '';
 				
 				//get selected team data
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"
-										SELECT PoolName
+										SELECT GroupName
 										FROM 
-											specialisationpoolinfo
+											specialisationgroupinfo
 										WHERE 
-											specialisationpoolinfo.MainPoolID = '$poolID'; ") or die("Select Error");
+											specialisationgroupinfo.MainGroupID = '$groupID'; ") or die("Select Error");
 
 				while ($Row = $result->fetch_assoc()) {
-					$poolName =	$Row['PoolName'];
+					$groupName =	$Row['GroupName'];
 				}
 
 				// fill and get necessary fields
@@ -90,14 +90,14 @@ session_start();
 							<td style='border: 2px solid black; border-collapse: collapse;'>
 						FROM 
 						<br><br>
-						Team Name: <input type='text' name='oldPoolName' value='" . $poolName . "' readonly>
+						Group Name: <input type='text' name='oldGroupName' value='" . $groupName . "' readonly>
 						<br><br>
 						</td>
 							
 						<td style='border: 2px solid black; border-collapse: collapse;'> 
 						TO
 						<br><br>
-						Team Name: <input type='text' name='newPoolName' value='" . $poolName . "' maxlength='32' >
+						Group Name: <input type='text' name='newGroupName' value='" . $groupName . "' maxlength='32' >
 						<br>";
 						
 				
