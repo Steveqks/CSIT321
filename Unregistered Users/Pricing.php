@@ -46,8 +46,7 @@
             <h4>24/7 Priority support</h4>
         </div>
     </div>
-    <footer>
-        
-    </footer>
+    <!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

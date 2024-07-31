@@ -116,7 +116,9 @@
         <div class="grid-item">
             <img id = "group" src = "Images/group.png">
         </div>
-    </div>
- 
+    </div> 
+	<br>
+<!-- Footer -->
+<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

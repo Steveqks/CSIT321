@@ -83,8 +83,73 @@
             <img id = "group" src = "Images/group.png">
         </div>
     </div>
+<<<<<<< Updated upstream
     <footer>
         
     </footer>
+=======
+	
+	<div id = "AdvertisingContainer2">
+		<h2>Why TrackMySchedule?</h2>
+		<div id = "Features">
+			<?php if (count($features) > 0): ?>
+				<?php foreach ($features as $feature): ?>
+					<div id = "FeatureBox">
+						<img src = <?php echo htmlspecialchars($feature['Icon'])?> width = "256px" height = "256px">
+						<h2><?php echo htmlspecialchars($feature['Name'])?></h2>
+					</div>
+				<?php endforeach ?>
+			<?php else: ?>
+				<h2 style = "text-align:center"> No Features Available </h2>
+		    <?php endif; ?>
+		</div>
+	</div>
+	
+	<div id = "AdvertisingContainer3">
+		<h2>Unsure how to Allocate Tasks to team members?</h2>
+		<h3>TrackMySchedule has you covered!</h3>
+		<img src = "Images/Placeholder.jpeg" width = "948px" height = "710px">
+	</div>
+	
+		<!-- Display reviews section -->
+	<div id = "AdvertisingContainer4">
+		<h2>Dont just listen to us, hear from our users!</h2>
+		<?php if (count($top3reviews) > 0): ?>
+			<?php foreach ($top3reviews as $review): ?>
+				<div class = 'displayReview'>
+					<p><?php echo htmlspecialchars($review['ReviewTitle']); ?></p>
+					<p>"<?php echo htmlspecialchars($review['comments']); ?>"</p>
+					<!-- Store the user rating, convert to stars -->
+					<?php
+						$rating = (int)$review['Rating'];
+						echo "<div class = 'rating'>";
+						for($i = 1; $i <= 5; $i++)
+						{
+							if ($i <= $rating)
+							{
+								 echo "<span class='filled'>&#9733;</span>"; // Filled star
+							}
+							else
+							{
+								echo "<span class='unfilled'>&#9733;</span>"; // Unfilled star
+							}
+						}
+						echo "</div>";
+					?>
+					<!-- FirstName, LastName, Company -->
+					<p><?php echo htmlspecialchars($review['FirstName']); ?> <?php echo htmlspecialchars($review['LastName']); ?> , <?php echo htmlspecialchars($review['CompanyName']); ?></p>
+				</div>
+			<?php endforeach ?>
+		    <?php else: ?>
+				<h2 style = "text-align:center"> No Reviews Available </h2>
+		    <?php endif; ?>
+			
+	</div>
+	<!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
+
+
+	
+>>>>>>> Stashed changes
 </body>
 </html>
