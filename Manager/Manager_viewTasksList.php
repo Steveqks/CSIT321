@@ -17,7 +17,7 @@
 
     $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
             (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-            sgi.GroupName, ti.Status
+            pi.ProjectName, ti.Status
             FROM projectinfo pi
             JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
             JOIN task t ON t.MainTaskID = ti.MainTaskID
@@ -26,23 +26,7 @@
             WHERE pi.ProjectManagerID = ".$userID."
             GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
             ORDER BY ti.Status DESC, ti.DueDate ASC;";
-/*
-        // GET NUMBER OF USERS IN THE TEAM, GROUP BY SPECIALISATION
-        $sql = "WITH abc AS ("
-            . " SELECT a.MainTeamID, a.MainTaskID, b.SpecialisationID, COUNT(a.UserID) AS totalNumStaff FROM task a
-                INNER JOIN taskinfo b ON a.MainTaskID = b.MainTaskID
-                GROUP BY a.MainTeamID, a.MainTaskID, b.SpecialisationID"
-            . ")"
-        // GET NUMBER AND DETAILS OF USERS FROM THE TEAM THAT MATCHED THE TASK
-            . " SELECT e.TaskName, e.StartDate, e.DueDate, e.NumStaff, a.totalNumStaff, d.MainTaskID, concat(c.FirstName, ' ', c.LastName) AS fullName, c.UserID FROM abc a"
-            . " INNER JOIN team b ON a.MainTeamID = b.MainTeamID"
-            . " INNER JOIN existinguser c ON c.UserID = b.UserID"
-            . " INNER JOIN task d ON c.UserID = d.UserID"
-            . " INNER JOIN taskinfo e ON e.MainTaskID = d.MainTaskID"
-            . " WHERE e.SpecialisationID = a.SpecialisationID AND e.Status = ".$taskStatusID
-            . " AND c.Status = ".$userStatusID
-            . " GROUP BY e.TaskName, e.NumStaff,a.totalNumStaff, e.StartDate, e.DueDate, e.MainTaskID, fullName;";
-*/
+
             //echo $sql;
 
     $stmt = $conn->prepare($sql);
@@ -95,10 +79,10 @@
                 <table class="tasks">
 
                     <tr>
-                        <th>Task Name</th>
+                        <th>Project</th>
+                        <th>Task</th>
                         <th>Assigned Date</th>
                         <th>Due Date</th>
-                        <th>Assigned Team</th>
                         <th>Avail / Req Number of Staff</th>
                         <th>Status</th>
                     </tr>
@@ -106,12 +90,12 @@
                     <?php if (count($tasks) > 0): ?>
                         <?php foreach ($tasks as $task): ?>
                             <tr>
+                                <td><?php echo $task['ProjectName']; ?></td>
                                 <td>
                                     <a href="Manager_viewTask.php?maintaskid=<?php echo htmlspecialchars($task['MainTaskID']); ?>"><?php echo htmlspecialchars($task['TaskName']); ?></a>
                                 </td>
                                 <td><?php echo date('F j, Y',strtotime($task['StartDate'])); ?></td>
                                 <td><?php echo date('F j, Y',strtotime($task['DueDate'])); ?></td>
-                                <td><?php echo htmlspecialchars($task['GroupName']); ?></td>
                                 <td><?php echo htmlspecialchars($task['totalNumStaff']); ?> / <?php echo htmlspecialchars($task['NumStaff']); ?></td>
 
                                 <?php

@@ -122,8 +122,8 @@
                                         <span class="details">Specialisation</span>
                                         <p><?php echo $taskDetails['SpecialisationName']; ?></p>
 
-                                        <span class="details">Specialisation Pool</span>
-                                        <p><?php echo $taskDetails['PoolName']; ?></p>
+                                        <span class="details">Specialisation Group</span>
+                                        <p><?php echo $taskDetails['GroupName']; ?></p>
 
                                         <span class="details">Staff Involved</span>
                                         <?php foreach ($usersTask as $taskDetail): echo "<p>".$taskDetail['fullName']."</p>"; endforeach; ?>

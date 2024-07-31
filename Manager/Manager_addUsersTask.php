@@ -15,7 +15,6 @@
     $taskStatus = 1;
     $userStatus = 1;
 
-    $showAutoForm = FALSE;
     $showManualForm = FALSE;
 
     // From Manager_addTask.php
@@ -43,7 +42,11 @@
         $mainProjectID = $_POST['mainprojectid'];
     }
 
-    if(isset($_POST['allocatetype'])) {
+    if(isset($_GET['allocatetype'])) {
+
+        $allocateType = $_GET['allocatetype'];
+
+    } else if(isset($_POST['allocatetype'])) {
 
         $allocateType = $_POST['allocatetype'];
 
@@ -52,13 +55,45 @@
         $allocateType = "manual";
 
     }
+    
+    if(isset($_GET['taskname'])) {
+        $taskName = $_GET['taskname'];
+    }
+
+    if(isset($_GET['taskdesc'])) {
+        $taskDesc = $_GET['taskdesc'];
+    }
+
+    if(isset($_GET['startdate'])) {
+        $startDate = $_GET['startdate'];
+    }
+
+    if(isset($_GET['enddate'])) {
+        $endDate = $_GET['enddate'];
+    }
+
+    if(isset($_GET['priority'])) {
+        $priority = $_GET['priority'];
+    }
+
+    if(isset($_GET['mainprojectid'])) {
+        $mainProjectID = $_GET['mainprojectid'];
+    }
+
+    if(isset($_POST['maingroupid'])) {
+        $mainGroupID = $_POST['maingroupid'];
+    }
+
+    if(isset($_POST['maingroupidmanual'])) {
+        $mainGroupID = $_POST['maingroupidmanual'];
+    }
 
 
     // From Manager_addUsersTask.php
     if(isset($_POST['numstaff'])) {
         $numStaff = $_POST['numstaff'];
     }
-
+    
 
     if(isset($_POST['addTask'])) {
 
@@ -75,11 +110,11 @@
             $result = $stmt->get_result();
             $projectDate = $result->fetch_assoc();
 
-            if ($startDate >= $projectDate['StartDate'] && $endDate <= $projectDate['EndDate']) {
-                $showAutoForm = TRUE;
-            } else {
+            if ($startDate <= $projectDate['StartDate'] && $endDate >= $projectDate['EndDate']) {
+
                 header("Location: Manager_addTask.php?error=Invalid date. Start Date or End Date is not within the Project's timeline.");
                 exit();
+
             }
         } else {
             header("Location: Manager_addTask.php?error=Invalid date. Please make sure the Start Date is not more than the End Date.");
@@ -87,10 +122,38 @@
         }
     }
 
+        
+    // get group project details
+    $sql = "SELECT a.MainGroupID, a.GroupName, c.SpecialisationName FROM specialisationgroupinfo a
+            INNER JOIN project d ON d.MainGroupID = a.MainGroupID
+            INNER JOIN specialisation c ON a.SpecialisationID = c.SpecialisationID
+            WHERE d.MainProjectID = ".$mainProjectID."
+            GROUP BY a.MainGroupID, a.GroupName, c.SpecialisationName;";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $teamProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
+
 
 
     if (isset($_POST['addUsersTask'])) {
-    
+
+        // Get the number of staff in the Specialisation Group
+        $sql = "SELECT COUNT(a.UserID) AS numStaffGroup FROM specialisationgroup a
+                INNER JOIN project b ON a.MainGroupID = b.MainGroupID
+                WHERE b.MainProjectID = ".$mainProjectID."
+                AND a.MainGroupID = ".$mainGroupID;
+
+        $stmt = $conn->prepare($sql);
+                
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $numStaffTeam = $result->fetch_assoc();
+
+        $totalNoStaff = $numStaffTeam['numStaffGroup'];
+
+
         // Get PT staff that is working on the selected dates
         // and is in the same Specialisation Group as the selected Project
         $sql = "WITH ConsecutiveWork AS (
@@ -101,6 +164,7 @@
                     WHERE a.WorkDate BETWEEN '".$startDate."' AND '".$endDate."'
                     AND DAYOFWEEK(a.WorkDate) NOT IN (1, 7)
                     AND c.MainProjectID = ".$mainProjectID."
+                    AND b.MainGroupID = ".$mainGroupID."
                 ),
                 GroupedConsecutiveWork AS (
                     SELECT UserID, COUNT(*) AS consecutive_days
@@ -115,13 +179,14 @@
         $result = $stmt->get_result();
         $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
 
-        echo $sql;
+        //echo $sql;
 
         // Get FT staff that is in the same Specialisation Group as the selected Project
         $sql = "SELECT a.UserID, (SELECT COUNT(*) FROM leaves WHERE UserID = a.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave FROM existinguser a
                 INNER JOIN specialisationgroup b ON a.UserID = b.UserID
                 INNER JOIN project c ON b.MainGroupID = c.MainGroupID
                 WHERE a.Role = 'FT' AND c.MainProjectID = ".$mainProjectID."
+                AND b.MainGroupID = ".$mainGroupID."
                 GROUP BY a.UserID
                 HAVING onLeave = 0";
 
@@ -131,42 +196,116 @@
         $result = $stmt->get_result();
         $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
 
-        echo "<br><br>". $sql;
+        //echo "<br><br>". $sql;
 
 
-        if ($allocateType == "auto") {
+        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName,
+                (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                WHERE b.Status = ".$taskStatus."
+                AND (b.StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR b.DueDate BETWEEN '".$startDate."' AND '".$endDate."')
+                AND c.UserID = a.UserID) AS totalTasks
+                FROM existinguser a
+                INNER JOIN specialisationgroup d ON a.UserID = d.UserID
+                WHERE d.MainGroupID = ".$mainGroupID."
+                AND a.UserID IN (";
 
-            // Get the number of staff in the Specialisation Pool
-            $sql = "SELECT COUNT(a.UserID) AS numStaffGroup FROM specialisationgroup a
-                    INNER JOIN project b ON a.MainGroupID = b.MainGroupID
-                    WHERE b.MainProjectID = ".$mainProjectID;
+                
+        if ($allocateType == "manual") {
 
-            $stmt = $conn->prepare($sql);
-                    
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $numStaffTeam = $result->fetch_assoc();
+            $FTTasksUsers = array();
+            $PTTasksUsers = array();
 
-            $totalNoStaff = $numStaffTeam['numStaffGroup'];
-
-
-            if ($totalNoStaff >= $numStaff) {
-
-                $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
-                        (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
-                        INNER JOIN task c ON b.MainTaskID = c.MainTaskID
-                        WHERE b.Status = ".$taskStatus."
-                        AND (b.StartDate >= '".$startDate."' OR b.DueDate <= '".$endDate."')) AS totalTasks
-                        FROM existinguser a
-                        INNER JOIN specialisationgroup d ON a.UserID = d.UserID
-                        WHERE a.UserID IN (".$FTUsers[0]['UserID'];
+            if (count($FTUsers) > 0) {
+                
+                $sql .= $FTUsers[0]['UserID'];
 
                 if (count($FTUsers) > 1) {
                     for ($i = 1; $i < count($FTUsers); $i++) {
                         $sql .= ", ".$FTUsers[$i]['UserID'];
                     }
                 }
-                
+
+                $sql .= ") GROUP BY a.UserID, fullName
+                        ORDER BY totalTasks ASC;";
+
+                $stmt = $conn->prepare($sql);
+                        
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $FTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+            }
+            
+            if (count($PTUsers) > 0) {
+
+                $sql .= $PTUsers[0]['UserID'];
+
+                if (count($PTUsers) > 1) {
+                    for ($i = 1; $i < count($PTUsers); $i++) {
+                        $sql .= ", ".$PTUsers[$i]['UserID'];
+                    }
+                }
+
+                $sql .= ") GROUP BY a.UserID, fullName
+                        ORDER BY totalTasks ASC;";
+
+                $stmt = $conn->prepare($sql);
+                        
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $PTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+            }
+
+            if (count($FTTasksUsers) > 0 || count($PTTasksUsers)) {
+                $showManualForm = TRUE;
+            }
+
+
+            if (isset($_POST['selectStaff'])) {
+
+                $selectStaff = $_POST['selectStaff'];
+
+                $numStaff = count($selectStaff);
+
+                // Insert into TaskInfo query
+                $stmt = $conn->prepare("INSERT INTO taskinfo (MainProjectID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
+
+                $stmt->bind_param("issssiii",$mainProjectID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
+
+                if ($stmt->execute()) {
+
+                    $newMainTaskID = $stmt->insert_id;
+
+                    // Insert into TaskInfo query
+                    $stmt = $conn->prepare("INSERT INTO task (MainGroupID,MainTaskID,UserID) VALUES (?,?,?)");
+
+                    foreach ($selectStaff as $userIDs) {
+
+                        $stmt->bind_param("iii",$mainGroupID, $newMainTaskID, $userIDs);
+
+                        $stmt->execute();
+                    }
+                }
+
+                header("Location: Manager_addTask.php?message=Task is successfully auto allocated.");
+            }
+
+            
+
+
+        } else if ($autoallocate == "auto") {
+            if (count($FTUsers) > 0) {
+                    
+                $sql .= $FTUsers[0]['UserID'];
+
+                if (count($FTUsers) > 1) {
+                    for ($i = 1; $i < count($FTUsers); $i++) {
+                        $sql .= ", ".$FTUsers[$i]['UserID'];
+                    }
+                }
+
                 if (count($PTUsers) > 0) {
                     for ($i = 0; $i < count($PTUsers); $i++) {
                         $sql .= ", ".$PTUsers[$i]['UserID'];
@@ -181,15 +320,54 @@
                             ORDER BY totalTasks ASC
                             LIMIT ".$numStaff.";";
                 }
+            } else {
+                if (count($PTUsers) > 0) {
 
-                echo "<br><br>". $sql;
+                    $sql .= $PTUsers[0]['UserID'];
 
-                $stmt = $conn->prepare($sql);
-                        
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $allUsers = $result->fetch_all(MYSQLI_ASSOC);
+                    if (count($PTUsers) > 1) {
+                        for ($i = 1; $i < count($PTUsers); $i++) {
+                            $sql .= ", ".$PTUsers[$i]['UserID'];
+                        }
+    
+                        $sql .= ") GROUP BY a.UserID, fullName
+                                ORDER BY totalTasks ASC
+                                LIMIT ".$numStaff.";";
+                    } else {
+                        $sql .= ") GROUP BY a.UserID, fullName
+                                ORDER BY totalTasks ASC
+                                LIMIT ".$numStaff.";";
+                    }
+                } else {
 
+                    // Get the number of staff in the Specialisation Group
+                    $sql = "SELECT a.GroupName FROM specialisationgroupinfo a
+                    INNER JOIN project b ON a.MainGroupID = b.MainGroupID
+                    WHERE b.MainProjectID = ".$mainProjectID."
+                    AND a.MainGroupID = ".$mainGroupID;
+    
+                    $stmt = $conn->prepare($sql);
+                            
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $groupName = $result->fetch_assoc();
+
+                    header("Location: Manager_addUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
+                    exit();
+                }
+            }
+
+            //echo "<br><br>". $sql;
+
+            $stmt = $conn->prepare($sql);
+                    
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $allUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+        //echo "<br><br>". $sql;
+
+            if ($totalNoStaff >= $numStaff) {
 
                 if (count($allUsers) > 0) {
 
@@ -219,10 +397,11 @@
 
             } else {
 
-                // Get the number of staff in the Specialisation Pool
+                // Get the number of staff in the Specialisation Group
                 $sql = "SELECT a.GroupName FROM specialisationgroupinfo a
                 INNER JOIN project b ON a.MainGroupID = b.MainGroupID
-                WHERE b.MainProjectID = ".$mainProjectID;
+                WHERE b.MainProjectID = ".$mainProjectID."
+                AND a.MainGroupID = ".$mainGroupID;
 
                 $stmt = $conn->prepare($sql);
                         
@@ -230,223 +409,12 @@
                 $result = $stmt->get_result();
                 $groupName = $result->fetch_assoc();
 
-                header("Location: Manager_addUsersTask.php?error=There are ".$totalNoStaff." in ".$groupName.". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.");
+                header("Location: Manager_addUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are ".$totalNoStaff." staff in ".$groupName['GroupName'].". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.");
                 exit();
             }
 
-        } else {
-
         }
     }
-
-
-/*
-    if ((isset($_GET['ismanual']) == 1)) {
-
-        // PT Users
-        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
-            . " INNER JOIN team b ON a.UserID = b.UserID"
-            . " LEFT JOIN schedule c ON a.UserID = c.UserID"
-            . " LEFT JOIN task d ON c.UserID = d.UserID"
-            . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
-            . " WHERE a.SpecialisationID = ".$specialisationID
-            . " AND a.Status = ".$userStatus
-            . " AND b.MainTeamID = ".$mainTeamID
-            . " AND a.Role = 'PT'"
-            . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'"
-            . " GROUP BY a.UserID"
-            . " ORDER BY totalTasks ASC";
-
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-
-        // FT Users
-        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks,"
-            . " (SELECT COUNT(*) FROM leaves WHERE UserID = a.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
-            . " FROM existinguser a"
-            . " INNER JOIN team b ON a.UserID = b.UserID"
-            . " LEFT JOIN task d ON b.UserID = d.UserID"
-            . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
-            . " WHERE a.SpecialisationID = ".$specialisationID
-            . " AND a.Status = ".$userStatus
-            . " AND b.MainTeamID = ".$mainTeamID
-            . " AND a.Role = 'FT'"
-            . " GROUP BY a.UserID, onLeave"
-            . " HAVING onLeave = 0"
-            . " ORDER BY totalTasks ASC";
-
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-
-    if(isset($_POST['addTask'])) {
-        
-        // auto allocation
-        if(isset($_POST['numstaff'])) {
-
-            // PT Users
-            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks FROM existinguser a"
-                . " INNER JOIN team b ON a.UserID = b.UserID"
-                . " LEFT JOIN schedule c ON a.UserID = c.UserID"
-                . " LEFT JOIN task d ON c.UserID = d.UserID"
-                . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
-                . " WHERE a.SpecialisationID = ".$specialisationID
-                . " AND a.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$mainTeamID
-                . " AND a.Role = 'PT'"
-                . " AND c.WorkDate >= '".$startDate."' AND c.WorkDate <= '".$endDate."'"
-                . " GROUP BY a.UserID"
-                . " ORDER BY totalTasks ASC"
-                . " LIMIT ".$numStaff;
-
-            $stmt = $conn->prepare($sql);
-        
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-            //echo "SQL1 ;; ".$sql;
-
-            // FT Users
-            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, IFNULL(SUM(e.Status),0) AS totalTasks,"
-                . " (SELECT COUNT(*) FROM leaves WHERE UserID = a.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
-                . " FROM existinguser a"
-                . " INNER JOIN team b ON a.UserID = b.UserID"
-                . " LEFT JOIN task d ON b.UserID = d.UserID"
-                . " LEFT JOIN taskinfo e ON d.MainTaskID = e.MainTaskID"
-                . " WHERE a.SpecialisationID = ".$specialisationID
-                . " AND a.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$mainTeamID
-                . " AND a.Role = 'FT'"
-                . " GROUP BY a.UserID, onLeave"
-                . " HAVING onLeave = 0"
-                . " ORDER BY totalTasks ASC";
-            
-            if (count($PTUsers) < $numStaff) {
-
-                $FTLimit = $numStaff - count($PTUsers);
-                $sql .= " LIMIT ".$FTLimit;
-            } else {
-                $sql .= " LIMIT ".$numStaff;
-            }
-
-            //echo "<br> SQL2 ;; ".$sql;
-
-            $stmt = $conn->prepare($sql);
-        
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-
-            if ($numStaffTeam >= $numStaff) {
-            
-                if (count($PTUsers) > 0 || count($FTUsers) > 0) {
-                    // Insert into TaskInfo query
-                    $stmt = $conn->prepare("INSERT INTO taskinfo (SpecialisationID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
-
-                    $stmt->bind_param("issssiii",$specialisationID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
-
-                    if ($stmt->execute()) {
-
-                        $newMainTaskID = $stmt->insert_id;
-
-                        // Insert into TaskInfo query
-                        $stmt = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
-
-                        if (count($PTUsers) > 0) {
-
-                            foreach ($PTUsers as $user):
-
-                                $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
-
-                                $stmt->execute();
-
-                            endforeach;
-
-                            if (count($PTUsers) < $numStaff) {
-
-                                foreach ($FTUsers as $user):
-
-                                    $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
-
-                                    $stmt->execute();
-
-                                endforeach;
-
-                                header("Location: Manager_viewTaskList.php?message=Task has been auto allocated.");
-                                exit();
-
-                            }
-                        } else {
-                            foreach ($FTUsers as $user):
-
-                                $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $user['UserID']);
-
-                                $stmt->execute();
-
-                            endforeach;
-
-                            header("Location: Manager_viewTaskList.php?message=Task has been auto allocated.");
-                            exit();
-                        }
-
-                    } else {
-                        echo "FAILED! Error: " . $stmt->error;
-                    }
-                } else {
-                    header("Location: Manager_addTask.php?error=There are no staff with ".$specialisationName.". Please select other specialisation.");
-                    exit();
-                }
-            } else {
-                $autoallocate = TRUE;
-
-                header("Location: Manager_addUsersTask.php?error=There are ".$numStaffTeam." with ".$specialisationName." in ".$mainTeamName.". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.&taskname=".$taskName."&taskdesc=".$taskDesc."&specialisationidname=".$specialisationIDName."&startdate=".$startDate."&enddate=".$endDate."&priority=".$priority."&autoallocate=".$autoallocate."&numstaffteam=".$numStaffTeam."&mainteamidname=".$teamIDName);
-                exit();
-            }
-
-        // manual allocation
-        } else if (isset($_POST['selectStaff'])) {
-
-            $selectStaff = $_POST['selectStaff'];
-
-            $numStaff = count($selectStaff);
-
-            // Insert into TaskInfo query
-            $stmt = $conn->prepare("INSERT INTO taskinfo (SpecialisationID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
-
-            $stmt->bind_param("issssiii",$specialisationID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
-
-            if ($stmt->execute()) {
-
-                $newMainTaskID = $stmt->insert_id;
-
-                // Insert into TaskInfo query
-                $stmt = $conn->prepare("INSERT INTO task (MainTeamID,MainTaskID,UserID) VALUES (?,?,?)");
-                
-                foreach ($selectStaff as $selectStaffID) {
-
-                    $stmt->bind_param("iii",$mainTeamID,$newMainTaskID, $selectStaffID);
-
-                    $stmt->execute();
-
-                    header("Location: Manager_viewTaskList.php?message=Task has been allocated.");
-                    exit();
-                }
-
-            } else {
-                echo "FAILED! Error: " . $stmt->error;
-            }
-        }
-    }*/
     
 ?>
 
@@ -474,7 +442,14 @@
         
         <!-- Right Section (Activity) -->
         <div class="content">
-            <h2 class="contentHeader">Select Staff for Task</h2>
+            <?php if($allocateType === "auto") { ?>
+
+                <h2 class="contentHeader">Select Number of Staff</h2>
+
+            <?php } else if ($allocateType === "manual"){ ?>
+
+                <h2 class="contentHeader">Select Staff for Task</h2>
+            <?php }?>
 
             <div class="innerContent">
 
@@ -496,11 +471,37 @@
 
 
                                         <?php
-                                        if ($allocateType == "auto") { ?>
+                                        if ($allocateType === "auto") { ?>
 
-                                            <input type="number" id="numstaff" name="numstaff">
+                                            <label for="maingroupid">Group</label>
+                                            <select name='maingroupid' required>
+                                                <?php
+                                                foreach ($teamProjectDetails as $groupName):
+                                                    echo "<option value='". $groupName['MainGroupID']."'>". $groupName['GroupName']." ( ".$groupName['SpecialisationName']." )</option>";
+                                                endforeach;
+                                                ?>
+                                            </select>
 
-                                        <?php } else if ($allocateType == "manual"){ ?>
+                                            <label for="numstaff">Required Number of Staff</label>
+                                            <input type="number" id="numstaff" name="numstaff" required>
+
+
+
+                                        <?php } else if ($allocateType === "manual") {
+                                                    if ($showManualForm == FALSE) { ?>
+
+                                            <label for="maingroupid">Group</label>
+                                            <select name='maingroupid' required>
+                                                <?php
+                                                foreach ($teamProjectDetails as $groupName):
+                                                    echo "<option value='". $groupName['MainGroupID']."'>". $groupName['GroupName']." ( ".$groupName['SpecialisationName']." )</option>";
+                                                endforeach;
+                                                ?>
+                                            </select>
+
+                                            <?php } else if($showManualForm) { ?>
+
+                                            <input type="hidden" name="maingroupid" value="<?php echo $mainGroupID; ?>">
 
                                             <label for="userid">Staff Name</label>
 
@@ -508,23 +509,31 @@
                                             
                                                 <div class="checkbox-container">
                                                     <?php
-                                                    foreach ($FTUsers as $user):
-                                                        echo "<div class='checkbox-team'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
-                                                    endforeach;
-                                                    ?>
+                                                    if(count($FTTasksUsers) > 0) {
+
+                                                        foreach ($FTTasksUsers as $user):
+                                                            echo "<div class='checkbox-team'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']." ( ".$user['totalTasks']." Task(s) )</div>";
+                                                        endforeach;
+                                                    } else {
+                                                        echo "No Full-Time Staff available";
+                                                    } ?>
                                                 </div>
 
                                                 <p style="font-weight:bold;">Part-Time</p>
 
                                                 <div class="checkbox-container">
                                                     <?php
-                                                    foreach ($PTUsers as $user):
-                                                        echo "<div class='checkbox-team'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']."</div>";
-                                                    endforeach;
-                                                    ?>
+                                                    if(count($PTTasksUsers) > 0) {
+                                                        foreach ($PTTasksUsers as $user):
+                                                            echo "<div class='checkbox-team'><input type='checkbox' name='selectStaff[]' value='". $user['UserID']."'>" . $user['fullName']." ( ".$user['totalTasks']." Task(s) )</div>";
+                                                        endforeach;
+                                                    } else {
+                                                        echo "No Part-Time Staff available";
+                                                    } ?>
                                                 </div>
                                         
-                                        <?php } ?>
+                                        <?php }
+                                    } ?>
                                     </div>
                                 
                                 </div>
