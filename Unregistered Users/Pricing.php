@@ -57,7 +57,8 @@
 				<h2 style = "text-align:center"> No Plans Available </h2>
 		    <?php endif; ?>
     </div>
-    <!-- Footer -->
-	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
+    <footer>
+        
+    </footer>
 </body>
 </html>
