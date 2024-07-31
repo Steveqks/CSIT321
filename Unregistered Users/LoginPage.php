@@ -36,7 +36,7 @@
 				if($row['Role'] == "FT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Existing Users/FT_Homepage.php");
+					header("Location:../Existing Users/FT_HomePage.php");
 				}
 				if($row['Role'] == "PT")
 				{
@@ -122,7 +122,9 @@
         <div class="grid-item">
             <img id = "group" src = "Images/group.png">
         </div>
-    </div>
- 
+    </div> 
+	<br>
+<!-- Footer -->
+<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>
