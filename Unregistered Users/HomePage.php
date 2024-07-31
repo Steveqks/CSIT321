@@ -24,7 +24,7 @@
 	$stmt->close();
 	
 	#Limit the first 3 features for home page
-	$features_sql = "SELECT Name, Icon from Features LIMIT 3";
+	$features_sql = "SELECT Name, Icon from features LIMIT 3";
 	
 	$stmts = $conn->prepare($features_sql);
 	$stmts->execute();
@@ -73,7 +73,7 @@
 					</div>
 				<?php endforeach ?>
 			<?php else: ?>
-				<h2 style = "text-align:center"> No Plans Available </h2>
+				<h2 style = "text-align:center"> No Features Available </h2>
 		    <?php endif; ?>
 		</div>
 	</div>
@@ -118,6 +118,8 @@
 		    <?php endif; ?>
 			
 	</div>
+	<!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 
 
 	

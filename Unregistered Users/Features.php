@@ -6,31 +6,14 @@
 	// Connect to the database
 	$conn = OpenCon();
 
-	// Select the Top 3 5* reviews ordered by latest review time
-	$sql = "SELECT a.UserID, a.ReviewTitle, a.Rating, a.comments, a.DatePosted, b.UserID, b.CompanyID, b.FirstName, b.LastName, c.CompanyID, c.CompanyName FROM reviews a
-		   INNER JOIN existinguser as b
-		   ON a.UserID = b.UserID
-		   INNER JOIN company as c
-           ON b.CompanyID = c.CompanyID
-		   WHERE a.Rating = 5
-           ORDER BY a.DatePosted DESC
-           LIMIT 3";
-
+	#Select the Name, Description and Image for all the available features 
+	$sql = "SELECT Name, Description, Image from features";
 	
 	$stmt = $conn->prepare($sql);
 	$stmt->execute();
 	$result = $stmt->get_result();
-	$top3reviews = $result->fetch_all(MYSQLI_ASSOC);
+	$features = $result->fetch_all(MYSQLI_ASSOC);
 	$stmt->close();
-	
-	#Limit the first 3 features for home page
-	$features_sql = "SELECT Name, Icon from Features LIMIT 3";
-	
-	$stmts = $conn->prepare($features_sql);
-	$stmts->execute();
-	$results = $stmts->get_result();
-	$features = $results->fetch_all(MYSQLI_ASSOC);
-	$stmts->close();
 	
 	// Close the database connection
 	CloseCon($conn);
@@ -59,7 +42,20 @@
 	<div id = "TitleContainer">
         <h2>Here's What We have to offer</h2>
     </div>
+	<!-- Display all the features from the database -->
+	<?php if (count($features) > 0): ?>
+		<?php foreach ($features as $feature): ?>
+			<div id = "Features">
+				<h2 style = "padding-top: 20px"><?php echo htmlspecialchars($feature['Name'])?></h2>
+				<img src = <?php echo htmlspecialchars($feature['Image'])?> width = "948px" height = "710px">
+				<h2 style = "padding-bottom: 20px"><?php echo htmlspecialchars($feature['Description'])?></h2>
+			</div>
+		<?php endforeach ?>
+	<?php else: ?>
+		<h2 style = "text-align:center"> No Features Available </h2>
+	<?php endif; ?>
 	
-	
+	<!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

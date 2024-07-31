@@ -18,7 +18,7 @@
 			$email = $_POST['email'];
 			$password = $_POST['password'];
 
-			$result = mysqli_query($db,"SELECT * FROM existinguser WHERE Email='$email' AND Password='$password' ") or die("Select Error");
+			$result = mysqli_query($db,"SELECT * FROM existinguser WHERE Email='$email' AND Password='$password'             ") or die("Select Error");
 			$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
 			$count = mysqli_num_rows($result);
 			
@@ -36,7 +36,7 @@
 				if($row['Role'] == "FT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Existing Users/FT_Homepage.php");
+					header("Location:../Existing Users/FT_HomePage.php");
 				}
 				if($row['Role'] == "PT")
 				{
@@ -122,7 +122,9 @@
         <div class="grid-item">
             <img id = "group" src = "Images/group.png">
         </div>
-    </div>
- 
+    </div> 
+	<br>
+<!-- Footer -->
+<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

@@ -101,7 +101,7 @@
 	session_start();
 
 	//connect to the database
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$db = mysqli_connect('localhost','root','','tms') or die  ("Couldnt Connect to database");
 	
 	
 	//Insert User credentials
@@ -245,8 +245,8 @@
             <img id = "group" src = "Images/group.png">
         </div>
     </div>
-    <footer>
-        
-    </footer>
+    <br>
+    <!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>
