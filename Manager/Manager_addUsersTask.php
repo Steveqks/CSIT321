@@ -84,10 +84,6 @@
         $mainGroupID = $_POST['maingroupid'];
     }
 
-    if(isset($_POST['maingroupidmanual'])) {
-        $mainGroupID = $_POST['maingroupidmanual'];
-    }
-
 
     // From Manager_addUsersTask.php
     if(isset($_POST['numstaff'])) {
@@ -110,7 +106,7 @@
             $result = $stmt->get_result();
             $projectDate = $result->fetch_assoc();
 
-            if ($startDate <= $projectDate['StartDate'] && $endDate >= $projectDate['EndDate']) {
+            if ($startDate <= $projectDate['StartDate'] || $endDate >= $projectDate['EndDate'] || $startDate >= $projectDate['EndDate'] || $endDate <= $projectDate['StartDate']) {
 
                 header("Location: Manager_addTask.php?error=Invalid date. Start Date or End Date is not within the Project's timeline.");
                 exit();
@@ -133,7 +129,7 @@
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    $teamProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
+    $groupProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
 
 
@@ -199,7 +195,7 @@
         //echo "<br><br>". $sql;
 
 
-        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName,
+        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
                 (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
                 INNER JOIN task c ON b.MainTaskID = c.MainTaskID
                 WHERE b.Status = ".$taskStatus."
@@ -289,13 +285,13 @@
                     }
                 }
 
-                header("Location: Manager_addTask.php?message=Task is successfully auto allocated.");
+                header("Location: Manager_addTask.php?message=Task is successfully allocated.");
             }
 
             
 
 
-        } else if ($autoallocate == "auto") {
+        } else if ($allocateType == "auto") {
             if (count($FTUsers) > 0) {
                     
                 $sql .= $FTUsers[0]['UserID'];
@@ -476,7 +472,7 @@
                                             <label for="maingroupid">Group</label>
                                             <select name='maingroupid' required>
                                                 <?php
-                                                foreach ($teamProjectDetails as $groupName):
+                                                foreach ($groupProjectDetails as $groupName):
                                                     echo "<option value='". $groupName['MainGroupID']."'>". $groupName['GroupName']." ( ".$groupName['SpecialisationName']." )</option>";
                                                 endforeach;
                                                 ?>
@@ -493,7 +489,7 @@
                                             <label for="maingroupid">Group</label>
                                             <select name='maingroupid' required>
                                                 <?php
-                                                foreach ($teamProjectDetails as $groupName):
+                                                foreach ($groupProjectDetails as $groupName):
                                                     echo "<option value='". $groupName['MainGroupID']."'>". $groupName['GroupName']." ( ".$groupName['SpecialisationName']." )</option>";
                                                 endforeach;
                                                 ?>
@@ -505,7 +501,7 @@
 
                                             <label for="userid">Staff Name</label>
 
-                                                <p style="font-weight:bold;">Full-Time</p>
+                                                <p class="details">Full-Time</p>
                                             
                                                 <div class="checkbox-container">
                                                     <?php
@@ -519,7 +515,7 @@
                                                     } ?>
                                                 </div>
 
-                                                <p style="font-weight:bold;">Part-Time</p>
+                                                <p class="details">Part-Time</p>
 
                                                 <div class="checkbox-container">
                                                     <?php

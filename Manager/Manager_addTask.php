@@ -22,7 +22,7 @@
     $isManual = FALSE;
 
 
-    // get team for the select option
+    // get project for the select option
     $sql = "SELECT MainProjectID, ProjectName FROM projectinfo"
         . " WHERE ProjectManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY ProjectName ASC;";
 
