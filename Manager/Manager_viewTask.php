@@ -167,11 +167,15 @@
                                 <?php } ?>
 
                                 <div class="col-50">
-                                    <button name="deleteTask" class="delbtn" onclick="confirmDelete()">Delete</button></>
+                                    <a href="Manager_editTask.php?changestatus=true&maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Change Status</button></a>
                                 </div>
 
                                 <div class="col-50">
                                     <a href="Manager_editTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>" ><button name="editTask" class="btn">Edit</button></a>
+                                </div>
+
+                                <div class="col-50">
+                                    <button name="deleteTask" class="delbtn" onclick="confirmDelete()">Delete</button></>
                                 </div>
                             </div>
                         </div>
