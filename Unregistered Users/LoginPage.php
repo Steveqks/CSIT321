@@ -102,7 +102,6 @@
               <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
 			      <ul>
 					<li><a href="Features.php">Features</a></li>
-				    <li><a href="AboutUs.php">About Us</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
 			     </ul>

@@ -212,8 +212,8 @@
                 <h2>View News Feed</h2>
                 <div class="categories">
                     <label for="categories">View By:
-                        <a href='FT_ViewNewsFeed?viewCompany=true'><button>Company</button></a>
-                        <a href='FT_ViewNewsFeed?viewTeam=true'><button>Team</button></a>
+                        <a href='FT_ViewNewsFeed.php?viewCompany=true'><button>Company</button></a>
+                        <a href='FT_ViewNewsFeed.php?viewTeam=true'><button>Team</button></a>
                     </label>
                 </div>
             </div>
