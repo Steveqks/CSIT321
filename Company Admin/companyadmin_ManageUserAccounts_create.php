@@ -119,29 +119,51 @@ session_start();
 					<h4>Password: <input name = "password" type = "password" placeholder = "password" maxlength='16'  required>
 					</h4>
 					<h4>  <label for="Role">Role:</label>
-					  <select name="role" id="RoleSelect" >
+					  <select name="role" id="RoleSelect" onchange='isManager()'>
 						  <option value="Manager">Manager</option>
 						  <option value="FT">FT</option>
 						  <option value="PT">PT</option>
-					  </select>
+  						  
+
+					  </select>						  
+
 					</h4>
 					
-							<?php
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' ";
-						$qres = mysqli_query($db, $sql); 
-						
-						$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
-									<select name='specialisationID' id='SelectSpecialisation' >";		
-						while ($Row = $qres->fetch_assoc()) 
-						{
-							$select .= "<option value ='" . $Row['SpecialisationID'] . "'> " 
-									. $Row['SpecialisationName'] . " </option>";
-						}
-						$select .= "</select> </h4>";
-						echo $select;
-						
-					?>
+						<?php
+							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+							
+							//find manager specialisation id
+							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+							$qres = mysqli_query($db, $sql); 
+							while ($Row = $qres->fetch_assoc()) 
+							{
+								$mid = $Row['SpecialisationID'];
+							}
+							
+							//find all specialisation and omit manager
+							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
+							$qres = mysqli_query($db, $sql); 
+							
+							$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
+										<select name='specialisationID' id='SelectSpecialisation'>";		
+							while ($Row = $qres->fetch_assoc()) 
+							{
+								$select .= "<option value ='" . $Row['SpecialisationID'] . "'> " 
+										. $Row['SpecialisationName'] . " </option>";
+							}
+							$select .= "</select> </h4>";
+							
+							$encodedselect= json_encode($select);
+							
+							
+							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+							$qres = mysqli_query($db, $sql); 
+							while ($Row = $qres->fetch_assoc()) 
+							{
+								$mid = json_encode($Row['SpecialisationID']);
+							}
+	
+						?><span id="span tag"> </span>
 					<h4>Status: <input name = "status" type = "text" placeholder = "status"  maxlength='1' required>
 					</h4>
 					<input type='button' value='Create' onclick='confirmDiag()'>
@@ -165,6 +187,25 @@ session_start();
 						console.log('result = pos');	
 					}else console.log('result = neg');
 					console.log('confirmDiag() executed');
+				}
+				
+				function isManager(){
+					var RSelect = document.getElementById("RoleSelect");
+					var SSelect = document.getElementById('SelectSpecialisation');
+					var spantag = document.getElementById('span tag');
+					var specialisationID2 = <?php echo json_encode($mid); ?>; 
+					
+					//show specialisation option if role is not manager
+					if(RSelect.value != "Manager")
+					{
+						spantag.innerHTML = <?php echo $encodedselect; ?>;
+					}
+					else
+					{
+						spantag.innerHTML = "<input type='hidden' name='specialisationID' value='" + specialisationID2.toString() + "'>";
+					}
+					
+					
 				}
 				
 			</script>

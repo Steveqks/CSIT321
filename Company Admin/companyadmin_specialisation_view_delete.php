@@ -59,11 +59,19 @@ session_start();
 
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				
+					//find manager specialisation id
+					$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+					$qres = mysqli_query($db, $sql); 
+					while ($Row = $qres->fetch_assoc()) 
+					{
+						$mid = $Row['SpecialisationID'];
+					}
+				
 					mysqli_query($db, "SET @row_number = 0;") or die("Error setting row number");
 
 					$qres = mysqli_query($db,	"SELECT @row_number := @row_number + 1 AS `S/n`, specialisation.*
 												FROM specialisation
-												WHERE CompanyID = '$companyID';
+												WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid';
 												") or die("Select Error");
 					
 					if($qres){

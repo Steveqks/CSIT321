@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 05, 2024 at 05:41 AM
--- Server version: 8.3.0
--- PHP Version: 8.2.18
+-- Generation Time: Aug 05, 2024 at 07:50 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -518,7 +518,7 @@ CREATE TABLE IF NOT EXISTS `superadmin` (
 
 INSERT INTO `superadmin` (`SAdminID`, `FirstName`, `LastName`, `Email`, `Password`) VALUES
 (1, 'Superb', 'Administrator', 'blank13@paper.com', '666'),
-(2, 'super', 'admin', 'email.sa', '123');
+(2, 'super', 'admin', 'email@sa', '123');
 
 -- --------------------------------------------------------
 
@@ -596,6 +596,7 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
   `CompanyUEN` varchar(10) NOT NULL,
   `FirstName` varchar(16) NOT NULL,
   `LastName` varchar(16) NOT NULL,
+  `ApplicationDate` date NOT NULL,
   `PlanID` int NOT NULL,
   PRIMARY KEY (`ApplicationID`),
   KEY `PlanID` (`PlanID`)
@@ -605,12 +606,12 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
 -- Dumping data for table `unregisteredusers`
 --
 
-INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `CompanyUEN`, `FirstName`, `LastName`, `PlanID`) VALUES
-(1, 'bobworlds@hotmail.com', '', 'bobsworld', '', 'bobby', 'lee', 2),
-(2, 'michelleangelo@yahoo.com', '', 'cookhouse', '', 'michelle', 'angelo', 2),
-(3, 'mt@yawee.com', '', 'fightingco', '', 'tyson', 'mike', 2),
-(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', 3),
-(8, 'premp@email.com', '123', 'Prem Company', '12345678A', 'Prem', 'P', 1);
+INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `CompanyUEN`, `FirstName`, `LastName`, `ApplicationDate`, `PlanID`) VALUES
+(1, 'bobworlds@hotmail.com', '', 'bobsworld', '', 'bobby', 'lee', '2012-01-01', 2),
+(2, 'michelleangelo@yahoo.com', '', 'cookhouse', '', 'michelle', 'angelo', '2014-02-02', 2),
+(3, 'mt@yawee.com', '', 'fightingco', '', 'tyson', 'mike', '2023-05-01', 2),
+(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', '2024-06-13', 3),
+(8, 'premp@email.com', '123', 'Prem Company', '12345678A', 'Prem', 'P', '2019-10-20', 1);
 
 --
 -- Constraints for dumped tables

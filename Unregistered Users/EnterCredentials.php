@@ -116,6 +116,7 @@
 		$companyuen = $_POST['companyuen'];
 		$companyname = $_POST['companyname'];
 		$planschoice = $_POST['plans'];
+		$applicationdate = date("Y-m-d");
 		
 		//Check if Email Exists in unregistered users account
 		$verify_query = mysqli_query($db, "SELECT email FROM unregisteredusers where Email = '$email'");
@@ -136,7 +137,7 @@
 				if(preg_match($charregex, $companyuen))
 				{
 					//Upload Query
-					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
+					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID,ApplicationDate) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice','$applicationdate')") or die("Error Occured");
 					
 					//Attempt to send email
 					if(sendEmail($email, $firstname))
