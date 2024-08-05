@@ -13,7 +13,7 @@
     $conn = OpenCon();
 
     $viewCompany = FALSE;
-    $viewTeam = TRUE;
+    $viewProject = TRUE;
 
     if(isset($_GET['viewCompany'])) {
 
@@ -30,19 +30,20 @@
         if ($result->num_rows > 0) {
 
             $viewCompany = TRUE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         } else {
 
             $viewCompany = FALSE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         }
 
-    } else if ($viewTeam) {
+    } else if ($viewProject) {
 
         $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
                 INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                INNER JOIN projectinfo c ON a.ManagerID = c.ProjectManagerID
                 WHERE a.ManagerID = ".$userID."
                 ORDER BY a.DatePosted DESC;";
 
@@ -54,12 +55,12 @@
         if ($result->num_rows > 0) {
 
             $viewCompany = FALSE;
-            $viewTeam = TRUE;
+            $viewProject = TRUE;
 
         } else {
 
             $viewCompany = FALSE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         }
     }
@@ -115,7 +116,7 @@
                 <div class="categories">
                     <label for="categories">View By:
                         <a href='Manager_viewNewsFeed?viewCompany=true'><button>Company</button></a>
-                        <a href='Manager_viewNewsFeed?viewTeam=true'><button>Team</button></a>
+                        <a href='Manager_viewNewsFeed?viewProject=true'><button>Project</button></a>
                     </label>
                 </div>
             </div>
@@ -124,7 +125,7 @@
                 
                 <?php
                 
-                if($viewTeam) {
+                if($viewProject) {
 
                     foreach ($teamNewsFeed as $team):?>
 
@@ -184,10 +185,10 @@
 
                         </div>
                     <?php
-                        endforeach;
-                    } else {
-                        echo "<h4>No news feed.</h4>";
-                    } ?>
+                    endforeach;
+                } else {
+                    echo "<h4>No news feed.</h4>";
+                } ?>
             </div>
         </div>
     </div>

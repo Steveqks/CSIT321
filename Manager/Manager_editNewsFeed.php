@@ -39,17 +39,13 @@
         $stmt->bind_param("ssi",$title,$desc,$newsFeedID);
 
         if ($stmt->execute()) {
-            header("Location: Manager_editNewsFeed.php?message=News Feed has been updated.");
+            header("Location: Manager_editNewsFeed.php?editnewsfeedid=".$newsFeedID."&message=News Feed has been updated.");
             exit();
         } else {
-            header("Location: Manager_editNewsFeed.php?error=Error updating news feed details.");
+            header("Location: Manager_editNewsFeed.php?editnewsfeedid=".$newsFeedID."&error=Error updating news feed details.");
             exit();
         }
     }
-
-    // Close the statement and connection
-    $stmt->close();
-    CloseCon($conn);
 ?>
 
 <!DOCTYPE html>
@@ -76,7 +72,7 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <h2>Post News Feed</h2>
+                <h2>Edit News Feed</h2>
             </div>
 
             <div class="innerContent">
