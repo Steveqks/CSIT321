@@ -62,15 +62,15 @@ body {
     color: white;
 }
 
-#myButton1:hover , #myButton2:hover , #myButton3:hover {
+#myButton1:hover , #myButton2:hover , #myButton3:hover, #myButton4:hover {
     background-color: #ccc;
 }
 
-#myButton1.expanded , #myButton2.expanded , #myButton3.expanded {
+#myButton1.expanded , #myButton2.expanded , #myButton3.expanded , #myButton4.expanded {
     background-color: #bbb;
 }
 
-#linkContainer1 , #linkContainer2 , #linkContainer3 {
+#linkContainer1 , #linkContainer2 , #linkContainer3 , #linkContainer4 {
     display: none;
 }
 

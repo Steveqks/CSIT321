@@ -2,6 +2,7 @@
     let show1 = false;
 	let show2 = false;
 	let show3 = false;
+	let show4 = false;
 
 
 	function showLinks1() {
@@ -27,11 +28,11 @@
 
 		if (show2 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Task Management ➖';
+			myButton.innerHTML = 'Project Management ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Task Management ➕';
+			myButton.innerHTML = 'Project Management ➕';
 			linkContainer.style.display = 'none';
 		}
 		show2 = !show2;
@@ -44,14 +45,31 @@
 
 		if (show3 == false) {
 			myButton.classList.add('expanded');
-			myButton.innerHTML = 'Project Management ➖';
+			myButton.innerHTML = 'Task Management ➖';
 			linkContainer.style.display = 'block';
 		} else {
 			myButton.classList.remove('expanded');
-			myButton.innerHTML = 'Project Management ➕';
+			myButton.innerHTML = 'Task Management ➕';
 			linkContainer.style.display = 'none';
 		}
 		show3 = !show3;
+	}
+	
+	function showLinks4() {
+		
+		let myButton = document.getElementById("myButton4");
+		let linkContainer = document.getElementById("linkContainer4");
+
+		if (show4 == false) {
+			myButton.classList.add('expanded');
+			myButton.innerHTML = 'Leave a Review! ➖';
+			linkContainer.style.display = 'block';
+		} else {
+			myButton.classList.remove('expanded');
+			myButton.innerHTML = 'Leave a Review ➕';
+			linkContainer.style.display = 'none';
+		}
+		show4 = !show4;
 	}
 </script>
 
@@ -66,9 +84,17 @@
             <a href='Manager_viewAccount.php'> - View Account Details </a>
         </div>
 	</div>
+
+	<a id='myButton2' class='myButton2' onClick='showLinks2()'>Project Management ➕</a>
+	<div id='linkContainer2'>
+		<div class='show'>
+			<a href='Manager_viewProjectList.php'> - View Projects </a>
+			<a href='Manager_addProject.php'> - Add Project </a>
+		</div>
+	</div>
     
-	<a id='myButton2' class='myButton2' onClick='showLinks2()'>Task Management ➕</a>
-    <div id='linkContainer2'>
+	<a id='myButton3' class='myButton3' onClick='showLinks3()'>Task Management ➕</a>
+    <div id='linkContainer3'>
 		<div class='show'>
 			<a href='Manager_viewTasksList.php'> - View Tasks </a>
             <a href='Manager_addTask.php'> - Add Task </a>
@@ -77,12 +103,13 @@
 
     <a href="Manager_viewLeaveHistory.php">Leave Management</a>
 
-    <a href="Manager_viewNewsFeed.php">News Feed Management</a>
-    <a id='myButton3' class='myButton3' onClick='showLinks3()'>Project Management ➕</a>
-    <div id='linkContainer3'>
+	<a href="Manager_viewNewsFeed.php">News Feed Management</a>
+    
+	<a id='myButton4' class='myButton4' onClick='showLinks4()'>Leave a Review! ➕</a>
+    <div id='linkContainer4'>
 		<div class='show'>
-            <a href='Manager_viewProjectList.php'> - View Projects </a>
-            <a href='Manager_addProject.php'> - Add Project </a>
+			<a href='Manager_SubmitReview.php'> - Submit a Review </a>
+            <a href='Manager_EditReview.php'> - Edit a Review </a>
         </div>
 	</div>
 
