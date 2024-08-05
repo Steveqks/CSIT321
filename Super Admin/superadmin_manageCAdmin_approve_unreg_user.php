@@ -138,9 +138,11 @@ session_start();
 													<th>Email</th>
 													<th>First Name</th>
 													<th>Last Name</th>
-													<th>Plan ID</th>
 													<th>Company Name</th>
 													<th>Company UEN</th>
+													<th>Plan ID</th>
+													<th>Application Date (YYYY-MM-DD)</th>
+
 													</tr>\n";
 							$accountsTable .= "<br/>";
 							}
@@ -149,9 +151,12 @@ session_start();
 							$accountsTable .= "<td>" . $Row['Email'] . "</td>";
 							$accountsTable .= "<td>" . $Row['FirstName'] . "</td>";
 							$accountsTable .= "<td>" . $Row['LastName'] . "</td>";
-							$accountsTable .= "<td>" . $Row['PlanID'] . "</td>";
 							$accountsTable .= "<td>" . $Row['CompanyName'] . "</td>";
 							$accountsTable .= "<td>" . $Row['CompanyUEN'] . "</td>";
+							$accountsTable .= "<td>" . $Row['PlanID'] . "</td>";
+							$accountsTable .= "<td style='text-align: center'>" . $Row['ApplicationDate'] . "</td>";
+
+
 						
 							$accountsTable .= "<td><form action'' method='POST'>
 								<input type='hidden' name='approveID' value='" . $Row['ApplicationID'] . "'/>
