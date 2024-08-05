@@ -77,8 +77,6 @@
 
     <a href="Manager_viewLeaveHistory.php">Leave Management</a>
 
-    <a href="Manager_attendanceTracking.php">Time/Attendance Tracking</a>
-
     <a href="Manager_viewNewsFeed.php">News Feed Management</a>
     <a id='myButton3' class='myButton3' onClick='showLinks3()'>Project Management ➕</a>
     <div id='linkContainer3'>
