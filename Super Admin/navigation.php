@@ -18,8 +18,8 @@
 	$navigation .= "<a id='myButton2' class='myButton2' onClick='showLinks2()'> Manage Web Pages ➕</a>
 						<div id='linkContainer2'>
 							<div class='show'>
-								<a href='superadmin_manageCAdmin_approve_unreg_user.php'> - Edit Home Page </a>
-								<a href='superadmin_manageCAdmin_approve_unreg_user.php'> - Edit About Us </a>
+								<a href='superadmin_ManageHomePage_view.php'> - Edit Home Page </a>
+								<a href='superadmin_ManageFeatures_view.php'> - View Features Page </a>
 								<a href='superadmin_SubscriptionPlans_View.php'> - View Subscription Plans </a>
 							</div>
 						</div>
