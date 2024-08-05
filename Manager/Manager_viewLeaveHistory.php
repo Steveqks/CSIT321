@@ -111,7 +111,7 @@
             <h2 class="contentHeader">View Leave History</h2>
             
             <div class="search">
-                <form action="Manager_viewLeaveHistory.php">
+                <form action="Manager_viewLeaveHistory.php" method="POST">
                     <input type="text" name="searchInput" placeholder="Enter name" required>
                     <input type="submit" class="searchBtn" name="search" value="Search">
                 </form>
