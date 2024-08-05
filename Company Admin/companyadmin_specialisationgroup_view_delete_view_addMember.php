@@ -8,17 +8,17 @@ session_start();
 	if (isset($_POST['AddUser'])) {
 
 		$userID = $_POST['userID'];
-		$poolID = $_SESSION['poolID'];
+		$groupID = $_SESSION['groupID'];
 		$fullname = $_POST['fullname'];
 
 		
 		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = 	mysqli_query($db, "
-			INSERT INTO specialisationpool(PoolID, MainPoolID, UserID)
-			VALUES (Null, '$poolID', '$userID');
+			INSERT INTO specialisationgroup(GroupID, MainGroupID, UserID)
+			VALUES (Null, '$groupID', '$userID');
 				") or die("Select Error");
 								
-		$_SESSION['message1'] = $fullname . " is added to pool";
+		$_SESSION['message1'] = $fullname . " is added to group";
 	}
 ?>
 <!DOCTYPE html>
@@ -51,16 +51,16 @@ session_start();
 			<?php   
 
 				$companyID = $_SESSION['companyID'];;
-				$poolID = $_SESSION['poolID'];
-				$poolName = $_SESSION['poolName'];
+				$groupID = $_SESSION['groupID'];
+				$groupName = $_SESSION['groupName'];
 				
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				$result = 	mysqli_query($db, "	SELECT SpecialisationID FROM `specialisationpoolinfo` WHERE `MainPoolID` = '$poolID' ") or die("Select Error");
+				$result = 	mysqli_query($db, "	SELECT SpecialisationID FROM `specialisationgroupinfo` WHERE `MainGroupID` = '$groupID' ") or die("Select Error");
 				
 				while ($Row = $result->fetch_assoc()) {
 					$specialisationID = $Row['SpecialisationID'];}
 				
-				echo "<h2>Add Users to Pool: ". $poolName . " </h2>";
+				echo "<h2>Add Users to Pool: ". $groupName . " </h2>";
 				
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db, "
@@ -79,8 +79,8 @@ session_start();
 						AND eu.Role IN ('PT', 'FT')
 						AND NOT EXISTS (
 							SELECT 1 
-							FROM specialisationpool sp
-							WHERE sp.UserID = eu.UserID AND sp.MainPoolID = '$poolID' 
+							FROM specialisationgroup sp
+							WHERE sp.UserID = eu.UserID AND sp.MainGroupID = '$groupID' 
 						)
 						;
 
