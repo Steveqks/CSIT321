@@ -12,6 +12,18 @@ session_start();
 		header('Location: superadmin_ManageFeatures_edit.php');
 		exit;
 	}
+	
+	if (isset($_POST['addNewFeature'])) {
+		header('Location: superadmin_ManageFeatures_create.php');
+		exit;
+	}
+	
+	if(isset($_POST['delete']) == 'yes')
+	{
+		$FeatureID = $_POST['FeatureID'];
+		$result = mysqli_query($db,	"DELETE FROM features WHERE FeatureID = '$FeatureID' ") or die("Delete Error");
+		$_SESSION['message'] = "<p>Feature deleted successfully</p>";
+	}
 
 ?>
 <!DOCTYPE html>
@@ -43,7 +55,9 @@ session_start();
 
   
 			<?php     
-					echo $_SESSION['message1'];
+					echo $_SESSION['message'];
+					
+					echo "<a href='superadmin_ManageFeatures_create' target='_self'>Add New Features</a>";
 		
 					$qres = mysqli_query($db,	"SELECT * FROM features ") or die("Select Error");
 						
@@ -70,6 +84,13 @@ session_start();
 							<input type='hidden' name='FeatureID' value='" . $Row['FeatureID'] . "'/>
 							<input type='submit' name='editFeature' value='Edit'>
 							</form></td>";
+							
+						$accountsTable .= "<td><form action'' method='POST'>
+							<input type='hidden' name='FeatureID' value='" . $Row['FeatureID'] . "'/>
+							<input type='hidden' name='delete' value='yes'/>
+							<input type='button' value='Delete' onclick='confirmDiag(event, this.form);'>
+							</form></td>";
+						
 						
 						$accountsTable.= "</tr>";
 					}
@@ -84,6 +105,18 @@ session_start();
     </div>
 
 </body>
+				<script>
+					function confirmDiag(event, form){
+						console.log('confirmDiag() executing');
+						let result = confirm("Delete Feature?");
+						if (result)
+						{
+							form.submit();
+							console.log('result = pos');	
+						}else console.log('result = neg');
+						console.log('confirmDiag() executed');
+					}
+				</script>
 </html>
 
 
