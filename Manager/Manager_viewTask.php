@@ -175,7 +175,7 @@
                                 </div>
 
                                 <div class="col-50">
-                                    <button name="deleteTask" class="delbtn" onclick="confirmDelete()">Delete</button></>
+                                    <button name="deleteTask" class="delbtn" onclick="confirmDelete()">Delete</button>
                                 </div>
                             </div>
                         </div>
