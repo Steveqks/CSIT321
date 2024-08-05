@@ -194,9 +194,9 @@
         let text = "All tasks related to this project will be deleted.\nConfirm to delete?";
         
         if (confirm(text) == true) {
-            window.location = "Manager_viewTask.php?deletemaintaskid=<?php echo $taskDetails['MainTaskID'] ?>";
+            window.location = "Manager_viewTask.php?deletemaintaskid=<?php echo $taskDetails['MainTaskID']; ?>";
         } else {
-            window.location = "Manager_viewTask.php?maintaskid=<?php echo $taskDetails['MainTaskID'] ?>";
+            window.location = "Manager_viewTask.php?maintaskid=<?php echo $taskDetails['MainTaskID']; ?>";
         }
     }
 </script>
