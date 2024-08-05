@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 30, 2024 at 08:50 AM
+-- Generation Time: Aug 05, 2024 at 05:41 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `Comments` varchar(100) NOT NULL,
   PRIMARY KEY (`LeaveID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `leaves`
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
 INSERT INTO `leaves` (`LeaveID`, `UserID`, `LeaveType`, `StartDate`, `EndDate`, `HalfDay`, `Status`, `Comments`) VALUES
 (1, 28, 'Personal', '2024-07-04', '2024-07-04', 1, 1, ''),
 (2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, ''),
-(3, 28, '', '0000-00-00', '0000-00-00', 0, 0, '');
+(4, 28, 'Vacation', '0000-00-00', '0000-00-00', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -332,17 +332,17 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE IF NOT EXISTS `project` (
   `ProjectID` int NOT NULL AUTO_INCREMENT,
   `MainProjectID` int NOT NULL,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   PRIMARY KEY (`ProjectID`),
-  KEY `MainPoolID` (`MainPoolID`),
-  KEY `project_ibfk_2` (`MainProjectID`)
+  KEY `MainProjectID` (`MainProjectID`) USING BTREE,
+  KEY `MainGroupID` (`MainGroupID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `project`
 --
 
-INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainPoolID`) VALUES
+INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainGroupID`) VALUES
 (21, 10, 19);
 
 -- --------------------------------------------------------
@@ -669,7 +669,7 @@ ALTER TABLE `newsfeed`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
