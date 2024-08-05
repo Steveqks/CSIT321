@@ -1,16 +1,19 @@
 <?php    
 include '../Session/session_check_superadmin.php';
 
+include 'db_connection.php';
+
+
 class userAccount{
 	public $conn;
 	function __construct(){
-		$this->conn=mysqli_connect("localhost","root","");
+		$this->conn=mysqli_connect($servername,$username,$password);
 		if(mysqli_connect_errno()){
 			echo "failed to connect";
 			mysqli_connect_error();
 			exit();
 		}
-		mysqli_select_db($this->conn,"TMS");
+		mysqli_select_db($this->conn,$dbname);
 	}
 	
 	public function viewAccount():bool|mysqli_result{
@@ -42,7 +45,6 @@ class userAccount{
 				$this->createCompanyAdmin($companyID,  $fname, $lname, $email, $password);
 				
 				//create manager specialisation		
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");				
 				$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, CompanyID) VALUES (NULL, 'Manager', '$companyID')") or die("Select Error");
 				
 				//remove company application from list

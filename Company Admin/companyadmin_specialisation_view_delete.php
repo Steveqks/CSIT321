@@ -12,7 +12,7 @@ session_start();
 
 	if(isset($_POST['delete'])=='yes')
 	{
-		$delete = new userAccount();
+		$delete = new userAccount($servername, $username, $password, $dbname);
 		$delete->deleteSpecialisation($_POST['specialisationID']);
 		
 		$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";

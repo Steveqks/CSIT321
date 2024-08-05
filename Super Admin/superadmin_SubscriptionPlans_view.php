@@ -2,6 +2,9 @@
 session_start();
 	include '../Session/session_check_superadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message'] ='';
 
 	if (isset($_POST['editPlan'])) {
@@ -42,7 +45,6 @@ session_start();
 			<?php     
 					echo $_SESSION['message'];
 		
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 					$qres = mysqli_query($db,	"SELECT * FROM plans ") or die("Select Error");
 						
 					if($qres){

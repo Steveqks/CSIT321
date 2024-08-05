@@ -5,6 +5,8 @@ session_start();
 
 	include_once('superadmin_manageCAdmin_approve_unreg_user_functions.php');
 	
+	include 'db_connection.php';
+
 
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
@@ -51,7 +53,6 @@ session_start();
 	{
 		$applicationID = $_POST['applicationID'];
 
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM unregisteredusers  WHERE ApplicationID = '$applicationID' ") or die("Select Error");
 		
 		$_SESSION['message'] = "Application  for \"" .$_POST['cname']. "\" deleted successfully";
