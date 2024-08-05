@@ -214,3 +214,24 @@ hr {
     margin-bottom: 15px;
     font-size: 0.9em;
 }
+
+
+/* Search */
+.search {
+    padding: 10px 0 25px 0;
+}
+.searchBtn {
+    margin-left: 30px;
+    background-color: white;
+    border: 0.5px solid black;
+    padding: 7px 15px;
+}
+.searchBtn:hover {
+    background-color: rgb(229, 229, 229);
+}
+
+.search input[type=text] {
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
