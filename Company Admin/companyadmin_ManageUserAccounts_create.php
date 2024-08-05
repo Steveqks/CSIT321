@@ -2,15 +2,14 @@
 session_start();
 				
 	include_once('../Session/session_check_companyadmin.php');
-				
+
+	include 'db_connection.php';
+
 	$companyID = $_SESSION['companyID'];
 	$_SESSION['message1'] = "";
 
 	//create user
 	if(isset($_POST['fname'])){
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
 		$emailadd = $_POST['emailadd'];
@@ -130,14 +129,13 @@ session_start();
 					</h4>
 					
 						<?php
-							$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 							
 							//find manager specialisation id
 							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
 							$qres = mysqli_query($db, $sql); 
 							while ($Row = $qres->fetch_assoc()) 
 							{
-								$mid = $Row['SpecialisationID'];
+								$mid = $Row['SpecialisationID'];			
 							}
 							
 							//find all specialisation and omit manager

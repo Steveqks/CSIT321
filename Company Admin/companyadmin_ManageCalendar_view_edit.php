@@ -2,6 +2,8 @@
 session_start();
 
 	include '../Session/session_check_companyadmin.php';
+	
+	include 'db_connection.php';
 
 	$_SESSION['message1'] = '';
 	$_SESSION['message2'] = '';
@@ -13,8 +15,6 @@ session_start();
 		
 		//check if there are changes in date name
 		if ($_POST['oldDateName'] != $_POST['newDateName']){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 			//check if date name exists
 			$result = mysqli_query($db,	"SELECT * FROM calendar WHERE DateName = '$newDateName'  AND CompanyID = '$companyID' ") or die("Select Error");
 
@@ -34,8 +34,6 @@ session_start();
 		
 		// if date changed
 		if(@$_POST['oldDate'] != $_POST['newDate']){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 			//check if date already exists
 			$result = mysqli_query($db,	"SELECT * FROM calendar WHERE Date = '$newDate' AND CompanyID = '$companyID' ") or die("Select Error");
 

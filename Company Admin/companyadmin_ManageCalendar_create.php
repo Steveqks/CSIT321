@@ -2,14 +2,15 @@
 session_start();
 				
 	include '../Session/session_check_companyadmin.php';
-				
+
+	include 'db_connection.php';
+
 	$_SESSION['message1'] = '';
 				
 	$companyID = $_SESSION['companyID'];
 	
 	//create user
 	if(isset($_POST['date'])){
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$dateName = $_POST['dateName'];
 		$date = $_POST['date'];

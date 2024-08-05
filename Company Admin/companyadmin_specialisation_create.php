@@ -3,10 +3,12 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message1'] = '';
 
 	if(isset($_POST['specialisation'])){
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$specialisation = $_POST['specialisation'];
 
 		//check if specialisation exists

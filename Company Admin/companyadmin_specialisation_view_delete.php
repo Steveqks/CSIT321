@@ -5,6 +5,8 @@ session_start();
 
 	include_once('companyadmin_specialisation_viewdelete_functions.php');
 
+	include 'db_connection.php';
+
 	
 	$_SESSION['message'] = '';
 
@@ -53,12 +55,8 @@ session_start();
 				<?php   
 					echo $_SESSION['message'];
 
-				
 					$companyID = $_SESSION['companyID'];;
-				
-
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-				
+								
 					//find manager specialisation id
 					$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
 					$qres = mysqli_query($db, $sql); 

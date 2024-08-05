@@ -6,8 +6,6 @@ session_start();
 	$_SESSION['message'] = '';
 
 	if(isset($_POST['specialisationID'])){
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 		$specialisationName = $_POST['specialisationName'];
 		$specialisationID = $_POST['specialisationID'];
 		
