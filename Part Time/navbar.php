@@ -9,6 +9,7 @@
 		<li><a href="PT_ViewNewsFeed.php">View News Feed</a></li>
         <li><a href="PT_SwapShift.php">Swap Shifts</a></li>
         <li><a href="PT_SetAvailability.php">Set Availability</a></li>
+		<li><a href="PT_ReviewManagement.php">Review Management</a></li>
         <li><a href="logout.php">Logout</a></li>
     </ul>
 </div>
