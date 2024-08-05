@@ -3,11 +3,7 @@
 	include 'db_connection.php';
 
 	// Check if user is logged in
-	if (!isset($_SESSION['Email'])) 
-	{
-		header("Location: ../Unregistered Users/LoginPage.php");
-		exit();
-	}
+	include '../Session/session_check_user_FT.php';
 
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
@@ -164,7 +160,7 @@
                 <h2>Time Management</h2>
             </div>
 			<div class="time-buttons">
-                <a href="FT_ViewSchedule.php" class="time-button">View Schedule</a>
+                <a href="#" class="time-button">View Schedule</a>
                 <a href="#" class="time-button">View Hours Worked</a>
                 <a href="#" class="time-button">View Time Management</a>
             </div>

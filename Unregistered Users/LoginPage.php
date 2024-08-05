@@ -18,7 +18,7 @@
 			$email = $_POST['email'];
 			$password = $_POST['password'];
 
-			$result = mysqli_query($db,"SELECT * FROM existinguser WHERE Email='$email' AND Password='$password' ") or die("Select Error");
+			$result = mysqli_query($db,"SELECT * FROM existinguser WHERE Email='$email' AND Password='$password'             ") or die("Select Error");
 			$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
 			$count = mysqli_num_rows($result);
 			
@@ -36,12 +36,12 @@
 				if($row['Role'] == "FT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:../Existing Users/FT_Homepage.php");
+					header("Location:../Existing Users/FT_HomePage.php");
 				}
 				if($row['Role'] == "PT")
 				{
 					//Route the user based on the role FT, PT, Manager
-					header("Location:PartTimers.php");
+					header("Location:../Part Time/PT_HomePage.php");
 				}
 				if($row['Role'] == "Manager")
 				{
@@ -101,8 +101,7 @@
             <div class="navdiv">
               <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
 			      <ul>
-					<li><a href="#">Features</a></li>
-				    <li><a href="AboutUs.php">About Us</a></li>
+					<li><a href="Features.php">Features</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
 			     </ul>
@@ -122,7 +121,9 @@
         <div class="grid-item">
             <img id = "group" src = "Images/group.png">
         </div>
-    </div>
- 
+    </div> 
+	<br>
+<!-- Footer -->
+<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

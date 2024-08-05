@@ -1,3 +1,91 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    $viewCompany = FALSE;
+    $viewTeam = TRUE;
+
+    if(isset($_GET['viewCompany'])) {
+
+        $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                WHERE b.CompanyID = ".$companyID."
+                ORDER BY a.DatePosted DESC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+        if ($result->num_rows > 0) {
+
+            $viewCompany = TRUE;
+            $viewTeam = FALSE;
+
+        } else {
+
+            $viewCompany = FALSE;
+            $viewTeam = FALSE;
+
+        }
+
+    } else if ($viewTeam) {
+
+        $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                WHERE a.ManagerID = ".$userID."
+                ORDER BY a.DatePosted DESC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+        if ($result->num_rows > 0) {
+
+            $viewCompany = FALSE;
+            $viewTeam = TRUE;
+
+        } else {
+
+            $viewCompany = FALSE;
+            $viewTeam = FALSE;
+
+        }
+    }
+
+    if (isset($_GET['deletenewsfeedid'])) {
+
+        $newsFeedID = $_GET['deletenewsfeedid'];
+
+        // Delete project
+        $stmt = $conn->prepare("DELETE FROM newsfeed WHERE NewsFeedID = ?");
+
+        $stmt->bind_param("i",$newsFeedID);
+
+        if ($stmt->execute()) {
+            echo "<script type='text/javascript'>";
+            echo "alert('News Feed has been deleted.');";
+            echo "window.location = 'Manager_viewNewsFeed.php';";
+            echo "</script>";
+        }
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,95 +94,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        $viewCompany = FALSE;
-        $viewTeam = TRUE;
-
-        if(isset($_GET['viewCompany'])) {
-
-            $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE b.CompanyID = ".$companyID."
-                    ORDER BY a.DatePosted DESC;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
-
-            if ($result->num_rows > 0) {
-
-                $viewCompany = TRUE;
-                $viewTeam = FALSE;
-
-            } else {
-
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
-
-            }
-
-        } else if ($viewTeam) {
-
-            $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE a.ManagerID = ".$userID."
-                    ORDER BY a.DatePosted DESC;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
-
-            if ($result->num_rows > 0) {
-
-                $viewCompany = FALSE;
-                $viewTeam = TRUE;
-
-            } else {
-
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
-
-            }
-        }
-
-        if (isset($_GET['deletenewsfeedid'])) {
-
-            $newsFeedID = $_GET['deletenewsfeedid'];
-
-            // Delete project
-            $stmt = $conn->prepare("DELETE FROM newsfeed WHERE NewsFeedID = ?");
-
-            $stmt->bind_param("i",$newsFeedID);
-
-            if ($stmt->execute()) {
-                echo "<script type='text/javascript'>";
-                echo "alert('News Feed has been deleted.');";
-                echo "window.location = 'Manager_viewNewsFeed.php';";
-                echo "</script>";
-            }
-        }
-    ?>
 </head>
 <body>
     <!-- Top Section -->

@@ -3,12 +3,8 @@
 	include 'db_connection.php';
 
 	// Check if user is logged in
-	if (!isset($_SESSION['Email'])) 
-	{
-		header("Location: ../Unregistered Users/LoginPage.php");
-		exit();
-	}
-
+	include '../Session/session_check_user_FT.php';
+	
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
 	$FirstName = $_SESSION['FirstName'];
@@ -28,9 +24,6 @@
 	// Close the database connection
 	$stmt->close();
 	CloseCon($conn);
-
-
-	
 ?>
 
 
@@ -141,6 +134,7 @@
 			height: 40px;
 			background-color:red;
 			border-radius: 4px;
+			border: none;
 			font-size: 20px;
 		}
 		
@@ -148,11 +142,13 @@
 		{
 			background-color: maroon;
 		}
+		
 		#cancel a
 		{
 			text-decoration: none;
 			color: white;
 		}
+		
 		
 		
 	</style>
@@ -208,7 +204,7 @@
 								<td>
 									<form action = "delete.php" method = "post">
 										<input type = "hidden" name = "id" value = "<?php echo $leave['LeaveID']; ?>">
-										<input type = "submit" name = "Cancel" value = "Cancel">
+										<input id = "cancel" type = "submit" name = "Cancel" value = "Cancel">
 									</form>
 								</td>
                             </tr>

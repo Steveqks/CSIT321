@@ -1,3 +1,74 @@
+    <?php
+        session_start();
+        include 'db_connection.php';
+
+        // Check if user is logged in
+        include '../Session/session_check_user_FT.php';
+
+        $userID = $_SESSION['UserID'];
+        $FirstName = $_SESSION['FirstName'];
+        $companyID = $_SESSION['CompanyID'];
+        $employeeType = $_SESSION['Role'];
+
+        // Connect to the database
+        $conn = OpenCon();
+
+        $viewCompany = FALSE;
+        $viewTeam = TRUE;
+
+        if(isset($_GET['viewCompany'])) {
+
+            $viewCompany = TRUE;
+            $viewTeam = FALSE;
+
+            $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                    WHERE b.CompanyID = ".$companyID."
+                    ORDER BY a.DatePosted DESC;";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+			
+			if ($result->num_rows > 0) {
+
+                $viewCompany = TRUE;
+                $viewTeam = FALSE;
+
+            } else {
+
+                $viewCompany = FALSE;
+                $viewTeam = FALSE;
+
+            }
+
+        }
+		else if ($viewTeam) {
+
+            $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                    WHERE a.ManagerID = ".$userID."
+                    ORDER BY a.DatePosted DESC;";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+            if ($result->num_rows > 0) {
+
+                $viewCompany = FALSE;
+                $viewTeam = TRUE;
+
+            } else {
+
+                $viewCompany = FALSE;
+                $viewTeam = FALSE;
+
+            }
+        }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,81 +183,6 @@
 			padding: 3%;
 		}
 	</style>
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $FirstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        $viewCompany = FALSE;
-        $viewTeam = TRUE;
-
-        if(isset($_GET['viewCompany'])) {
-
-            $viewCompany = TRUE;
-            $viewTeam = FALSE;
-
-            $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE b.CompanyID = ".$companyID."
-                    ORDER BY a.DatePosted DESC;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
-			
-			if ($result->num_rows > 0) {
-
-                $viewCompany = TRUE;
-                $viewTeam = FALSE;
-
-            } else {
-
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
-
-            }
-
-        }
-		else if ($viewTeam) {
-
-            $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE a.ManagerID = ".$userID."
-                    ORDER BY a.DatePosted DESC;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
-
-            if ($result->num_rows > 0) {
-
-                $viewCompany = FALSE;
-                $viewTeam = TRUE;
-
-            } else {
-
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
-
-            }
-        }
-    ?>
 </head>
 <body>
     <!-- TOP SECTION -->
@@ -216,8 +212,8 @@
                 <h2>View News Feed</h2>
                 <div class="categories">
                     <label for="categories">View By:
-                        <a href='FT_ViewNewsFeed?viewCompany=true'><button>Company</button></a>
-                        <a href='FT_viewNewsFeed?viewTeam=true'><button>Team</button></a>
+                        <a href='FT_ViewNewsFeed.php?viewCompany=true'><button>Company</button></a>
+                        <a href='FT_ViewNewsFeed.php?viewTeam=true'><button>Team</button></a>
                     </label>
                 </div>
             </div>

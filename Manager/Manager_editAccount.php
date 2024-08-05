@@ -1,3 +1,61 @@
+<?php
+    session_start();
+        
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+    $userStatus = 1;
+
+    // get manager's details to edit
+    $sql = "SELECT a.*, b.SpecialisationName FROM existinguser a
+            LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
+            WHERE a.UserID = ".$userID;
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $managerDetails = $result->fetch_assoc();
+    
+
+    if (isset($_POST['editAccount'])) {
+            
+        $fName = $_POST['firstname'];
+        $lName = $_POST['lastname'];
+        $email = $_POST['email'];
+        $password = $_POST['pwd'];
+        $confirm_password = $_POST['confirm_password'];
+
+        // Check if passwords match
+        if ($password != $confirm_password) {
+            header("Location: Manager_editAccount.php?error=Passwords do not match. Please try again.");
+            exit();
+        }
+
+        $stmt = $conn->prepare("UPDATE existinguser SET FirstName = ?, LastName = ?, Email = ?, Password = ? WHERE UserID = ?");
+
+        $stmt->bind_param("ssssi",$fName,$lName,$email,$password,$userID);
+
+        if ($stmt->execute()) {
+            header("Location: Manager_editAccount.php?message=Account details updated successfully.");
+            exit();
+        } else {
+            header("Location: Manager_editAccount.php?error=Error updating account details.");
+            exit();
+        }
+
+        // Close the statement and connection
+        $stmt->close();
+        CloseCon($conn);
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,73 +64,22 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-        $userStatus = 1;
-
-        // get manager's details to edit
-        $sql = "SELECT a.*, b.SpecialisationName FROM existinguser a
-                LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
-                WHERE a.UserID = ".$userID;
     
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $managerDetails = $result->fetch_all(MYSQLI_ASSOC);
+    <script>
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var errorMessage = document.getElementById("error-message");
 
-        $stmt->close();
-
-        if (isset($_POST['editAccount'])) {
-            
-            $email = $_POST['email'];
-            $password = $_POST['pwd'];
-
-            $sql = "SELECT UserID FROM existinguser
-                    WHERE email LIKE '%".$email."%'";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-
-                echo "<script type='text/javascript'>";
-                echo "alert('Email exist in system.');";
-                echo "window.location = 'Manager_editAccount.php';";
-                echo "</script>";
-
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match. Please try again.";
+                return false;
             } else {
-
-                $stmt = $conn->prepare("UPDATE existinguser SET Email=?,Password=? WHERE UserID=?");
-
-                $stmt->bind_param("ssi",$email,$password,$userID);
-
-                if ($stmt->execute()) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Account has been updated successfully.');";
-                    echo "window.location = 'Manager_viewAccount.php';";
-                    echo "</script>";
-                }
+                errorMessage.textContent = "";
+                return true;
             }
         }
-    ?>
+    </script>
 </head>
 <body>
     <!-- Top Section -->
@@ -89,69 +96,68 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
-                    <h2>Edit User Account</h2>
+                <h2>Edit User Account</h2>
             </div>
 
             <div class="innerContent">
             <div class="row">
-                    <div class="col-75">
-                        <div class="container">
-                            <form name="editAccount" action="Manager_editAccount.php" method="POST">
+                <div class="col-75">
+                    <div class="container">
+                        <form name="editAccount" action="Manager_editAccount.php" method="POST" onsubmit="return validateForm()">
                             
-                                <div class="row">
-                                    <div class="col-50">
-                                        <label for="firstname">First Name</label>
-                                        <input type="text" id="firstname" name="firstname" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['FirstName']; endforeach; ?>" disabled>
+                            <div class="row">
+                                <div class="col-50">
+                                    <label for="firstname">First Name</label>
+                                    <input type="text" id="firstname" name="firstname" value="<?php echo htmlspecialchars($managerDetails['FirstName']); ?>" required>
                                         
-                                        <label for="lastname">Last Name</label>
-                                        <input type="text" id="lastname" name="lastname" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['LastName']; endforeach; ?>" disabled>
+                                    <label for="lastname">Last Name</label>
+                                    <input type="text" id="lastname" name="lastname" value="<?php echo htmlspecialchars($managerDetails['LastName']); ?>" required>
 
-                                        <label for="gender">Gender</label>
-                                        <select id="gender" name="gender" disabled>
-                                            <?php foreach ($managerDetails as $managerDetail):
-                                                echo "<option value='". $managerDetail['Gender']."'>" . $managerDetail['Gender']."</option>";
-                                            endforeach; ?>
-                                        </select>
+                                    <label for="gender">Gender</label>
+                                    <select id="gender" name="gender" disabled>
+                                        <?php echo "<option value='". $managerDetails['Gender']."'>" . $managerDetails['Gender']."</option>"; ?>
+                                    </select>
                                         
-                                        <label for="email">Email</label>
-                                        <input type="email" id="email" name="email" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['Email']; endforeach; ?>">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($managerDetails['Email']); ?>" required>
                                         
-                                        <label for="role">Role</label>
-                                        <select id="role" name="role" disabled>
-                                            <?php foreach ($managerDetails as $managerDetail):
-                                                echo "<option value='". $managerDetail['Role']."'>" . $managerDetail['Role']."</option>";
-                                            endforeach; ?>
-                                        </select>
+                                    <label for="role">Role</label>
+                                    <select id="role" name="role" disabled>
+                                        <?php echo "<option value='". $managerDetails['Role']."'>" . $managerDetails['Role']."</option>"; ?>
+                                    </select>
                                 
-                                    </div>
-                                    <div class="col-50">
+                                </div>
+                                <div class="col-50">
 
-                                        <label for="specialisation">Specialisation</label>
-                                        <select id="specialisationidname" name="specialisationidname" disabled>
+                                    <label for="specialisation">Specialisation</label>
+                                    <select id="specialisationidname" name="specialisationidname" disabled>
 
-                                            <?php foreach ($managerDetails as $managerDetail):
-                                                echo "<option value='". $managerDetail['SpecialisationID']." ".$managerDetail['SpecialisationName']."'>" . $managerDetail['SpecialisationName']."</option>";
-                                            endforeach; ?>
+                                        <?php echo "<option value='". $managerDetails['SpecialisationID']." ".$managerDetails['SpecialisationName']."'>" . $managerDetails['SpecialisationName']."</option>"; ?>
 
-                                        </select>
+                                    </select>
                                         
-                                        <label for="pwd">Password</label>
-                                        <input type="text" id="pwd" name="pwd" value="<?php foreach ($managerDetails as $managerDetail): echo $managerDetail['Password']; endforeach; ?>">
+                                    <label for="pwd">Password</label>
+                                    <input type="password" id="password" name="pwd" value="<?php echo htmlspecialchars($managerDetails['Password']); ?>" required>
 
-                                    </div>
+                                    <label for="confirm_password">Confirm Password</label>
+                                    <input type="password" id="confirm_password" name="confirm_password" required>
+                                </div>
+                                
+                                <?php
+                                    if (isset($_GET['message'])) {
+                                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                                    } elseif (isset($_GET['error'])) {
+                                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                                    }
+                                ?>
 
                                 <button name="editAccount" type="submit" class="btn">Save</button>
-                                
-                            </form>
-
-
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>

@@ -101,7 +101,7 @@
 	session_start();
 
 	//connect to the database
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+	$db = mysqli_connect('localhost','root','','tms') or die  ("Couldnt Connect to database");
 	
 	
 	//Insert User credentials
@@ -116,6 +116,7 @@
 		$companyuen = $_POST['companyuen'];
 		$companyname = $_POST['companyname'];
 		$planschoice = $_POST['plans'];
+		$applicationdate = date("Y-m-d");
 		
 		//Check if Email Exists in unregistered users account
 		$verify_query = mysqli_query($db, "SELECT email FROM unregisteredusers where Email = '$email'");
@@ -136,7 +137,7 @@
 				if(preg_match($charregex, $companyuen))
 				{
 					//Upload Query
-					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice')") or die("Error Occured");
+					mysqli_query($db,"INSERT INTO unregisteredusers(Email,Password,CompanyName,CompanyUEN,FirstName,LastName,PlanID,ApplicationDate) VALUES('$email','$password','$companyname','$companyuen','$firstname','$lastname','$planschoice','$applicationdate')") or die("Error Occured");
 					
 					//Attempt to send email
 					if(sendEmail($email, $firstname))
@@ -214,7 +215,7 @@
             <div class="navdiv">
                 <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
 			     <ul>
-				    <li><a href="AboutUs.php">About Us</a></li>
+					<li><a href="Features.php">Features</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
 			     </ul>
@@ -244,8 +245,8 @@
             <img id = "group" src = "Images/group.png">
         </div>
     </div>
-    <footer>
-        
-    </footer>
+    <br>
+    <!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

@@ -84,7 +84,18 @@ button a{
 	background-color:darkorange;
 }
 #teamlogo{
-    height: 20vh;
+    height: 40vh;
     width: auto;
+}
+
+footer
+{
+	background-color: lightgray;
+	width: 100%;
+	height: 50px;
+	vertical-align: middle;
+	line-height: 50px;
+	text-align: center;
+	
 }
 

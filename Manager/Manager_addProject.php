@@ -1,3 +1,30 @@
+<?php
+    session_start();
+
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    // get Specialisation for the select option
+    $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC;";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $specialisations = $result->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,97 +33,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        // get team for the select option
-        $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
-            . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $teams = $result->fetch_all(MYSQLI_ASSOC);
-
-        $stmt->close();
-
-        if (isset($_POST['addProject'])) {
-
-            if ($_POST['startdate'] < $_POST['enddate']) {
-
-                $projectName = $_POST['projectname'];
-                $mainTeamID = $_POST['teams'];
-                $startDate = $_POST['startdate'];
-                $endDate = $_POST['enddate'];
-
-                $sql = "SELECT MainProjectID FROM projectinfo
-                        WHERE ProjectName LIKE '%".$projectName."%'
-                        AND ProjectManagerID = ".$userID;
-
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $result = $stmt->get_result();
-
-
-                if ($result->num_rows > 0) {
-
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Project Name with ".$projectName." already exist.');";
-                    echo "window.location = 'Manager_addProject.php';";
-                    echo "</script>";
-
-                } else {
-                    $stmt = $conn->prepare("INSERT INTO projectinfo (ProjectManagerID,CompanyID,ProjectName,StartDate,EndDate) VALUES (?,?,?,?,?)");
-
-                    $stmt->bind_param("iisss",$userID,$companyID,$projectName,$startDate,$endDate);
-
-                    if ($stmt->execute()) {
-
-                        $newMainProjectID = $stmt->insert_id;
-
-                        $stmt = $conn->prepare("INSERT INTO project (MainProjectID,MainTeamID) VALUES (?,?)");
-
-                        foreach ($mainTeamID as $team) {
-
-                            $stmt->bind_param("ii",$newMainProjectID,$team);
-
-                            $stmt->execute();
-                                
-                            echo "<script type='text/javascript'>";
-                            echo "alert('Project has been created successfully.');";
-                            echo "window.location = 'Manager_viewProjectList.php';";
-                            echo "</script>";
-                        }
-                    }
-
-                }
-
-            } else {
-                echo "<script type='text/javascript'>";
-                echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                echo "window.location = 'Manager_addProject.php';";
-                echo "</script>";
-            }
-
-        }
-    ?>
 </head>
 <body>
     <!-- Top Section -->
@@ -113,26 +49,25 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
-                    <h2>Add Project</h2>
+                <h2>Add Project</h2>
             </div>
 
             <div class="innerContent">
             <div class="row">
                     <div class="col-75">
                         <div class="container">
-                            <form name="addProject" action="Manager_addProject.php" method="POST">
+                            <form name="addProject" action="Manager_addProjectGroup.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
                                         <label for="projectname">Project Name</label>
                                         <input type="text" id="projectname" name="projectname" required>
 
-                                        <label for="teamid">Team</label>
+                                        <label for="specialisation">Specialisation</label>
                                         <div class="checkbox-container">
                                             <?php
-                                            foreach ($teams as $team):
-                                                echo "<div class='checkbox-team'><input type='checkbox' name='teams[]' value='". $team['MainTeamID']."'>". $team['TeamName']."</div>";
+                                            foreach ($specialisations as $specialisation):
+                                                echo "<div class='checkbox-team'><input type='checkbox' name='specialisation[]' value='". $specialisation['SpecialisationID']."'>". $specialisation['SpecialisationName']."</div>";
                                             endforeach;
                                             ?>
                                         </div>
@@ -144,6 +79,14 @@
                                         <input type="date" id="enddate" name="enddate" required>
                                     </div>
                                 </div>
+                                
+                                <?php
+                                    if (isset($_GET['message'])) {
+                                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                                    } elseif (isset($_GET['error'])) {
+                                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                                    }
+                                ?>
 
                                 <button name="addProject" type="submit" class="btn">Save</button>
                                 

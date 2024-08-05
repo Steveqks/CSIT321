@@ -1,3 +1,70 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    $taskStatus = 1;
+    $userStatus = 1;
+
+    if (isset($_GET['maintaskid'])) {
+        $mainTaskID = $_GET['maintaskid'];
+
+        // FORM
+        // get Task details
+        $sql = "SELECT a.MainTaskID, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, e.MainProjectID, e.ProjectName
+                FROM taskinfo a
+                INNER JOIN task b ON a.MainTaskID = b.MainTaskID
+                LEFT JOIN projectinfo e ON a.MainProjectID = e.MainProjectID
+                WHERE a.MainTaskID = ".$mainTaskID."
+                GROUP BY a.MainTaskID, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, e.MainProjectID, e.ProjectName;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $taskDetails = $result->fetch_assoc();
+
+
+        // get project for the select option
+        $sql = "SELECT MainProjectID, ProjectName FROM projectinfo
+                WHERE ProjectManagerID = ".$userID." AND CompanyID = ".$companyID."
+                AND MainProjectID NOT IN (".$taskDetails['MainProjectID'].")
+                ORDER BY ProjectName ASC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projects = $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+
+    if(isset($_POST['editTask'])) {
+
+        $taskStatus = $_POST['statusid'];
+        $mainTaskID = $_POST['maintaskid'];
+
+        // Update into TaskInfo query
+        $stmt = $conn->prepare("UPDATE taskinfo SET Status=? WHERE MainTaskID=?");
+
+        $stmt->bind_param("ii",$taskStatus,$mainTaskID);
+
+        if ($stmt->execute()) {
+
+            header("Location: Manager_viewTask.php?message=Task status has been updated successfully.&maintaskid=".$mainTaskID);
+        }
+
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,257 +73,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-    
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        $taskStatus = 1;
-        $userStatus = 1;
-
-        $validSpecialisation = FALSE;
-        $validSchedule = FALSE;
-        $validDate = FALSE;
-
-        $isManual = FALSE;
-
-        // get specialisation for the select option
-        $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID." ORDER BY SpecialisationName ASC";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $specialisations = $result->fetch_all(MYSQLI_ASSOC);
-
-        // get team for the select option
-        $sql = "SELECT MainTeamID, TeamName FROM teaminfo"
-            . " WHERE ManagerID = ".$userID." AND CompanyID = ".$companyID." ORDER BY TeamName ASC;";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $teams = $result->fetch_all(MYSQLI_ASSOC);
-
-
-        // for viewing of task details
-        if (isset($_GET['maintaskid'])) {
-            $mainTaskID = $_GET['maintaskid'];
-        
-            // get task detail of the specific task
-            $sql = "SELECT a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName
-                    FROM taskinfo a
-                    INNER JOIN task b ON a.MainTaskID = b.MainTaskID
-                    INNER JOIN teaminfo f ON f.MainTeamID = b.MainTeamID
-                    INNER JOIN existinguser c ON b.UserID = c.UserID
-                    INNER JOIN specialisation e ON e.SpecialisationID = a.SpecialisationID
-                    WHERE a.MainTaskID = ".$mainTaskID."
-                    GROUP BY a.MainTaskID, a.SpecialisationID, e.SpecialisationName, a.TaskName, a.TaskDesc, a.StartDate, a.DueDate, a.Status, a.Priority, f.MainTeamID, f.TeamName;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $taskDetails = $result->fetch_all(MYSQLI_ASSOC);
-        }
-
-
-        // FORM
-        if(isset($_POST['editTask'])) {
-
-            $taskName = $_POST['taskname'];
-            $taskDesc = $_POST['taskdesc'];
-
-            $sDate = strtotime($_POST['startdate']);
-            $startDate = date('Y-m-d', $sDate);
-            
-            $eDate = strtotime($_POST['enddate']);
-            $endDate = date('Y-m-d', $eDate);
-
-            $priority = $_POST['priority'];
-
-
-            $teamIDName = $_POST['team'];
-
-            $teamIDNameE = explode(",", $teamIDName);
-
-            $mainTeamID = $teamIDNameE[0];
-            
-            $mainTeamName = $teamIDNameE[1];
-
-
-            $statusID = $_POST['statusid'];
-
-            $mainTaskID = $_POST['maintaskid'];
-            
-
-            $specialisationIDName = $_POST['specialisationidname'];
-
-            $specialisationIDNameE = explode(" ", $specialisationIDName);
-
-            $specialisationIDSub = $specialisationIDNameE[0];
-            
-            $specialisationName = $specialisationIDNameE[1];
-
-
-            // get PT staff that is working on the specific dates
-            $sql = "SELECT c.UserID FROM team b"
-                . " INNER JOIN existinguser c on c.UserID = b.UserID"
-                . " INNER JOIN schedule d ON c.UserID = d.UserID"
-                . " WHERE c.SpecialisationID = ".$specialisationIDSub
-                . " AND c.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$mainTeamID
-                . " AND c.Role = 'PT'"
-                . " AND d.WorkDate >= '".$startDate."' AND d.WorkDate <= '".$endDate."'"
-                . " GROUP BY c.UserID;";
-
-            $stmt = $conn->prepare($sql);
-            
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $PTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-            //echo "SQL1 ;; ".$sql;
-
-            // FT Users
-            $sql = "SELECT c.UserID,"
-                . " (SELECT COUNT(*) FROM leaves WHERE UserID = c.UserID AND (StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR EndDate BETWEEN '".$startDate."' AND '".$endDate."') AND Status = 1) AS onLeave"
-                . " FROM team b"
-                . " INNER JOIN existinguser c on c.UserID = b.UserID"
-                . " WHERE c.SpecialisationID = ".$specialisationIDSub
-                . " AND c.Status = ".$userStatus
-                . " AND b.MainTeamID = ".$mainTeamID
-                . " AND c.Role = 'FT'"
-                . " GROUP BY c.UserID, onLeave"
-                . " HAVING onLeave = 0;";
-
-            //echo "<br> SQL2 ;; ".$sql;
-
-            $stmt = $conn->prepare($sql);
-            
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $FTUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-
-            // find how many and which staff with the specific specialisation (FT & PT)
-            // to put into NumStaff column in taskinfo table
-            $sql = "SELECT c.UserID FROM team b"
-                . " INNER JOIN existinguser c on c.UserID = b.UserID"
-                . " WHERE c.SpecialisationID = ".$specialisationIDSub
-                . " AND b.MainTeamID = ".$mainTeamID
-                . " AND c.Role IN ('PT','FT') AND c.Status = ".$userStatus." AND c.CompanyID = ".$companyID
-                . " GROUP BY c.UserID;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $teamUserIDs = $result->fetch_all(MYSQLI_ASSOC);
-
-            $numStaffTeam = count($teamUserIDs);
-
-
-            if ($statusID == 0) {
-
-                // Update into TaskInfo query
-                $stmt = $conn->prepare("UPDATE taskinfo SET SpecialisationID=?,TaskName=?,TaskDesc=?,StartDate=?,DueDate=?,NumStaff=?,Priority=?,Status=? WHERE MainTaskID=?");
-
-                $stmt->bind_param("issssiiii",$specialisationIDSub,$taskName,$taskDesc,$startDate,$endDate,$numStaffTeam,$priority,$statusID,$mainTaskID);
-
-                if ($stmt->execute()) {
-
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Task has updated.');";
-                    echo "window.location = 'Manager_viewTasksList.php';";
-                    echo "</script>";
-                }
-
-            } else {
-
-                if(isset($_POST['autoallocate']) && $_POST['autoallocate'] == 'on') {
-
-                    // indicate that there are staff in the team with the specific specialisation
-                    if (count($PTUsers) > 0 || count($FTUsers) > 0) {
-        
-                        $validSpecialisation = TRUE;
-                    
-        
-                        // check if endDate is not less than startDate
-                        if ($endDate >= $startDate) {
-            
-                            $validDate = TRUE;
-            
-                        } else {
-                            echo "<script type='text/javascript'>";
-                            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                            echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."';";
-                            echo "</script>";
-                        }
-        
-                    } else {
-                        echo "<script type='text/javascript'>";
-                        echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-                        echo "window.location = 'Manager_editTask.php?maintaskid=".$mainTaskID."';";
-                        echo "</script>";
-                    }
-                    
-                    $autoallocate = TRUE;
-
-                    if ($validSpecialisation && $validDate) {
-                        header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&autoallocate='.$autoallocate.'&numstaffteam='.$numStaffTeam.'&mainteamidname='.$teamIDName.'&maintaskid='.$mainTaskID.'&statusid='.$statusID);
-                    }
-
-                } else {
-
-                    // indicate that there are staff in the team with the specific specialisation
-                    if ($numStaffTeam > 0) {
-        
-                        $validSpecialisation = TRUE;
-                    
-        
-                        // check if endDate is not less than startDate
-                        if ($endDate >= $startDate) {
-            
-                            $validDate = TRUE;
-            
-                        } else {
-                            echo "<script type='text/javascript'>";
-                            echo "alert('Invalid date. Please make sure the Start Date is not more than the End Date.');";
-                            echo "window.location = 'Manager_editTask.php';";
-                            echo "</script>";
-                        }
-        
-                    } else {
-                        echo "<script type='text/javascript'>";
-                        echo "alert('There are no staff with ".$specialisationName.". Please select other specialisation.');";
-                        echo "window.location = 'Manager_editTask.php';";
-                        echo "</script>";
-                    }
-
-                    $isManual = TRUE;
-                    
-                    if ($validSpecialisation && $validDate) {
-                        header('location: Manager_editUsersTask.php?taskname='.$taskName.'&taskdesc='.$taskDesc.'&specialisationidname='.$specialisationIDName.'&startdate='.$startDate.'&enddate='.$endDate.'&priority='.$priority.'&ismanual='.$isManual.'&numstaffteam='.$numStaffTeam."&mainteamidname=".$teamIDName."&maintaskid=".$mainTaskID."&statusid=".$statusID);
-                    }
-                }
-            }
-        }
-
-    ?>
-
 </head>
 <body>
 
@@ -274,7 +90,6 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
                 <h2>Edit Task</h2>
             </div>
 
@@ -283,45 +98,85 @@
                 <div class="row">
                     <div class="col-75">
                         <div class="container">
+
+                            <?php
+                            if (isset($_GET['changestatus'])) { ?>
                             <form name="editTask" action="Manager_editTask.php" method="POST">
                             
                                 <div class="row">
                                     <div class="col-50">
-                                        <?php if (isset($_GET['maintaskid'])) { ?>
+                                        <input type="hidden" name="maintaskid" value="<?php echo $mainTaskID; ?>">
+
+                                        <label for="status">Status</label>
+                                        <select name="statusid">
+                                            <?php
+                                                if ($taskDetails['Status'] == 1) {
+
+                                                    echo "<option value=1>Ongoing</option>
+                                                        <option value=0>Done</option>";
+
+                                                } else {
+
+                                                    echo "<option value=0>Done</option>
+                                                        <option value=1>Ongoing</option>";
+                                                }
+                                            ?>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                
+                                <?php
+                                    if (isset($_GET['message'])) {
+                                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                                    } elseif (isset($_GET['error'])) {
+                                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                                    }
+                                ?>
+
+                                <button name="editTask" type="submit" class="btn">Save</button>
+                            </form>
+                            <?php } else {
+                            ?>
+
+                            <form name="editTask" action="Manager_editUsersTask.php" method="POST">
+                            
+                                <div class="row">
+                                    <div class="col-50">
                                         <input type="hidden" name="maintaskid" value="<?php echo $mainTaskID; ?>">
                                         
 
                                         <label for="taskname">Task Name</label>
-                                        <input type="text" id="taskname" name="taskname" value="<?php foreach ($taskDetails as $taskDetail):  echo $taskDetail['TaskName']; endforeach; ?>">
+                                        <input type="text" id="taskname" name="taskname" value="<?php echo $taskDetails['TaskName']; ?>">
                                             
                                         <label for="taskdesc">Task Description</label>
-                                        <textarea id="taskdesc" name="taskdesc" rows="6"><?php foreach ($taskDetails as $taskDetail):  echo $taskDetail['TaskDesc']; endforeach; ?></textarea>
+                                        <textarea id="taskdesc" name="taskdesc" rows="6"><?php echo $taskDetails['TaskDesc']; ?></textarea>
 
-                                        
-                                        <label for="specialisation">Specialisation</label>
-                                        <select id="specialisationidname" name="specialisationidname" required>
+                                        <label for="project">Project</label>
+                                        <select name="mainprojectid" required>
 
-                                            <?php foreach ($taskDetails as $taskDetail):
-                                                echo "<option value='". $taskDetail['SpecialisationID']." ". $taskDetail['SpecialisationName']."'>-- ".$taskDetail['SpecialisationName']." --</option>";
-                                            endforeach; ?>
+                                            <?php echo "<option value='". $taskDetails['MainProjectID']."'>".$taskDetails['ProjectName']."</option>"; ?>
 
-                                            <?php foreach ($specialisations as $specialisation):
-                                                echo "<option value='". $specialisation['SpecialisationID']." ".$specialisation['SpecialisationName']."'>" . $specialisation['SpecialisationName']."</option>";
+                                            <?php foreach ($projects as $project):
+                                                echo "<option value='". $project['MainProjectID']."'>" . $project['ProjectName']."</option>";
                                             endforeach; ?>
 
                                         </select>
+                                        
+                                        <label for="status">Status</label>
+                                        <select name="statusid">
+                                            <?php
+                                                if ($taskDetails['Status'] == 1) {
 
-                                        <label for="team">Team</label>
-                                        <select id="team" name="team" required>
+                                                    echo "<option value=1>Ongoing</option>
+                                                        <option value=0>Done</option>";
 
-                                            <?php foreach ($taskDetails as $taskDetail):
-                                                echo "<option value='". $taskDetail['MainTeamID'].",".$taskDetail['TeamName']."'>-- " . $taskDetail['TeamName']." --</option>";
-                                            endforeach; ?>
+                                                } else {
 
-                                            <?php foreach ($teams as $team):
-                                                echo "<option value='". $team['MainTeamID'].",".$team['TeamName']."'>" . $team['TeamName']."</option>";
-                                            endforeach; ?>
-
+                                                    echo "<option value=0>Done</option>
+                                                        <option value=1>Ongoing</option>";
+                                                }
+                                            ?>
                                         </select>
                                     </div>
 
@@ -329,53 +184,55 @@
 
                                         <label for="priority">Priority</label>
                                         <select id="priority" name="priority">
-                                            <?php foreach ($taskDetails as $taskDetail):
-                                                if ($taskDetail['Priority'] == 1) {
-                                                    $priorityName = "High";
-                                                } else if ($taskDetail['Priority'] == 2) {
-                                                    $priorityName = "Mid";
+                                            <?php
+                                                if ($taskDetails['Priority'] == 1) {
+
+                                                    echo "<option value='1'>High</option>
+                                                        <option value='3'>Low</option>
+                                                        <option value='2'>Mid</option>";
+
+                                                } else if ($taskDetails['Priority'] == 2) {
+
+                                                    echo "<option value='2'>Mid</option>
+                                                        <option value='3'>Low</option>
+                                                        <option value='1'>High</option>";
+                                                        
                                                 } else {
-                                                    $priorityName = "Low";
+
+                                                    echo "<option value='3'>Low</option>
+                                                        <option value='2'>Mid</option>
+                                                        <option value='1'>High</option>";
+                                                        
                                                 }
-                                                echo "<option value='". $taskDetail['Priority']."'>-- " . $priorityName." --</option>";
-                                            endforeach; ?>
-                                            <option value="3">Low</option>
-                                            <option value="2">Mid</option>
-                                            <option value="1">High</option>
+                                            ?>
                                         </select>
                                         
                                         <label for="startdate">Start Date</label>
-                                        <input type="date" id="startdate" name="startdate" value="<?php foreach ($taskDetails as $taskDetail):  echo $taskDetail['StartDate']; endforeach; ?>">
+                                        <input type="date" id="startdate" name="startdate" value="<?php echo $taskDetails['StartDate']; ?>">
 
                                         <label for="enddate">End Date</label><!--<p id="disableEnddate" style="color:red;"></p>-->
-                                        <input type="date" id="enddate" name="enddate" value="<?php foreach ($taskDetails as $taskDetail):  echo $taskDetail['DueDate']; endforeach; ?>">
-                                        
-                                        <label for="status">Status</label>
-                                        <select id="status" name="statusid">
-                                            <?php foreach ($taskDetails as $taskDetail):
-                                                if ($taskDetail['Status'] == 1) {
-                                                    $statusName = "Ongoing";
-                                                } else {
-                                                    $statusName = "Done";
-                                                }
-                                                echo "<option value='". $taskDetail['Status']."'>-- " . $statusName." --</option>";
-                                            endforeach; ?>
-                                            <option value="0">Done</option>
-                                            <option value="1">Ongoing</option>
-                                        </select>
+                                        <input type="date" id="enddate" name="enddate" value="<?php echo $taskDetails['DueDate']; ?>">
 
                                         <label>
-                                            Auto Allocate <input type="checkbox" name="autoallocate">
+                                            Auto Allocate <input type="checkbox" name="allocatetype" value="auto">
                                         </label>
 
                                     </div>
-                                    <?php } ?>
                                 
                                 </div>
+                                
+                                <?php
+                                    if (isset($_GET['message'])) {
+                                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                                    } elseif (isset($_GET['error'])) {
+                                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                                    }
+                                ?>
 
                                 <button name="editTask" type="submit" class="btn">Allocate to Staff</button>
                                 
                             </form>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>

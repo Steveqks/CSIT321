@@ -12,47 +12,16 @@
 	// Connect to the database
 	$conn = OpenCon();
 
-	if(isset($_POST['submit']))
-	{
-		//store form variables
-		
-		$startdate = $_POST['startdate'];
-		$enddate = $_POST['enddate'];
-		$leavetype = $_POST['leavetype'];
-		$Comments = $_POST['Comments'];
-		$status = 0; //Unapproved by default
-		
-		if($startdate > $enddate)
-		{
-			echo "<div class='message'>
-                      <p>Start Date chosen cannot be later than End Date chosen!!</p>
-                  </div> <br>";
-		}
-		else
-		{
-			if(isset($_POST['HalfDay']) && $_POST['HalfDay'] == "1")
-			{
-				$HalfDay = 1;
-		
-				// Fetch tasks for the logged-in user
-				mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
-				echo "<div class='message'>
-                      <p>Leave Applied Successfully!</p>
-                  </div> <br>";
-			}
-			else
-			{
-				$HalfDay = 0;
-				mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
-				echo "<div class='message'>
-                      <p>Leave Applied Successfully!</p>
-                  </div> <br>";
-			}
-		}
-	}
+	$sql = "SELECT * FROM reviews WHERE UserID = $user_id";
 	
+	$stmt = $conn->prepare($sql);
+	//$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$review = $result->fetch_assoc();
+	// Close the database connection
+	$stmt->close();
 	CloseCon($conn);
-
 
 ?>
 
@@ -126,12 +95,12 @@
 			border: 0.5px solid black;
 		}
 
-		.apply-leaves-section {
+		.review-section {
 			padding: 20px;
 			flex-grow: 1;
 		}
 
-		.apply-leaves-header {
+		.review-header {
 			display: inline-flex;
 			align-items: center;
 			border-bottom: 1px solid black;
@@ -139,26 +108,42 @@
 			margin-bottom: 20px;
 		}
 
-		.apply-leaves-header i {
+		.review-header i {
 			margin-right: 10px;
 		}
 		
-		#startdate, #enddate, #leavetype
-		{
-			width: 200px;
+		.rating {
+			margin: 10px 0;
+			display: flex;
+			/*justify-content: center;*/
 		}
 		
 		label
 		{
 			font-weight: bold;
 		}
+		.star {
+			width: 32px;
+			font-size: 32px;
+			cursor: pointer;
+			color: #ccc;
+		}
+
+		.star:hover,
+		.star.selected {
+			color: gold;
+		}
 		
-		#comments_tb
+		#reviewtitle
+		{
+			width: 200px;
+		}
+		
+		#reviewcomments
 		{
 			width: 200px;
 			height: 40px;
 		}
-		
 		#submitBtn
 		{
 			width: 150px;
@@ -171,6 +156,13 @@
             background-color: #218838;
             color: white;
         }
+		.error-message {
+            color: red;
+        }
+		
+		.success-message {
+			color: green;
+		}
 	</style>
 </head>
 <body>
@@ -195,33 +187,71 @@
         </div>
         
         <!-- RIGHT SECTION (TASK TABLE) -->
-        <div class="apply-leaves-section">
-            <div class="apply-leaves-header">
+        <div class="review-section">
+            <div class="review-header">
                 <i class="fas fa-user"></i>
-                <h2>Apply For Leaves</h2>
+                <h2>Edit A Review</h2>
 			</div>
-			
-			<div class = "apply-leave-form">
-				<form action = "" method = "post">
-						<label for "startdate">Start Date: </label><br>
-						<input id = "startdate" name = "startdate" type = "date" placeholder = "Start Date"><br><br>
-						<label for "enddate">End Date: </label><br>
-						<input id = "enddate" name = "enddate" type = "date" placeholder = "End Date "><br><br>
-						<label for "leavetype">Leave Type: </label><br>
-						<select id = "leavetype" name = "leavetype">
-							<option value = "Vacation">Vacation</option>
-							<option value = "Sick Leave">Sick Leave</option>
-							<option value = "Personal Leave">Personal Leave</option>
-						</select><br><br>
-						<input id = "HalfDay" type = "checkbox" name = "HalfDay" value = "1">
-						<label for "HalfDay">Half Day Leave</label><br><br>
-						<label for "comments_tb">Comments: </label><br>
-						<input id = "comments_tb" type = "textarea" name = "Comments" placeholder = "Comments" rows = "5" cols = "30"><br><br>
-						<button id = "submitBtn" name = "submit">Apply Leave</button>
+			<div class = "review-form">
+				<?php if($review): ?>
+					<form action = "FT_UpdateReview.php" method = "post">
+						<label for "reviewtitle">Title: </label><br>
+						<input id = "reviewtitle" name = "reviewtitle" type = "text" value="<?php echo htmlspecialchars($review['ReviewTitle']); ?>"><br><br>
+						
+						
+						<label for "rating">Rating: </label>
+						<div class="rating">
+							<span class="star" data-value="1">&#9733;</span>
+							<span class="star" data-value="2">&#9733;</span>
+							<span class="star" data-value="3">&#9733;</span>
+							<span class="star" data-value="4">&#9733;</span>
+							<span class="star" data-value="5">&#9733;</span>
+						</div>
+						
+						<input type="hidden" name="rating" id="rating" value = "<?php echo ($review['Rating']); ?>" required>
+						
+						<label for "reviewcomments">Comments: </label><br>
+						<input id = "reviewcomments" name = "reviewcomments" type = "textarea" value="<?php echo htmlspecialchars($review['Comments']); ?>"><br><br>
+						<button id = "submitBtn" name = "submit">Edit Review</button>
+						<?php
+						if (isset($_GET['message'])) {
+							echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+						} elseif (isset($_GET['error'])) {
+							echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+						}
+					?>
 					</form>
+				<?php else: ?>
+					<p>You have yet to submit a review, please submit a review first!!</p>
+				<?php endif; ?>
             </div>
         </div>
     </div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const stars = document.querySelectorAll('.star');
+			const ratingInput = document.getElementById('rating');
+			
+			// Set initial rating if any
+			const initialRating = parseInt(ratingInput.value);
+			if (initialRating > 0) {
+				for (let i = 0; i < initialRating; i++) {
+					stars[i].classList.add('selected');
+				}
+			}
+			stars.forEach(star => {
+				star.addEventListener('click', () => {
+					const value = star.getAttribute('data-value');
+					ratingInput.value = value;
+
+					stars.forEach(s => s.classList.remove('selected'));
+					for (let i = 0; i < value; i++) {
+						stars[i].classList.add('selected');
+					}
+				});
+			});
+		})
+	</script>
 </body>
 
 </html>

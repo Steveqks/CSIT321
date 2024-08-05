@@ -1,3 +1,31 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+    $employeeType = $_SESSION['Role'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    // get teams for the team option in form
+    $sql = "SELECT * FROM existinguser WHERE UserID = ".$userID;
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $userDetails = $result->fetch_assoc();
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,35 +34,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        include 'db_connection.php';
-
-        // Check if user is logged in
-        if (!isset($_SESSION['Email']))
-        {
-            header("Location: ../Unregistered Users/LoginPage.php");
-            exit();
-        }
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-        $employeeType = $_SESSION['Role'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        // get teams for the team option in form
-        $sql = "SELECT * FROM existinguser WHERE UserID = ".$userID;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $userDetails = $result->fetch_assoc();
-        
-    ?>
 </head>
 <body>
     <!-- Top Section -->
@@ -51,11 +50,17 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <div class="task-header">
-                <i class="fas fa-user"></i>
-                    <h2>View Account Details</h2>
+                <h2>View Account Details</h2>
             </div>
 
             <div class="innerContent">
+                <?php
+                    if (isset($_GET['message'])) {
+                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                    } elseif (isset($_GET['error'])) {
+                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                    }
+                ?>
                 <div class="detailsContent">
                     <p>First Name: <span class="details"><?php echo $userDetails['FirstName']; ?></span></p>
                     <p>Last Name: <span class="details"><?php echo $userDetails['LastName']; ?></span></p>

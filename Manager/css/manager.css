@@ -36,12 +36,30 @@
     border-radius: 3px;
 }
 
-input[type=text], select, input[type=date], textarea, input[type=number], input[type=email] {
+.col-50 input[type=text], .col-50 select, .col-50 input[type=date], .col-50 textarea, .col-50 input[type=number], .col-50 input[type=email], .col-50 input[type=password] {
     width: 100%;
     margin-bottom: 20px;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 3px;
+}
+
+.task-header input[type=date] {
+    width: 25%;
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.searchBtn {
+    margin-left: 20px;
+    background-color: white;
+    border: 0.5px solid black;
+    padding: 7px 15px;
+}
+.searchBtn:hover {
+    background-color: rgb(229, 229, 229);
 }
 
 label {
@@ -180,4 +198,19 @@ hr {
 .details {
     font-weight: bold;
     text-decoration: underline;
+}
+
+
+.error-message {
+    color: red;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.success-message {
+    color: green;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
 }

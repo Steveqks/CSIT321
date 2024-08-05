@@ -23,7 +23,7 @@
 }
 
 #teamlogo{
-    height: 20vh;
+    height: 40vh;
     width: auto;
 }
 li{
@@ -54,27 +54,17 @@ button a{
 }
 
 /*Container for Advertising*/
-#AdvertisingContainer1
+#AdvertisingContainer1, #AdvertisingContainer2, #AdvertisingContainer3, #AdvertisingContainer4
 {
     width:100%;
-    height: 280px;
     background:lightgray;
 	text-align:center;
 }
 
-#AdvertisingContainer2
+/* Container with the "Get started" button --> Enter credentials form */
+#AdvertisingContainer1
 {
-	text-align:center;
-}
-h2
-{
-	font-size: 48px;
-	padding-top: 20px;
-}
-
-h3
-{
-	font-size: 32px;
+	height: 275px;
 }
 
 .EnterCredBtn
@@ -90,4 +80,61 @@ h3
 	background-color:darkorange;
 }
 
+/* Related to Advertising Container 2 aka features*/
+#Features
+{
+	display: flex;
+    justify-content: center;
+}
 
+
+#FeatureBox{
+	margin-top: 50px;
+    width: 513px;
+    height: 571px;
+}
+
+
+h2
+{
+	font-size: 48px;
+	padding-top: 20px;
+}
+
+h3
+{
+	font-size: 32px;
+}
+
+
+/*ID's and classes specific to displaying the review form*/
+
+.displayReview
+{
+	text-align:center;
+	background: #99A3A4;
+}
+
+.rating
+{
+	font-size: 32px;
+}
+.rating .filled 
+{
+	color: #ffd700; /* Gold color */
+}
+.rating .unfilled 
+{
+	color: #d3d3d3; /* Light gray color */
+}
+
+footer
+{
+	background-color: lightgray;
+	width: 100%;
+	height: 50px;
+	vertical-align: middle;
+	line-height: 50px;
+	text-align: center;
+	
+}

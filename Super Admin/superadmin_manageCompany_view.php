@@ -76,12 +76,11 @@ session_start();
 
 		
 					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-					$qres = mysqli_query($db,	"SELECT * FROM company ") or die("Select Error");
+					$qres = mysqli_query($db,	"SELECT * FROM company ORDER BY CompanyName") or die("Select Error");
 						
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>Company ID</th>
 												<th>Company Name</th>
 												<th>Company UEN</th>
 												<th>Subscription Plan</th>
@@ -92,7 +91,6 @@ session_start();
 						}
 					while ($Row = $qres->fetch_assoc()) {
 						$accountsTable.= "<tr>\n"
-						."<td>" . $Row['CompanyID'] . "</td>" 
 						."<td>" . $Row['CompanyName'] . "</td>" 
 						."<td>" . $Row['CompanyUEN'] . "</td>" 
 						."<td>" . $Row['PlanID'] . "</td>" ;

@@ -30,9 +30,8 @@
    <nav class="navbar">
         <div class="navdiv">
           <div class="logo"><a href="HomePage.php"><img id = "teamlogo" accesskey=""src = "Images/tms.png"></a></div>
-			      <ul>
-					<li><a href="#">Features</a></li>
-				    <li><a href="AboutUs.php">About Us</a></li>
+			     <ul>
+					<li><a href="Features.php">Features</a></li>
 				    <li><a href="Pricing.php">Pricing</a></li>
                     <button class = "LoginBtn"><a href="LoginPage.php">Log In</a></button>
 			     </ul>
@@ -57,8 +56,7 @@
 				<h2 style = "text-align:center"> No Plans Available </h2>
 		    <?php endif; ?>
     </div>
-    <footer>
-        
-    </footer>
+    <!-- Footer -->
+	<footer>&#169;TrackMySchedule, Icons taken from FlatIcon & Freepik</footer>
 </body>
 </html>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 22, 2024 at 08:04 AM
--- Server version: 8.3.0
--- PHP Version: 8.2.18
+-- Generation Time: Aug 05, 2024 at 07:50 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `StartBreak` datetime DEFAULT NULL,
   `EndBreak` datetime DEFAULT NULL,
   `TotalHours` float DEFAULT NULL,
+  `NumOfOverTimeHours` float DEFAULT NULL,
   PRIMARY KEY (`AttendanceID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -44,8 +45,8 @@ CREATE TABLE IF NOT EXISTS `attendance` (
 -- Dumping data for table `attendance`
 --
 
-INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `StartBreak`, `EndBreak`, `TotalHours`) VALUES
-(1, 30, '2024-07-15 11:46:18', '2024-07-15 11:51:04', '2024-07-15 11:47:26', '2024-07-15 11:48:19', 0.0647222);
+INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `StartBreak`, `EndBreak`, `TotalHours`, `NumOfOverTimeHours`) VALUES
+(1, 30, '2024-07-15 11:46:18', '2024-07-15 11:51:04', '2024-07-15 11:47:26', '2024-07-15 11:48:19', 0.0647222, NULL);
 
 -- --------------------------------------------------------
 
@@ -217,6 +218,31 @@ INSERT INTO `existinguser` (`UserID`, `CompanyID`, `SpecialisationID`, `Role`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `features`
+--
+
+DROP TABLE IF EXISTS `features`;
+CREATE TABLE IF NOT EXISTS `features` (
+  `FeatureID` int NOT NULL AUTO_INCREMENT,
+  `Name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Image` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`FeatureID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `features`
+--
+
+INSERT INTO `features` (`FeatureID`, `Name`, `Description`, `Icon`, `Image`) VALUES
+(1, 'Feature 1', 'Description 1', 'Images/tasks.png', 'Images/Placeholder.jpeg'),
+(2, 'Feature 2', 'Description 2', 'Images/attendance.png', 'Images/Placeholder.jpeg'),
+(3, 'Feature 3', 'Description 3', 'Images/project-management.png', 'Images/Placeholder.jpeg');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `leaves`
 --
 
@@ -232,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `Comments` varchar(100) NOT NULL,
   PRIMARY KEY (`LeaveID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `leaves`
@@ -241,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
 INSERT INTO `leaves` (`LeaveID`, `UserID`, `LeaveType`, `StartDate`, `EndDate`, `HalfDay`, `Status`, `Comments`) VALUES
 (1, 28, 'Personal', '2024-07-04', '2024-07-04', 1, 1, ''),
 (2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, ''),
-(3, 28, '', '0000-00-00', '0000-00-00', 0, 0, '');
+(4, 28, 'Vacation', '0000-00-00', '0000-00-00', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -306,11 +332,18 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE IF NOT EXISTS `project` (
   `ProjectID` int NOT NULL AUTO_INCREMENT,
   `MainProjectID` int NOT NULL,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   PRIMARY KEY (`ProjectID`),
-  KEY `MainPoolID` (`MainPoolID`),
-  KEY `project_ibfk_2` (`MainProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `MainProjectID` (`MainProjectID`) USING BTREE,
+  KEY `MainGroupID` (`MainGroupID`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `project`
+--
+
+INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainGroupID`) VALUES
+(21, 10, 19);
 
 -- --------------------------------------------------------
 
@@ -329,15 +362,14 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
   PRIMARY KEY (`MainProjectID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ProjectManagerID` (`ProjectManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `projectinfo`
 --
 
 INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
-(6, 27, 82, 'Resident Evil 1', '2024-06-28', '2024-09-01'),
-(8, 27, 82, 'Project 1', '2024-07-01', '2024-07-31');
+(10, 27, 82, 'Resident Evil Village', '2024-07-01', '2024-08-31');
 
 -- --------------------------------------------------------
 
@@ -349,20 +381,23 @@ DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `ReviewID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
-  `ReviewTitle` varchar(16) NOT NULL,
+  `ReviewTitle` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Rating` int NOT NULL,
-  `Comments` text NOT NULL,
+  `Comments` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`ReviewID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `reviews`
 --
 
 INSERT INTO `reviews` (`ReviewID`, `UserID`, `ReviewTitle`, `Rating`, `Comments`, `DatePosted`) VALUES
-(6, 28, 'Good Website', 5, 'very good', '2024-07-22');
+(8, 28, 'Good Website', 5, 'very good', '2024-07-23'),
+(9, 27, 'fun website', 5, 'would use again', '2024-07-24'),
+(10, 31, 'had fun using website', 5, 'need user manual', '2024-07-24'),
+(11, 29, 'BOOOO', 1, 'Shit', '2024-07-24');
 
 -- --------------------------------------------------------
 
@@ -416,49 +451,49 @@ INSERT INTO `specialisation` (`SpecialisationID`, `SpecialisationName`, `Company
 -- --------------------------------------------------------
 
 --
--- Table structure for table `specialisationpool`
+-- Table structure for table `specialisationgroup`
 --
 
-DROP TABLE IF EXISTS `specialisationpool`;
-CREATE TABLE IF NOT EXISTS `specialisationpool` (
-  `PoolID` int NOT NULL AUTO_INCREMENT,
-  `MainPoolID` int NOT NULL,
+DROP TABLE IF EXISTS `specialisationgroup`;
+CREATE TABLE IF NOT EXISTS `specialisationgroup` (
+  `GroupID` int NOT NULL AUTO_INCREMENT,
+  `MainGroupID` int NOT NULL,
   `UserID` int NOT NULL,
-  PRIMARY KEY (`PoolID`),
-  KEY `MainPoolID` (`MainPoolID`),
+  PRIMARY KEY (`GroupID`),
+  KEY `MainGroupID` (`MainGroupID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=389 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `specialisationpool`
+-- Dumping data for table `specialisationgroup`
 --
 
-INSERT INTO `specialisationpool` (`PoolID`, `MainPoolID`, `UserID`) VALUES
+INSERT INTO `specialisationgroup` (`GroupID`, `MainGroupID`, `UserID`) VALUES
 (387, 19, 28),
 (388, 19, 29);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `specialisationpoolinfo`
+-- Table structure for table `specialisationgroupinfo`
 --
 
-DROP TABLE IF EXISTS `specialisationpoolinfo`;
-CREATE TABLE IF NOT EXISTS `specialisationpoolinfo` (
-  `MainPoolID` int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `specialisationgroupinfo`;
+CREATE TABLE IF NOT EXISTS `specialisationgroupinfo` (
+  `MainGroupID` int NOT NULL AUTO_INCREMENT,
   `SpecialisationID` int NOT NULL,
   `CompanyID` int NOT NULL,
-  `PoolName` varchar(32) NOT NULL,
-  PRIMARY KEY (`MainPoolID`),
+  `GroupName` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`MainGroupID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `SpecialisationID` (`SpecialisationID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `specialisationpoolinfo`
+-- Dumping data for table `specialisationgroupinfo`
 --
 
-INSERT INTO `specialisationpoolinfo` (`MainPoolID`, `SpecialisationID`, `CompanyID`, `PoolName`) VALUES
+INSERT INTO `specialisationgroupinfo` (`MainGroupID`, `SpecialisationID`, `CompanyID`, `GroupName`) VALUES
 (19, 77, 82, 'Team Specialisation 1');
 
 -- --------------------------------------------------------
@@ -483,7 +518,7 @@ CREATE TABLE IF NOT EXISTS `superadmin` (
 
 INSERT INTO `superadmin` (`SAdminID`, `FirstName`, `LastName`, `Email`, `Password`) VALUES
 (1, 'Superb', 'Administrator', 'blank13@paper.com', '666'),
-(2, 'super', 'admin', 'email.sa', '123');
+(2, 'super', 'admin', 'email@sa', '123');
 
 -- --------------------------------------------------------
 
@@ -516,13 +551,13 @@ CREATE TABLE IF NOT EXISTS `swap_requests` (
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE IF NOT EXISTS `task` (
   `TaskID` int NOT NULL AUTO_INCREMENT,
-  `MainPoolID` int NOT NULL,
+  `MainGroupID` int NOT NULL,
   `MainTaskID` int NOT NULL,
   `UserID` int NOT NULL,
   PRIMARY KEY (`TaskID`),
   KEY `UserID` (`UserID`),
-  KEY `task_ibfk_2` (`MainTaskID`),
-  KEY `task_ibfk_3` (`MainPoolID`)
+  KEY `MainTaskID` (`MainTaskID`),
+  KEY `MainGroupID` (`MainGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -534,7 +569,7 @@ CREATE TABLE IF NOT EXISTS `task` (
 DROP TABLE IF EXISTS `taskinfo`;
 CREATE TABLE IF NOT EXISTS `taskinfo` (
   `MainTaskID` int NOT NULL AUTO_INCREMENT,
-  `SpecialisationID` int NOT NULL,
+  `MainProjectID` int NOT NULL,
   `TaskName` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `TaskDesc` varchar(100) NOT NULL,
   `StartDate` date NOT NULL,
@@ -543,17 +578,8 @@ CREATE TABLE IF NOT EXISTS `taskinfo` (
   `Priority` tinyint(1) NOT NULL,
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`MainTaskID`),
-  KEY `SpecialisationID` (`SpecialisationID`)
+  KEY `MainProjectID` (`MainProjectID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `taskinfo`
---
-
-INSERT INTO `taskinfo` (`MainTaskID`, `SpecialisationID`, `TaskName`, `TaskDesc`, `StartDate`, `DueDate`, `NumStaff`, `Priority`, `Status`) VALUES
-(19, 78, 'Task 1', 'task 1', '2024-07-01', '2024-07-05', 1, 3, 1),
-(20, 77, 'specialisation 1', 'specialisation 1 desc here', '2024-07-16', '2024-07-23', 1, 3, 1),
-(21, 77, 'specialisation1', 'specialisation1 desc', '2024-07-16', '2024-07-17', 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -570,6 +596,7 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
   `CompanyUEN` varchar(10) NOT NULL,
   `FirstName` varchar(16) NOT NULL,
   `LastName` varchar(16) NOT NULL,
+  `ApplicationDate` date NOT NULL,
   `PlanID` int NOT NULL,
   PRIMARY KEY (`ApplicationID`),
   KEY `PlanID` (`PlanID`)
@@ -579,12 +606,12 @@ CREATE TABLE IF NOT EXISTS `unregisteredusers` (
 -- Dumping data for table `unregisteredusers`
 --
 
-INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `CompanyUEN`, `FirstName`, `LastName`, `PlanID`) VALUES
-(1, 'bobworlds@hotmail.com', '', 'bobsworld', '', 'bobby', 'lee', 2),
-(2, 'michelleangelo@yahoo.com', '', 'cookhouse', '', 'michelle', 'angelo', 2),
-(3, 'mt@yawee.com', '', 'fightingco', '', 'tyson', 'mike', 2),
-(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', 3),
-(8, 'premp@email.com', '123', 'Prem Company', '12345678A', 'Prem', 'P', 1);
+INSERT INTO `unregisteredusers` (`ApplicationID`, `Email`, `Password`, `CompanyName`, `CompanyUEN`, `FirstName`, `LastName`, `ApplicationDate`, `PlanID`) VALUES
+(1, 'bobworlds@hotmail.com', '', 'bobsworld', '', 'bobby', 'lee', '2012-01-01', 2),
+(2, 'michelleangelo@yahoo.com', '', 'cookhouse', '', 'michelle', 'angelo', '2014-02-02', 2),
+(3, 'mt@yawee.com', '', 'fightingco', '', 'tyson', 'mike', '2023-05-01', 2),
+(7, '1231231', '123123', '123123333', '1233312', '123123', '231231', '2024-06-13', 3),
+(8, 'premp@email.com', '123', 'Prem Company', '12345678A', 'Prem', 'P', '2019-10-20', 1);
 
 --
 -- Constraints for dumped tables
@@ -643,7 +670,7 @@ ALTER TABLE `newsfeed`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
-  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
@@ -666,18 +693,18 @@ ALTER TABLE `specialisation`
   ADD CONSTRAINT `specialisation_ibfk_1` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `specialisationpool`
+-- Constraints for table `specialisationgroup`
 --
-ALTER TABLE `specialisationpool`
-  ADD CONSTRAINT `specialisationpool_ibfk_1` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `specialisationpool_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `specialisationgroup`
+  ADD CONSTRAINT `specialisationgroup_ibfk_1` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `specialisationgroup_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
--- Constraints for table `specialisationpoolinfo`
+-- Constraints for table `specialisationgroupinfo`
 --
-ALTER TABLE `specialisationpoolinfo`
-  ADD CONSTRAINT `specialisationpoolinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `specialisationpoolinfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
+ALTER TABLE `specialisationgroupinfo`
+  ADD CONSTRAINT `specialisationgroupinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `specialisationgroupinfo_ibfk_2` FOREIGN KEY (`CompanyID`) REFERENCES `company` (`CompanyID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `swap_requests`
@@ -691,13 +718,13 @@ ALTER TABLE `swap_requests`
 ALTER TABLE `task`
   ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`MainTaskID`) REFERENCES `taskinfo` (`MainTaskID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainPoolID`) REFERENCES `specialisationpoolinfo` (`MainPoolID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`MainGroupID`) REFERENCES `specialisationgroupinfo` (`MainGroupID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `taskinfo`
 --
 ALTER TABLE `taskinfo`
-  ADD CONSTRAINT `taskinfo_ibfk_1` FOREIGN KEY (`SpecialisationID`) REFERENCES `specialisation` (`SpecialisationID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `taskinfo_ibfk_1` FOREIGN KEY (`MainProjectID`) REFERENCES `projectinfo` (`MainProjectID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `unregisteredusers`
