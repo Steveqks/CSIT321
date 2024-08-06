@@ -3,6 +3,7 @@
 	let show2 = false;
 	let show3 = false;
 	let show4 = false;
+	let show5 = false;
 
 
 	function showLinks1() {
@@ -62,6 +63,23 @@
 
 		if (show4 == false) {
 			myButton.classList.add('expanded');
+			myButton.innerHTML = 'Part-Time Management ➖';
+			linkContainer.style.display = 'block';
+		} else {
+			myButton.classList.remove('expanded');
+			myButton.innerHTML = 'Part-Time Management ➕';
+			linkContainer.style.display = 'none';
+		}
+		show4 = !show4;
+	}
+	
+	function showLinks5() {
+		
+		let myButton = document.getElementById("myButton5");
+		let linkContainer = document.getElementById("linkContainer5");
+
+		if (show5 == false) {
+			myButton.classList.add('expanded');
 			myButton.innerHTML = 'Leave a Review! ➖';
 			linkContainer.style.display = 'block';
 		} else {
@@ -69,7 +87,7 @@
 			myButton.innerHTML = 'Leave a Review ➕';
 			linkContainer.style.display = 'none';
 		}
-		show4 = !show4;
+		show5 = !show5;
 	}
 </script>
 
@@ -102,13 +120,19 @@
 	</div>
 
     <a href="Manager_viewLeaveHistory.php">Leave Management</a>
-
-	<a href="Manager_PTAvailability.php">Schedule for Part-Time</a>
+    
+	<a id='myButton4' class='myButton4' onClick='showLinks4()'>Part-Time Management ➕</a>
+    <div id='linkContainer4'>
+		<div class='show'>
+			<a href='Manager_PTAvailability.php'> - View Availability </a>
+            <a href='Manager_PTSchedule.php'> - View Schedule </a>
+        </div>
+	</div>
 
 	<a href="Manager_viewNewsFeed.php">News Feed Management</a>
     
-	<a id='myButton4' class='myButton4' onClick='showLinks4()'>Leave a Review! ➕</a>
-    <div id='linkContainer4'>
+	<a id='myButton5' class='myButton5' onClick='showLinks5()'>Leave a Review! ➕</a>
+    <div id='linkContainer5'>
 		<div class='show'>
 			<a href='Manager_SubmitReview.php'> - Submit a Review </a>
             <a href='Manager_EditReview.php'> - Edit a Review </a>

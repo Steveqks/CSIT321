@@ -36,7 +36,7 @@
     border-radius: 3px;
 }
 
-.col-50 input[type=text], .col-50 select, .col-50 input[type=date], .col-50 textarea, .col-50 input[type=number], .col-50 input[type=email], .col-50 input[type=password] {
+.col-50 input[type=text], .col-50 select, .col-50 input[type=date], .col-50 textarea, .col-50 input[type=number], .col-50 input[type=email], .col-50 input[type=password], .col-50 input[type=time] {
     width: 100%;
     margin-bottom: 20px;
     padding: 12px;
