@@ -24,9 +24,8 @@
 		
 		if($startdate > $enddate)
 		{
-			echo "<div class='message'>
-                      <p>Start Date chosen cannot be later than End Date chosen!!</p>
-                  </div> <br>";
+			header("Location: FT_ApplyLeaves.php?error=Start Date chosen cannot be later than End Date chosen!!!.");
+			exit();
 		}
 		else
 		{
@@ -36,17 +35,19 @@
 		
 				// Fetch tasks for the logged-in user
 				mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
-				echo "<div class='message'>
-                      <p>Leave Applied Successfully!</p>
-                  </div> <br>";
+				
+				//Success Message
+				header("Location: FT_ApplyLeaves.php?message=Leave Applied Successfully!.");
+				exit();
 			}
 			else
 			{
 				$HalfDay = 0;
 				mysqli_query($conn,"INSERT INTO leaves(UserID,LeaveType,StartDate,EndDate,HalfDay,Status,Comments) VALUES ('$user_id','$leavetype','$startdate','$enddate','$HalfDay','$status','$Comments')")or die("Error Occured");
-				echo "<div class='message'>
-                      <p>Leave Applied Successfully!</p>
-                  </div> <br>";
+				
+				//Success Message  
+				header("Location: FT_ApplyLeaves.php?message=Leave Applied Successfully!.");
+				exit();	
 			}
 		}
 	}
@@ -171,6 +172,13 @@
             background-color: #218838;
             color: white;
         }
+		.error-message {
+            color: red;
+        }
+		
+		.success-message {
+			color: green;
+		}
 	</style>
 </head>
 <body>
@@ -204,11 +212,11 @@
 			<div class = "apply-leave-form">
 				<form action = "" method = "post">
 						<label for "startdate">Start Date: </label><br>
-						<input id = "startdate" name = "startdate" type = "date" placeholder = "Start Date"><br><br>
+						<input id = "startdate" name = "startdate" type = "date" placeholder = "Start Date" required><br><br>
 						<label for "enddate">End Date: </label><br>
-						<input id = "enddate" name = "enddate" type = "date" placeholder = "End Date "><br><br>
+						<input id = "enddate" name = "enddate" type = "date" placeholder = "End Date " required><br><br>
 						<label for "leavetype">Leave Type: </label><br>
-						<select id = "leavetype" name = "leavetype">
+						<select id = "leavetype" name = "leavetype" required>
 							<option value = "Vacation">Vacation</option>
 							<option value = "Sick Leave">Sick Leave</option>
 							<option value = "Personal Leave">Personal Leave</option>
@@ -218,6 +226,15 @@
 						<label for "comments_tb">Comments: </label><br>
 						<input id = "comments_tb" type = "textarea" name = "Comments" placeholder = "Comments" rows = "5" cols = "30"><br><br>
 						<button id = "submitBtn" name = "submit">Apply Leave</button>
+						<?php
+							if (isset($_GET['message'])) {
+								echo '<br>';
+								echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+							} elseif (isset($_GET['error'])) {
+								echo '<br>';
+								echo '<br><div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+							}
+						?>
 					</form>
             </div>
         </div>
