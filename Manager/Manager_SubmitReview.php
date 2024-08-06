@@ -27,18 +27,16 @@
 		
 		if(mysqli_num_rows($dupecheckQuery) >= 1)
 		{
-			echo "<div class='message'>
-				<p>1 Review already submitted, please edit your existing review!</p>
-			</div> <br>";
+			header("Location: Manager_SubmitReview.php?error=1 Review has already been submitted, please edit your existing review!.");
+			exit();
 		}
 		
 		else
 		{
 			mysqli_query($conn,$sql)or die("Error Occured");
 		
-			echo "<div class='message'>
-				<p>Review Successfully submitted!</p>
-			</div> <br>";
+			header("Location: Manager_SubmitReview.php?message=Successfully updated your review!.");
+			exit();
 		}
 	}
 	
@@ -121,6 +119,13 @@
             background-color: #218838;
             color: white;
         }
+		.error-message {
+            color: red;
+        }
+		
+		.success-message {
+			color: green;
+		}
 	</style>
 </head>
 <body>
@@ -160,6 +165,15 @@
 					<label for "reviewcomments">Comments: </label><br>
 					<input id = "reviewcomments" name = "reviewcomments" type = "textarea"><br><br>
 					<button id = "submitBtn" name = "submit">Submit Review</button>
+					<?php
+						if (isset($_GET['message'])) {
+							echo '<br>';
+							echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+						} elseif (isset($_GET['error'])) {
+							echo '<br>';
+							echo '<br><div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+						}
+					?>
 				</form>
             </div>
         </div>
