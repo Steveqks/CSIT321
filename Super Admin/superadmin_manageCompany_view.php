@@ -81,7 +81,6 @@ session_start();
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>Company ID</th>
 												<th>Company Name</th>
 												<th>Company UEN</th>
 												<th>Subscription Plan</th>

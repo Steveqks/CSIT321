@@ -44,6 +44,10 @@ class userAccount{
 				//create manager specialisation		
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");				
 				$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, CompanyID) VALUES (NULL, 'Manager', '$companyID')") or die("Select Error");
+				
+				//remove company application from list
+				$result = mysqli_query($db,"DELETE FROM unregisteredusers  WHERE CompanyUEN = '$companyUEN' AND Email = '$email'") or die("Remove Applicant from list");
+				
 				return 3; // created company & company admin
 			}
 			return 2; // error, company admin email already exists 

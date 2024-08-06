@@ -27,7 +27,10 @@ $stmt_total->close();
 $total_pages = ceil($total_records / $limit);
 
 // Fetch attendance records for the current page
-$sql = "SELECT DATE(ClockIn) AS Date, TIME(ClockIn) AS StartTime, TIME(ClockOut) AS EndTime FROM attendance WHERE UserID = ? LIMIT ?, ?";
+$sql = "SELECT DATE(ClockIn) AS Date, TIME(ClockIn) AS StartTime, TIME(ClockOut) AS EndTime, NumOfOverTimeHours 
+        FROM attendance 
+        WHERE UserID = ? 
+        LIMIT ?, ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("iii", $user_id, $start_from, $limit);
 $stmt->execute();
@@ -229,6 +232,7 @@ $pagination_range = getPaginationRange($page, $total_pages);
                         <th>Date</th>
                         <th>Start Time</th>
                         <th>End Time</th>
+                        <th>Overtime Hours</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -239,12 +243,13 @@ $pagination_range = getPaginationRange($page, $total_pages);
                                 <td><?php echo htmlspecialchars($record['Date']); ?></td>
                                 <td><?php echo htmlspecialchars($record['StartTime']); ?></td>
                                 <td><?php echo htmlspecialchars($record['EndTime']); ?></td>
+                                <td><?php echo htmlspecialchars($record['NumOfOverTimeHours']); ?></td>
                                 <td class="status">Present</td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4">No attendance records found.</td>
+                            <td colspan="5">No attendance records found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

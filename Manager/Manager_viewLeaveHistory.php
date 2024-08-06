@@ -14,23 +14,46 @@
 
     $userStatusID = 1;
 
-    $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
-            FROM leaves a
-            INNER JOIN team c ON a.UserID = c.UserID
-            INNER JOIN teaminfo d ON c.MainTeamID = d.MainTeamID
-            LEFT JOIN existinguser b ON c.UserID = b.UserID
-            WHERE d.ManagerID = ".$userID."
-            AND b.Status = ".$userStatusID."
-            GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status;";
+    if (isset($_GET['search'])) {
+
+        $searchInput = $_GET['searchInput'];
+
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE b.Status = ".$userStatusID."
+                AND (b.FirstName LIKE '%".$searchInput."%' OR b.LastName LIKE '%".$searchInput."%')
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                ORDER BY a.Status ASC, a.EndDate ASC;";
 
 
-    //echo $sql;
+        //echo $sql;
 
-    $stmt = $conn->prepare($sql);
-    
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $leaves = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else {
+
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE b.Status = ".$userStatusID."
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                ORDER BY a.Status ASC, a.EndDate ASC;";
+
+
+        //echo $sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+
+    }
     
     if (isset($_GET['approve'])) {
 
@@ -54,6 +77,7 @@
             header('Location: Manager_viewLeaveHistory.php');
         }
     }
+    
 
     // Close the statement and connection
     $stmt->close();
@@ -85,6 +109,13 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <h2 class="contentHeader">View Leave History</h2>
+            
+            <div class="search">
+                <form action="Manager_viewLeaveHistory.php" method="POST">
+                    <input type="text" name="searchInput" placeholder="Enter name" required>
+                    <input type="submit" class="searchBtn" name="search" value="Search">
+                </form>
+            </div>
 
             <div class="innerContent">
 
@@ -106,10 +137,10 @@
                                     <?php echo $leave['fullName']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $leave['StartDate']; ?>
+                                    <?php echo date('F j, Y',strtotime($leave['StartDate'])); ?>
                                 </td>
                                 <td>
-                                    <?php echo $leave['EndDate']; ?>
+                                    <?php echo date('F j, Y',strtotime($leave['EndDate'])); ?>
                                 </td>
                                 <td>
                                     <?php
@@ -127,8 +158,8 @@
                                     <?php
                                         if ($leave['Status'] === NULL) {
 
-                                            echo "<a href='Manager_viewLeaveHistory.php?approve=yes&leaveid=".$leave['LeaveID']."'>Approve</a>&emsp;";
-                                            echo "<a href='Manager_viewLeaveHistory.php?approve=no&leaveid=".$leave['LeaveID']."'>Decline</a>";
+                                            echo "<a href='#' onclick='return confirmApprove(".$leave['LeaveID'].");'>Approve</a>&emsp;";
+                                            echo "<a href='#' onclick='return confirmDecline(".$leave['LeaveID'].");'>Decline</a>";
 
                                         } else if ($leave['Status'] !== NULL) {
 
@@ -153,4 +184,28 @@
         </div>
     </div>
 </body>
+
+<script type="text/javascript">
+    function confirmApprove(leaveID) {
+
+        let text = "Confirm to approve leave?";
+        
+        if (confirm(text) == true) {
+            window.location = "Manager_viewLeaveHistory.php?approve=yes&leaveid=" + leaveID;
+        } else {
+            window.location = "Manager_viewLeaveHistory.php";
+        }
+    }
+    
+    function confirmDecline(leaveID) {
+
+        let text = "Confirm to decline leave?";
+
+        if (confirm(text) == true) {
+            window.location = "Manager_viewLeaveHistory.php?approve=no&leaveid=" + leaveID;
+        } else {
+            window.location = "Manager_viewLeaveHistory.php";
+        }
+    }
+</script>
 </html>
