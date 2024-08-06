@@ -202,7 +202,6 @@
                 <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
                 <li><a href="FT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_TimeManagement.php">Time Management</a></li>
                 <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
 				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
                 <li><a href="logout.php">Logout</a></li>

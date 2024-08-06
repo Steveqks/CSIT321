@@ -231,10 +231,10 @@ include 'db_connection.php';
             </ul>
         </div>
         
-        <!-- RIGHT SECTION (TASK TABLE) -->
+       <!-- RIGHT SECTION (TASK TABLE) -->
         <div class="task-section">
             <div class="task-header">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-tasks"></i>
                 <h2>View Tasks</h2>
             </div>
             <table class="task-table">
@@ -266,49 +266,29 @@ include 'db_connection.php';
             </table>
 
             <!-- Pagination controls -->
-            <div class="pagination">
-                <a href="home_pt.php?page=<?php echo max(1, $page-1); ?>" class="<?php if ($page == 1) echo 'disabled'; ?>">&#9664;</a>
-                
-                <?php
-                // Adjust the start and end pages to show a maximum of 5 page buttons
-                if ($total_pages > 5) {
-                    if ($page <= 3) {
-                        $start_page = 1;
-                        $end_page = 5;
-                    } elseif ($page > $total_pages - 3) {
-                        $start_page = $total_pages - 4;
-                        $end_page = $total_pages;
-                    } else {
-                        $start_page = $page - 2;
-                        $end_page = $page + 2;
-                    }
-                } else {
-                    $start_page = 1;
-                    $end_page = $total_pages;
-                }
+            <?php if ($total_pages > 1): ?>
+            <ul class="pagination">
+                <?php if ($page > 1): ?>
+                    <li><a href="FT_HomePage.php?page=<?php echo $page - 1; ?>">&laquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                <?php endif; ?>
 
-                if ($start_page > 1) {
-                    echo '<a href="home_pt.php?page=1">1</a>';
-                    if ($start_page > 2) {
-                        echo '<span>...</span>';
-                    }
-                }
+                <?php foreach ($pagination_range as $p): ?>
+                    <?php if ($p == $page): ?>
+                        <li class="active"><a href="#"><?php echo $p; ?></a></li>
+                    <?php else: ?>
+                        <li><a href="FT_HomePage.php?page=<?php echo $p; ?>"><?php echo $p; ?></a></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
 
-                for ($i = $start_page; $i <= $end_page; $i++):
-                    ?>
-                    <a href="home_pt.php?page=<?php echo $i; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
-                <?php endfor;
-
-                if ($end_page < $total_pages) {
-                    if ($end_page < $total_pages - 1) {
-                        echo '<span>...</span>';
-                    }
-                    echo '<a href="home_pt.php?page=' . $total_pages . '">' . $total_pages . '</a>';
-                }
-                ?>
-
-                <a href="home_pt.php?page=<?php echo min($total_pages, $page+1); ?>" class="<?php if ($page == $total_pages) echo 'disabled'; ?>">&#9654;</a>
-            </div>
+                <?php if ($page < $total_pages): ?>
+                    <li><a href="FT_HomePage.php?page=<?php echo $page + 1; ?>">&raquo;</a></li>
+                <?php else: ?>
+                    <li class="disabled"><a href="#">&raquo;</a></li>
+                <?php endif; ?>
+            </ul>
+            <?php endif; ?>
         </div>
     </div>
 

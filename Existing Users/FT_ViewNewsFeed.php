@@ -12,62 +12,62 @@
 
         // Connect to the database
         $conn = OpenCon();
+ $viewCompany = FALSE;
+    $viewProject = TRUE;
 
-        $viewCompany = FALSE;
-        $viewTeam = TRUE;
+    if(isset($_GET['viewCompany'])) {
 
-        if(isset($_GET['viewCompany'])) {
+        $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                WHERE b.CompanyID = ".$companyID."
+                ORDER BY a.DatePosted DESC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+
+        if ($result->num_rows > 0) {
 
             $viewCompany = TRUE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
-            $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE b.CompanyID = ".$companyID."
-                    ORDER BY a.DatePosted DESC;";
+        } else {
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $companyNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
-			
-			if ($result->num_rows > 0) {
-
-                $viewCompany = TRUE;
-                $viewTeam = FALSE;
-
-            } else {
-
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
-
-            }
+            $viewCompany = FALSE;
+            $viewProject = FALSE;
 
         }
-		else if ($viewTeam) {
 
-            $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
-                    INNER JOIN existinguser b ON a.ManagerID = b.UserID
-                    WHERE a.ManagerID = ".$userID."
-                    ORDER BY a.DatePosted DESC;";
+    } else if ($viewProject) {
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+        $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
+                INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                INNER JOIN projectinfo c ON a.ManagerID = c.ProjectManagerID
+                WHERE a.ManagerID = ".$userID."
+                ORDER BY a.DatePosted DESC;";
 
-            if ($result->num_rows > 0) {
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projectNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
 
-                $viewCompany = FALSE;
-                $viewTeam = TRUE;
+        if ($result->num_rows > 0) {
 
-            } else {
+            $viewCompany = FALSE;
+            $viewProject = TRUE;
 
-                $viewCompany = FALSE;
-                $viewTeam = FALSE;
+        } else {
 
-            }
+            $viewCompany = FALSE;
+            $viewProject = FALSE;
+
         }
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    CloseCon($conn);
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -163,11 +163,17 @@
 			align-items: baseline;
 			padding-bottom: 15px;
 		}
+		.companyNameNewsFeed a {
+			padding-left: 20px;
+		}
 		.teamDateNewsFeed a {
 			padding-left: 20px;
 		}
 		.teamDateNewsFeed {
-			padding-left: 69%;
+			padding-left: 61%;
+		}
+		.teamNameNewsFeed a {
+			padding-left: 20px;
 		}
 		.companyNameNewsFeed, .companyDateNewsFeed {
 			display: flex;
@@ -182,6 +188,7 @@
 			border: 1px solid lightgrey;
 			padding: 3%;
 		}
+				
 	</style>
 </head>
 <body>
@@ -198,7 +205,6 @@
                 <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
                 <li><a href="FT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_TimeManagement.php">Time Management</a></li>
                 <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
 				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
                 <li><a href="logout.php">Logout</a></li>
@@ -213,36 +219,34 @@
                 <div class="categories">
                     <label for="categories">View By:
                         <a href='FT_ViewNewsFeed.php?viewCompany=true'><button>Company</button></a>
-                        <a href='FT_ViewNewsFeed.php?viewTeam=true'><button>Team</button></a>
+                        <a href='FT_ViewNewsFeed.php?viewProject=true'><button>Project</button></a>
                     </label>
                 </div>
             </div>
 
             <div class="innerContentNewsFeed">
                 
-                 <?php
+                <?php
                 
-                if($viewTeam) {
+                if($viewProject) {
 
-                    foreach ($teamNewsFeed as $team):?>
+                    foreach ($projectNewsFeed as $project):?>
 
                     <div class="nameDateNewsFeed">
 
                         <div class="teamNameNewsFeed">
-                            <?php echo $team['fullName']; ?>
-                            <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $team['NewsFeedID']; ?>">Edit Post</a>
+                            <?php echo $project['fullName']; ?>
                         </div>
 
                         <div class="teamDateNewsFeed">
-                            <?php echo date('F j, Y',strtotime($team['DatePosted'])); ?>
-                            <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $team['NewsFeedID']; ?>">Delete Post</a>
+                            <?php echo date('F j, Y',strtotime($project['DatePosted'])); ?>
                         </div>
 
                     </div>
                     <div class="newsFeedContents">
 
-                        <label for="title" style="font-weight: bold;"><?php echo $team['NewsTitle']; ?></label>
-                        <p><?php echo $team['NewsDesc']; ?></p>
+                        <label for="title" style="font-weight: bold;"><?php echo $project['NewsTitle']; ?></label>
+                        <p><?php echo $project['NewsDesc']; ?></p>
 
                     </div>
                 <?php
@@ -256,17 +260,12 @@
                             
                             <div class="companyNameNewsFeed">
                                 <label for="fullname"><?php echo $company['fullName']; ?></label>
-
-                                <?php if($company['ManagerID'] == $userID) { ?>
-                                    <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $company['NewsFeedID']; ?>">Edit Post</a>
-                                <?php } ?>
                             </div>
 
                             
                             <?php if($company['ManagerID'] == $userID) { ?>
                                 <div class="teamDateNewsFeed">
                                     <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
-                                    <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $company['NewsFeedID']; ?>">Delete Post</a>
                                 </div>
                             <?php } else { ?>
                                 <div class="companyDateNewsFeed">
@@ -282,10 +281,10 @@
 
                         </div>
                     <?php
-                        endforeach;
-                    } else {
-                        echo "<h4>No news feed.</h4>";
-                    } ?>
+                    endforeach;
+                } else {
+                    echo "<h4>No news feed.</h4>";
+                } ?>
             </div>
         </div>
     </div>
