@@ -3,6 +3,8 @@ session_start();
 
 include '../Session/session_check_companyadmin.php';
 	
+include 'db_connection.php';
+	
 	$_SESSION['message1'] = "";
 	$_SESSION['message2'] = "";
 	$_SESSION['message3'] = "";
@@ -13,7 +15,6 @@ include '../Session/session_check_companyadmin.php';
 	$_SESSION['message3'] ='';
 	$_SESSION['message4'] ='';
 	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 	
 	if(isset($_POST['Password'])){
@@ -108,7 +109,6 @@ include '../Session/session_check_companyadmin.php';
 		$cadminID = $_SESSION['cadminID'];
 		
 				//get Super Admin data
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"SELECT * FROM companyadmin WHERE CAdminID = '$cadminID'") or die("Select Error");
 			
 				while($Row = $result->fetch_assoc()){

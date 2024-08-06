@@ -50,22 +50,22 @@ session_start();
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>Plan Name</th>
-												<th>Price</th>
-												<th>User Access</th>
-												<th>Customer Support</th>
+												<th>Feature</th>
+												<th>Description</th>
+												<th>Icon</th>
+												<th>Images</th>
 											</tr>\n";
 						$accountsTable .= "<br/>";
 						}
 					while ($Row = $qres->fetch_assoc()) {
 						$accountsTable.= "<tr>\n"
-						."<td>" . $Row['PlanName'] . "</td>" 
-						."<td>" . $Row['Price'] . "</td>" 
-						."<td>" . $Row['UserAccess'] . "</td>" 
-						."<td>" . $Row['CustomerSupport'] . "</td>" ;
+						."<td>" . $Row['Name'] . "</td>" 
+						."<td>" . $Row['Description'] . "</td>" 
+						."<td>" . $Row['Icon'] . "</td>" 
+						."<td>" . $Row['Images'] . "</td>" ;
 						
 						$accountsTable .= "<td><form action'' method='POST'>
-							<input type='hidden' name='PlanID' value='" . $Row['PlanID'] . "'/>
+							<input type='hidden' name='PlanID' value='" . $Row['FeatureID'] . "'/>
 							<input type='submit' name='editPlan' value='Edit'>
 							</form></td>";
 						

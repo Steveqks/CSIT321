@@ -5,12 +5,14 @@ session_start();
 
 	include_once('companyadmin_specialisation_viewdelete_functions.php');
 
+	include 'db_connection.php';
+
 	
 	$_SESSION['message'] = '';
 
 	if(isset($_POST['delete'])=='yes')
 	{
-		$delete = new userAccount();
+		$delete = new userAccount($servername, $username, $password, $dbname);
 		$delete->deleteSpecialisation($_POST['specialisationID']);
 		
 		$_SESSION['message'] = "Specialisation \"" . $_POST['specialisationName'] . "\" deleted successful";
@@ -53,11 +55,15 @@ session_start();
 				<?php   
 					echo $_SESSION['message'];
 
-				
 					$companyID = $_SESSION['companyID'];;
-				
-
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
+								
+					//find manager specialisation id
+					$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
+					$qres = mysqli_query($db, $sql); 
+					while ($Row = $qres->fetch_assoc()) 
+					{
+						$mid = $Row['SpecialisationID'];
+					}
 				
 					//find manager specialisation id
 					$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";

@@ -3,6 +3,8 @@
 
 	include '../Session/session_check_superadmin.php';
 
+	include 'db_connection.php';
+
 	$PlanID = $_SESSION['PlanID'];
 
 	$_SESSION['message1'] = '';
@@ -15,21 +17,18 @@
 		$newCS = $_POST['newCS'];
 		
 		if ($_POST['oldPrice'] != $newPrice){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE plans SET Price = '$newPrice' WHERE plans.planID = '$PlanID'") or die("update Error");
 			$_SESSION['message1'] = "<p>Subscription Plan Price updated</p>";							
 		}else $_SESSION['message1'] = "";
 		
 		
 		if($_POST['oldUA'] != $newUA){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE plans SET UserAccess = '$newUA' WHERE plans.planID = '$PlanID'") or die("update Error");
 			$_SESSION['message2'] = "<p >Subscription Plan User Access updated.</p>";
 		}else $_SESSION['message2'] = "";
 		
 		
 		if($_POST['oldCS'] != $newCS){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result2 = mysqli_query($db,"UPDATE plans SET CustomerSupport = '$newCS' WHERE plans.planID = '$PlanID'") or die("update Error");
 			$_SESSION['message3'] = "<p >Subscription Plan CustomerSupport updated.</p>";
 		}else $_SESSION['message3'] = "";
@@ -64,7 +63,6 @@
 
 			<?php   
 			
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$qres = mysqli_query($db,	"SELECT * FROM plans WHERE plans.planID = '$PlanID'") or die("Select Error");
 		
 				while ($Row = $qres->fetch_assoc()) {

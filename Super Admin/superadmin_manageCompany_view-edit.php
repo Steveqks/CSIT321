@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_superadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message1'] = '';
 	$_SESSION['message2'] = '';
 	$_SESSION['message3'] = '';
@@ -14,8 +17,6 @@ session_start();
 		$planID = $_POST['planID'];
 		
 		if ($_POST['oldCompanyName'] != $_POST['companyName']){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 			//check if companyName exists.
 			$result = mysqli_query($db,	"SELECT CompanyName FROM company WHERE company.CompanyName = '$companyName'") or die("Select Error");
 
@@ -34,8 +35,6 @@ session_start();
 		
 		
 		if($_POST['oldPlanID'] != $planID){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 			//check if planID exists already.
 			$result3 = mysqli_query($db, "SELECT * FROM plans WHERE planID = '$planID'") or die("Select Error");
 
@@ -53,8 +52,6 @@ session_start();
 		
 		
 		if($_POST['oldCompanyUEN'] != $newCompanyUEN){
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 			//check if planID exists already.
 			$result3 = mysqli_query($db, "SELECT * FROM company WHERE CompanyUEN = '$newCompanyUEN' ") or die("Select Error");
 

@@ -3,6 +3,10 @@ session_start();
 
 	include '../Session/session_check_superadmin.php';
 
+	include_once('superadmin_manageCAdmin_view_functions.php');
+	
+	include 'db_connection.php';
+
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 
@@ -11,15 +15,11 @@ session_start();
 	require '../Unregistered Users/phpmailer/src/PHPMailer.php';
 	require '../Unregistered Users/phpmailer/src/SMTP.php';
 
-
-	include_once('superadmin_manageCAdmin_view_functions.php');
-
 	$_SESSION['message'] = '';
 
 	if(isset($_POST['delete']) == 'yes')
 	{
 		$cAdminID = $_POST['cAdminID'];
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM companyadmin WHERE CAdminID = '$cAdminID' ") or die("Select Error");
 		$_SESSION['message'] = "Company Admin \"" .$_POST['fname']. " ". $_POST['lname'] . "\" deleted successfully";
 	}
@@ -28,9 +28,7 @@ session_start();
 	{
 		$cAdminID = $_POST['cAdminID'];
 		$status = $_POST['status'];
-		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-		
+				
 		if($status == 1){
 			$result = mysqli_query($db,	"UPDATE companyadmin SET Status = 0 WHERE CAdminID = '$cAdminID'") or die("Select Error");
 			$_SESSION['message'] = "Company Admin ". $_POST['fname']. ' '. $_POST['lname']. " status set to Suspended.";
@@ -51,7 +49,6 @@ session_start();
 		
 		sendEmail($email, $currentDateTime);
 		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"UPDATE companyadmin SET Password = '$currentDateTime' WHERE CAdminID = '$cAdminID' ") or die("Select Error");
 
 		$_SESSION['pwmessage'] = "yes";
@@ -129,7 +126,7 @@ session_start();
 			<?php     
 				echo $_SESSION['message'];
 
-				$view = new userAccount();
+				$view = new userAccount($servername, $username, $password, $dbname);
 						$qres = $view->viewCAdmin();
 						
 					if($qres){

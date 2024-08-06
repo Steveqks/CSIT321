@@ -11,12 +11,14 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message1'] = '';
 
 	if(isset($_POST['delete'])=='yes')
 	{
 		$userID = $_POST['userID'];
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM existinguser WHERE UserID = '$userID' ") or die("Select Error");
 		
 		$_SESSION['message1'] = $_POST['fname'] . " ". $_POST['lname'] ." deleted successfully";
@@ -28,13 +30,11 @@ session_start();
 		
 		if ($_POST['status'] == 0)
 		{
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result = mysqli_query($db,"UPDATE existinguser SET Status = '1' WHERE UserID = '$userID' ") or die("update Error");
 			$_SESSION['message1'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Active";
 		}
 		else
 		{
-			$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 			$result = mysqli_query($db,"UPDATE existinguser SET Status = '0' WHERE UserID = '$userID' ") or die("update Error");
 			$_SESSION['message1'] = $_POST['fname'] . " ". $_POST['lname'] ." Status set to Suspended";
 		}
@@ -49,7 +49,6 @@ session_start();
 		
 		sendEmail($email, $currentDateTime);
 		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"UPDATE existinguser SET Password = '$currentDateTime' WHERE UserID = '$userID' ") or die("Select Error");
 
 		$_SESSION['pwmessage'] = "yes";
@@ -129,7 +128,6 @@ session_start();
 			
 				$companyID = $_SESSION['companyID'];;
 
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"SELECT 
 												eu.UserID,
 												eu.FirstName,

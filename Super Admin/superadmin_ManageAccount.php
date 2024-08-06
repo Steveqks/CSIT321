@@ -3,16 +3,15 @@ session_start();
 				
 	include '../Session/session_check_superadmin.php';
 				
+	include 'db_connection.php';
+
 	$SAdminID = $_SESSION['SAdminID'];
 	
 	$_SESSION['message1'] ='';
 	$_SESSION['message2'] ='';
 	$_SESSION['message3'] ='';
 	$_SESSION['message4'] ='';
-	
-	$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
-	
+		
 	if(isset($_POST['Password'])){
 		$FirstName = $_POST['FirstName'];			
 		$LastName = $_POST['LastName'];			
@@ -104,7 +103,6 @@ session_start();
 
 				
 				//get Super Admin data
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"SELECT * FROM superadmin WHERE SAdminID = '$SAdminID'") or die("Select Error");
 			
 				while($Row = $result->fetch_assoc()){
