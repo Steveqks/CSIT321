@@ -103,6 +103,8 @@
 
     <a href="Manager_viewLeaveHistory.php">Leave Management</a>
 
+	<a href="Manager_PTAvailability.php">Schedule for Part-Time</a>
+
 	<a href="Manager_viewNewsFeed.php">News Feed Management</a>
     
 	<a id='myButton4' class='myButton4' onClick='showLinks4()'>Leave a Review! ➕</a>
