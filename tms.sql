@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 06, 2024 at 02:59 PM
+-- Generation Time: Aug 06, 2024 at 03:43 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `availability` (
   `WeekStartDate` date NOT NULL,
   `DayOfWeek` varchar(10) NOT NULL,
   `IsAvailable` tinyint(1) DEFAULT NULL,
+  `Status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`AvailabilityID`),
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -69,21 +70,21 @@ CREATE TABLE IF NOT EXISTS `availability` (
 -- Dumping data for table `availability`
 --
 
-INSERT INTO `availability` (`AvailabilityID`, `UserID`, `WeekStartDate`, `DayOfWeek`, `IsAvailable`) VALUES
-(1, 31, '2024-08-12', 'Monday', 1),
-(2, 31, '2024-08-12', 'Tuesday', 0),
-(3, 31, '2024-08-12', 'Wednesday', 1),
-(4, 31, '2024-08-12', 'Thursday', 1),
-(5, 31, '2024-08-12', 'Friday', 0),
-(6, 31, '2024-08-12', 'Saturday', 0),
-(7, 31, '2024-08-12', 'Sunday', 0),
-(8, 31, '2024-08-19', 'Monday', 0),
-(9, 31, '2024-08-19', 'Tuesday', 1),
-(10, 31, '2024-08-19', 'Wednesday', 1),
-(11, 31, '2024-08-19', 'Thursday', 1),
-(12, 31, '2024-08-19', 'Friday', 0),
-(13, 31, '2024-08-19', 'Saturday', 0),
-(14, 31, '2024-08-19', 'Sunday', 0);
+INSERT INTO `availability` (`AvailabilityID`, `UserID`, `WeekStartDate`, `DayOfWeek`, `IsAvailable`, `Status`) VALUES
+(1, 31, '2024-08-12', 'Monday', 1, NULL),
+(2, 31, '2024-08-12', 'Tuesday', 0, NULL),
+(3, 31, '2024-08-12', 'Wednesday', 1, NULL),
+(4, 31, '2024-08-12', 'Thursday', 1, NULL),
+(5, 31, '2024-08-12', 'Friday', 0, NULL),
+(6, 31, '2024-08-12', 'Saturday', 0, NULL),
+(7, 31, '2024-08-12', 'Sunday', 0, NULL),
+(8, 31, '2024-08-19', 'Monday', 0, NULL),
+(9, 31, '2024-08-19', 'Tuesday', 1, NULL),
+(10, 31, '2024-08-19', 'Wednesday', 1, NULL),
+(11, 31, '2024-08-19', 'Thursday', 1, NULL),
+(12, 31, '2024-08-19', 'Friday', 0, NULL),
+(13, 31, '2024-08-19', 'Saturday', 0, NULL),
+(14, 31, '2024-08-19', 'Sunday', 0, NULL);
 
 -- --------------------------------------------------------
 
