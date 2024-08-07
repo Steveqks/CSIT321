@@ -87,16 +87,9 @@ session_start();
 				$form = "<form action'' id='ModifyAccount' method='POST'>
 						<table >
 						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						FROM 
-						<br><br>
-						Group Name: <input type='text' name='oldGroupName' value='" . $groupName . "' readonly>
-						<br><br>
-						</td>
+				
+						<input type='hidden' name='oldGroupName' value='" . $groupName . "' readonly>
 							
-						<td style='border: 2px solid black; border-collapse: collapse;'> 
-						TO
-						<br><br>
 						Group Name: <input type='text' name='newGroupName' value='" . $groupName . "' maxlength='32' >
 						<br>";
 						

@@ -24,7 +24,7 @@ session_start();
 			// dont exists
 			if($num_rows == 0){
 				$result2 = mysqli_query($db,"UPDATE company SET CompanyName = '$companyName' WHERE company.CompanyID = '$companyID'") or die("update Error");
-				$_SESSION['message1'] = "<p >Company new name ->\"". $companyName. "\"</p>";							
+				$_SESSION['message1'] = "<p >Company Name changed</p>";							
 				$_SESSION['companyName'] = $companyName;
 			}
 			else{
@@ -99,28 +99,44 @@ session_start();
 			<h2>Edit Company</h2>
 
 			<?php   
-				$form = "<form action'' id='ModifyAccount' method='POST'>
-						<br>
-						<table>
+				$form = "<form action'' id='ModifyAccount' method='POST' style='
+																				flex: 0 0 48%;
+																				display: inline-flex;
+																				justify-content: space-between;
+																				padding: 8px;
+																				border: 1px solid #ddd;
+																				border-radius: 4px;
+																				box-sizing: border-box;
+																				width: 80%;
+																				margin-bottom: 15px;
+																				margin-bottom: 5px;
+																				display: flex;
+																				flex-direction: column;
+																				margin-bottom: 15px;
+																				background-color: #f0f0f0;
+																				padding: 20px;
+																				border-radius: 5px;
+																				max-width: 600px;
+																				display: flex;
+																				flex-direction: column;
+																					'>
+						
+						<table >
+						<input type='hidden' name='oldCompanyName' value='" . $_SESSION['companyName'] . "' readonly> 
+						<input type='hidden' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> 
+						<input type='hidden' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly>
+						<input type='hidden' name='companyID' value=" . $_SESSION['companyID'] . " readonly>
+						<br><br><br><br>
 						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						FROM 
-						<br><br>
-						Company ID: <input type='text' value=" . $_SESSION['companyID'] . " readonly><br>
-						Company Name: <input type='text' name='oldCompanyName' value='" . $_SESSION['companyName'] . "' readonly> <br>
-						Company UEN: <input type='text' name='oldCompanyUEN' value=" . $_SESSION['companyUEN'] . " readonly> <br>
-						Subscription Plan: <input type='text' name='oldPlanID' value=" . $_SESSION['planID'] . " readonly> <br>
-						<br>
+							<td>
+								Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "' maxlength='16'> <br>
+								Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . "  maxlength='10'> <br>
 							</td>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						TO
-						<br><br>
-						Company ID: <input type='text' name='companyID' value=" . $_SESSION['companyID'] . " readonly> <br>
-						Company Name: <input type='text' name='companyName' value='" . $_SESSION['companyName'] . "' maxlength='16'><br>
-						Company UEN: <input type='text' name='newCompanyUEN' value=" . $_SESSION['companyUEN'] . "  maxlength='10'> <br>
-						Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . " maxlength='1'><br>
-						<input type='button' value='Update' onclick='confirmDiag();'>
-						</form>
+							
+							<td>
+								Subscription Plan: <input type='text' name='planID' value=" . $_SESSION['planID'] . " maxlength='1'><br><br>
+								<input type='button' value='Update' onclick='confirmDiag();'>
+								</form>
 							</td>
 						</tr>
 						</table>

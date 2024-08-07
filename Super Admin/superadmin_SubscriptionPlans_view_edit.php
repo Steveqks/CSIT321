@@ -72,29 +72,49 @@
 					$CustomerSupport = $Row['CustomerSupport'];
 				};
 		
-				$form = "<form action'' id='ModifyPlan' method='POST'>
+				$form = "<form action'' id='ModifyPlan' method='POST' style='
+																				flex: 0 0 48%;
+																				display: inline-flex;
+																				justify-content: space-between;
+																				padding: 8px;
+																				border: 1px solid #ddd;
+																				border-radius: 4px;
+																				box-sizing: border-box;
+																				width: 80%;
+																				margin-bottom: 15px;
+																				margin-bottom: 5px;
+																				display: flex;
+																				flex-direction: column;
+																				margin-bottom: 15px;
+																				background-color: #f0f0f0;
+																				padding: 20px;
+																				border-radius: 5px;
+																				max-width: 600px;
+																				display: flex;
+																				flex-direction: column;
+																					'>
 						<br>
 						<table>
 						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						FROM 
-						<br><br>
-						Plan Name: <input type='text' value='" . $PlanName . "' readonly><br>
-						Price: <input type='text' name='oldPrice' value='" . $Price . "' readonly> <br>
-						User Access : <input type='text' name='oldUA' value='" . $UserAccess . "' readonly> <br>
-						Customer Support : <input type='text' name='oldCS' value='" . $CustomerSupport . "' readonly> <br>
+
+						<input type='hidden' value='" . $PlanName . "' readonly><br>
+						<input type='hidden' name='oldPrice' value='" . $Price . "' readonly> <br>
+						<input type='hidden' name='oldUA' value='" . $UserAccess . "' readonly> <br>
+						<input type='hidden' name='oldCS' value='" . $CustomerSupport . "' readonly> <br>
 						<br>
-							</td>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						TO
-						<br><br>
+							<td >
+				
 						Plan Name: <input type='text' value='" . $PlanName . "' readonly ><br>
 						Price: <input type='text' name='newPrice' value='" . $Price . "' > <br>
-						User Access : <input type='text' name='newUA' value='" . $UserAccess . "' > <br>
-						Customer Support : <input type='text' name='newCS' value='" . $CustomerSupport . "' > <br>
+						
 						<input type='button' value='Update' onclick='confirmDiag();'>
+							</td><td>
+						User Access : <input type='text' name='newUA' value='" . $UserAccess . "' > <br>
+						Customer Support : <input type='text' name='newCS' value='" . $CustomerSupport . "' > <br><br>
+						
 						</form>
 							</td>
+							
 						</tr>
 						</table>
 							";
