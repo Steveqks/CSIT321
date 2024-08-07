@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 05, 2024 at 07:50 AM
--- Server version: 8.0.31
--- PHP Version: 8.0.26
+-- Generation Time: Aug 06, 2024 at 03:43 PM
+-- Server version: 8.3.0
+-- PHP Version: 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -56,33 +56,35 @@ INSERT INTO `attendance` (`AttendanceID`, `UserID`, `ClockIn`, `ClockOut`, `Star
 
 DROP TABLE IF EXISTS `availability`;
 CREATE TABLE IF NOT EXISTS `availability` (
+  `AvailabilityID` int NOT NULL AUTO_INCREMENT,
   `UserID` int NOT NULL,
   `WeekStartDate` date NOT NULL,
   `DayOfWeek` varchar(10) NOT NULL,
   `IsAvailable` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`UserID`,`WeekStartDate`,`DayOfWeek`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Status` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`AvailabilityID`),
+  KEY `UserID` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `availability`
 --
 
-INSERT INTO `availability` (`UserID`, `WeekStartDate`, `DayOfWeek`, `IsAvailable`) VALUES
-(30, '2024-07-15', 'Friday', 1),
-(30, '2024-07-15', 'Monday', 1),
-(30, '2024-07-15', 'Saturday', 1),
-(30, '2024-07-15', 'Sunday', 1),
-(30, '2024-07-15', 'Thursday', 1),
-(30, '2024-07-15', 'Tuesday', 1),
-(30, '2024-07-15', 'Wednesday', 1),
-(30, '2024-07-22', 'Friday', 0),
-(30, '2024-07-22', 'Monday', 0),
-(30, '2024-07-22', 'Saturday', 1),
-(30, '2024-07-22', 'Sunday', 0),
-(30, '2024-07-22', 'Thursday', 1),
-(30, '2024-07-22', 'Tuesday', 1),
-(30, '2024-07-22', 'Wednesday', 0),
-(31, '2024-07-15', 'Thursday', 1);
+INSERT INTO `availability` (`AvailabilityID`, `UserID`, `WeekStartDate`, `DayOfWeek`, `IsAvailable`, `Status`) VALUES
+(1, 31, '2024-08-12', 'Monday', 1, NULL),
+(2, 31, '2024-08-12', 'Tuesday', 0, NULL),
+(3, 31, '2024-08-12', 'Wednesday', 1, NULL),
+(4, 31, '2024-08-12', 'Thursday', 1, NULL),
+(5, 31, '2024-08-12', 'Friday', 0, NULL),
+(6, 31, '2024-08-12', 'Saturday', 0, NULL),
+(7, 31, '2024-08-12', 'Sunday', 0, NULL),
+(8, 31, '2024-08-19', 'Monday', 0, NULL),
+(9, 31, '2024-08-19', 'Tuesday', 1, NULL),
+(10, 31, '2024-08-19', 'Wednesday', 1, NULL),
+(11, 31, '2024-08-19', 'Thursday', 1, NULL),
+(12, 31, '2024-08-19', 'Friday', 0, NULL),
+(13, 31, '2024-08-19', 'Saturday', 0, NULL),
+(14, 31, '2024-08-19', 'Sunday', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -258,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `leaves` (
   `Comments` varchar(100) NOT NULL,
   PRIMARY KEY (`LeaveID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `leaves`
@@ -267,7 +269,11 @@ CREATE TABLE IF NOT EXISTS `leaves` (
 INSERT INTO `leaves` (`LeaveID`, `UserID`, `LeaveType`, `StartDate`, `EndDate`, `HalfDay`, `Status`, `Comments`) VALUES
 (1, 28, 'Personal', '2024-07-04', '2024-07-04', 1, 1, ''),
 (2, 29, 'Vacation', '2024-07-11', '2024-07-13', 0, 0, ''),
-(4, 28, 'Vacation', '0000-00-00', '0000-00-00', 0, 0, '');
+(5, 29, 'Vacation', '2024-08-05', '2024-08-06', 0, 1, ''),
+(6, 29, 'Vacation', '2024-08-06', '2024-08-08', 0, 1, ''),
+(7, 29, 'Vacation', '2024-08-06', '2024-08-08', 0, 1, ''),
+(8, 29, 'Vacation', '2024-08-06', '2024-08-08', 0, 0, ''),
+(9, 29, 'Vacation', '2024-08-06', '2024-08-08', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -284,18 +290,7 @@ CREATE TABLE IF NOT EXISTS `newsfeed` (
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`NewsFeedID`),
   KEY `ManagerID` (`ManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `newsfeed`
---
-
-INSERT INTO `newsfeed` (`NewsFeedID`, `ManagerID`, `NewsTitle`, `NewsDesc`, `DatePosted`) VALUES
-(1, 28, 'newsfeed1', 'newsfeed1 desc', '2024-07-14'),
-(2, 27, 'newsfeed1 made by manager', 'newsfeed1 made by manager desc', '2024-07-14'),
-(3, 27, 'newsfeed2mademanager', 'newsfeed2mademanager desc', '2024-07-14'),
-(4, 27, 'newsfeed3manager', 'newsfeed3manager desc', '2024-07-14'),
-(5, 27, 'managerteam1', 'managerteam1 desc', '2024-07-14');
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -336,14 +331,14 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`ProjectID`),
   KEY `MainProjectID` (`MainProjectID`) USING BTREE,
   KEY `MainGroupID` (`MainGroupID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `project`
 --
 
 INSERT INTO `project` (`ProjectID`, `MainProjectID`, `MainGroupID`) VALUES
-(21, 10, 19);
+(22, 11, 19);
 
 -- --------------------------------------------------------
 
@@ -362,14 +357,14 @@ CREATE TABLE IF NOT EXISTS `projectinfo` (
   PRIMARY KEY (`MainProjectID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ProjectManagerID` (`ProjectManagerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `projectinfo`
 --
 
 INSERT INTO `projectinfo` (`MainProjectID`, `ProjectManagerID`, `CompanyID`, `ProjectName`, `StartDate`, `EndDate`) VALUES
-(10, 27, 82, 'Resident Evil Village', '2024-07-01', '2024-08-31');
+(11, 27, 82, 'Project 1', '2024-08-01', '2024-08-31');
 
 -- --------------------------------------------------------
 
@@ -383,11 +378,11 @@ CREATE TABLE IF NOT EXISTS `reviews` (
   `UserID` int NOT NULL,
   `ReviewTitle` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Rating` int NOT NULL,
-  `Comments` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `DatePosted` date NOT NULL,
   PRIMARY KEY (`ReviewID`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `reviews`
@@ -395,9 +390,9 @@ CREATE TABLE IF NOT EXISTS `reviews` (
 
 INSERT INTO `reviews` (`ReviewID`, `UserID`, `ReviewTitle`, `Rating`, `Comments`, `DatePosted`) VALUES
 (8, 28, 'Good Website', 5, 'very good', '2024-07-23'),
-(9, 27, 'fun website', 5, 'would use again', '2024-07-24'),
 (10, 31, 'had fun using website', 5, 'need user manual', '2024-07-24'),
-(11, 29, 'BOOOO', 1, 'Shit', '2024-07-24');
+(11, 29, 'BOOOO', 1, 'Shit', '2024-07-24'),
+(12, 27, 'Very bad!', 1, 'Would not recommend!', '2024-08-06');
 
 -- --------------------------------------------------------
 
@@ -558,7 +553,14 @@ CREATE TABLE IF NOT EXISTS `task` (
   KEY `UserID` (`UserID`),
   KEY `MainTaskID` (`MainTaskID`),
   KEY `MainGroupID` (`MainGroupID`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `task`
+--
+
+INSERT INTO `task` (`TaskID`, `MainGroupID`, `MainTaskID`, `UserID`) VALUES
+(28, 19, 22, 28);
 
 -- --------------------------------------------------------
 
@@ -579,7 +581,14 @@ CREATE TABLE IF NOT EXISTS `taskinfo` (
   `Status` tinyint(1) NOT NULL,
   PRIMARY KEY (`MainTaskID`),
   KEY `MainProjectID` (`MainProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `taskinfo`
+--
+
+INSERT INTO `taskinfo` (`MainTaskID`, `MainProjectID`, `TaskName`, `TaskDesc`, `StartDate`, `DueDate`, `NumStaff`, `Priority`, `Status`) VALUES
+(22, 11, 'task 1', 'hello', '2024-08-13', '2024-08-14', 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -627,7 +636,7 @@ ALTER TABLE `attendance`
 -- Constraints for table `availability`
 --
 ALTER TABLE `availability`
-  ADD CONSTRAINT `avaliability_constraint1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `availability_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `existinguser` (`UserID`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `calendar`

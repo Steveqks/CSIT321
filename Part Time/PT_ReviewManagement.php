@@ -1,9 +1,7 @@
 <?php
 	session_start();
 	include 'db_connection.php';
-
-	// Check if user is logged in
-	include '../Session/session_check_user_FT.php';
+	include '../Session/session_check_user_PT.php';
 
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
@@ -16,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Account Details (PT)</title>
+    <title>Review Management (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
 		body 
@@ -81,13 +79,13 @@
 			border: 0.5px solid black;
 		}
 
-		.leave-section 
+		.review-section 
 		{
 			padding: 20px;
 			flex-grow: 1;
 		}
 
-		.leave-header 
+		.review-header 
 		{
 			display: inline-flex;
 			align-items: center;
@@ -96,21 +94,21 @@
 			margin-bottom: 20px;
 		}
 
-		.leave-header i 
+		.review-header i 
 		{
 			margin-right: 10px;
 		}
 		
-		.leave-header h2 {
+		.review-header h2 {
             margin: 0;
         }
 
-        .leave-buttons {
+        .review-buttons {
             display: flex;
             flex-direction: column;
         }
 		
-		.leave-button {
+		.review-button {
             display: inline-block;
             width: 200px; /* Adjust the width to make buttons shorter */
             padding: 15px 20px;
@@ -124,7 +122,7 @@
             border-radius: 0;
         }
 		
-		.leave-button:hover {
+		.review-button:hover {
             background-color: #bbb;
             color: black;
         }
@@ -141,27 +139,17 @@
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
-				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
         
-        <!-- RIGHT SECTION (TASK TABLE) -->
-        <div class="leave-section">
-            <div class="leave-header">
+        <!-- RIGHT SECTION (REVIEW TABLE) -->
+        <div class="review-section">
+            <div class="review-header">
                 <i class="fas fa-user"></i>
-                <h2>Leave Management</h2>
+                <h2>Review Management</h2>
             </div>
-			<div class="leave-buttons">
-                <a href="FT_ViewLeaves.php" class="leave-button">View My Leaves</a>
-                <a href="FT_ApplyLeaves.php" class="leave-button">Apply For Leaves</a>
-                <a href="FT_CancelLeaves.php" class="leave-button">Cancel My Leaves</a>
+			<div class="review-buttons">
+                <a href="PT_SubmitReview.php" class="review-button">Submit a Review</a>
+                <a href="PT_EditReview.php" class="review-button">Edit a Review</a>
             </div>
         </div>
     </div>

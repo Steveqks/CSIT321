@@ -13,7 +13,7 @@
     $conn = OpenCon();
 
     $viewCompany = FALSE;
-    $viewTeam = TRUE;
+    $viewProject = TRUE;
 
     if(isset($_GET['viewCompany'])) {
 
@@ -30,36 +30,37 @@
         if ($result->num_rows > 0) {
 
             $viewCompany = TRUE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         } else {
 
             $viewCompany = FALSE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         }
 
-    } else if ($viewTeam) {
+    } else if ($viewProject) {
 
         $sql = "SELECT CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
                 INNER JOIN existinguser b ON a.ManagerID = b.UserID
+                INNER JOIN projectinfo c ON a.ManagerID = c.ProjectManagerID
                 WHERE a.ManagerID = ".$userID."
                 ORDER BY a.DatePosted DESC;";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $teamNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
+        $projectNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
 
         if ($result->num_rows > 0) {
 
             $viewCompany = FALSE;
-            $viewTeam = TRUE;
+            $viewProject = TRUE;
 
         } else {
 
             $viewCompany = FALSE;
-            $viewTeam = FALSE;
+            $viewProject = FALSE;
 
         }
     }
@@ -74,10 +75,8 @@
         $stmt->bind_param("i",$newsFeedID);
 
         if ($stmt->execute()) {
-            echo "<script type='text/javascript'>";
-            echo "alert('News Feed has been deleted.');";
-            echo "window.location = 'Manager_viewNewsFeed.php';";
-            echo "</script>";
+            header('Location: Manager_viewNewsFeed.php');
+            exit;
         }
     }
 
@@ -115,7 +114,7 @@
                 <div class="categories">
                     <label for="categories">View By:
                         <a href='Manager_viewNewsFeed?viewCompany=true'><button>Company</button></a>
-                        <a href='Manager_viewNewsFeed?viewTeam=true'><button>Team</button></a>
+                        <a href='Manager_viewNewsFeed?viewProject=true'><button>Project</button></a>
                     </label>
                 </div>
             </div>
@@ -124,27 +123,27 @@
                 
                 <?php
                 
-                if($viewTeam) {
+                if($viewProject) {
 
-                    foreach ($teamNewsFeed as $team):?>
+                    foreach ($projectNewsFeed as $project):?>
 
                     <div class="nameDateNewsFeed">
 
                         <div class="teamNameNewsFeed">
-                            <?php echo $team['fullName']; ?>
-                            <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $team['NewsFeedID']; ?>">Edit Post</a>
+                            <?php echo $project['fullName']; ?>
+                            <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $project['NewsFeedID']; ?>">Edit Post</a>
                         </div>
 
                         <div class="teamDateNewsFeed">
-                            <?php echo date('F j, Y',strtotime($team['DatePosted'])); ?>
-                            <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $team['NewsFeedID']; ?>">Delete Post</a>
+                            <?php echo date('F j, Y',strtotime($project['DatePosted'])); ?>
+                            <a href="#" onclick="return confirmDelete(<?php echo $project['NewsFeedID']; ?>)">Delete Post</a>
                         </div>
 
                     </div>
                     <div class="newsFeedContents">
 
-                        <label for="title" style="font-weight: bold;"><?php echo $team['NewsTitle']; ?></label>
-                        <p><?php echo $team['NewsDesc']; ?></p>
+                        <label for="title" style="font-weight: bold;"><?php echo $project['NewsTitle']; ?></label>
+                        <p><?php echo $project['NewsDesc']; ?></p>
 
                     </div>
                 <?php
@@ -184,12 +183,25 @@
 
                         </div>
                     <?php
-                        endforeach;
-                    } else {
-                        echo "<h4>No news feed.</h4>";
-                    } ?>
+                    endforeach;
+                } else {
+                    echo "<h4>No news feed.</h4>";
+                } ?>
             </div>
         </div>
     </div>
 </body>
+
+<script type="text/javascript">
+    function confirmDelete(newsFeedID) {
+
+        let text = "Confirm to delete post?";
+        
+        if (confirm(text) == true) {
+            window.location = "Manager_viewNewsFeed.php?deletenewsfeedid=" + newsFeedID;
+        } else {
+            window.location = "Manager_viewNewsFeed.php";
+        }
+    }
+</script>
 </html>

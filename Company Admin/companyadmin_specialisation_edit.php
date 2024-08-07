@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 	
+	include 'db_connection.php';
+
+	
 	$_SESSION['message'] = '';
 
 	if(isset($_POST['specialisationID'])){
@@ -59,11 +62,10 @@ session_start();
 				
 				$form = "<form action'' id='ModifySpecialisation' method='POST'>
 				
-						FROM 
-						<input type='text' value='" . $_SESSION['specialisationName'] . "' readonly>
+						<input type='hidden' value='" . $_SESSION['specialisationName'] . "' readonly>
 						
-						TO
-						<input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "' maxlength='32'>
+						
+						Specialisation Name: <input type='text' name='specialisationName' value='" . $_SESSION['specialisationName'] . "' maxlength='32'>
 						<input type='hidden' name='specialisationID' value=" . $_SESSION['specialisationID'] . " >
 						<input type='button' value='Update' onclick='confirmDiag()' >
 						</form>";

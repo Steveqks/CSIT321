@@ -1,9 +1,7 @@
 <?php
 	session_start();
 	include 'db_connection.php';
-
-	// Check if user is logged in
-	include '../Session/session_check_user_FT.php';
+	include '../Session/session_check_user_PT.php';
 
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
@@ -31,7 +29,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Account Details (PT)</title>
+    <title>Edit Review (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
 		body {
@@ -174,18 +172,9 @@
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
-				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
         
-        <!-- RIGHT SECTION (TASK TABLE) -->
+        <!-- RIGHT SECTION (REVIEW TABLE) -->
         <div class="review-section">
             <div class="review-header">
                 <i class="fas fa-user"></i>
@@ -193,7 +182,7 @@
 			</div>
 			<div class = "review-form">
 				<?php if($review): ?>
-					<form action = "FT_UpdateReview.php" method = "post">
+					<form action = "PT_UpdateReview.php" method = "post">
 						<label for "reviewtitle">Title: </label><br>
 						<input id = "reviewtitle" name = "reviewtitle" type = "text" value="<?php echo htmlspecialchars($review['ReviewTitle']); ?>"><br><br>
 						

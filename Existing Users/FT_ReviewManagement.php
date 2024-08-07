@@ -3,11 +3,7 @@
 	include 'db_connection.php';
 
 	// Check if user is logged in
-	if (!isset($_SESSION['Email'])) 
-	{
-		header("Location: ../Unregistered Users/LoginPage.php");
-		exit();
-	}
+	include '../Session/session_check_user_FT.php';
 
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
@@ -150,7 +146,6 @@
                 <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
                 <li><a href="FT_AccountDetails.php">Manage Account</a></li>
                 <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_TimeManagement.php">Time Management</a></li>
                 <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
 				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
                 <li><a href="logout.php">Logout</a></li>
@@ -165,7 +160,7 @@
             </div>
 			<div class="review-buttons">
                 <a href="FT_SubmitReview.php" class="review-button">Submit a Review</a>
-                <a href="#" class="review-button">Edit a Review</a>
+                <a href="FT_EditReview.php" class="review-button">Edit a Review</a>
             </div>
         </div>
     </div>

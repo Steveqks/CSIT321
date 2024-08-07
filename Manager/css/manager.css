@@ -36,7 +36,7 @@
     border-radius: 3px;
 }
 
-.col-50 input[type=text], .col-50 select, .col-50 input[type=date], .col-50 textarea, .col-50 input[type=number], .col-50 input[type=email], .col-50 input[type=password] {
+.col-50 input[type=text], .col-50 select, .col-50 input[type=date], .col-50 textarea, .col-50 input[type=number], .col-50 input[type=email], .col-50 input[type=password], .col-50 input[type=time] {
     width: 100%;
     margin-bottom: 20px;
     padding: 12px;
@@ -213,4 +213,25 @@ hr {
     margin-top: -10px;
     margin-bottom: 15px;
     font-size: 0.9em;
+}
+
+
+/* Search */
+.search {
+    padding: 10px 0 25px 0;
+}
+.searchBtn {
+    margin-left: 30px;
+    background-color: white;
+    border: 0.5px solid black;
+    padding: 7px 15px;
+}
+.searchBtn:hover {
+    background-color: rgb(229, 229, 229);
+}
+
+.search input[type=text] {
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }

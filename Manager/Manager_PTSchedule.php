@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackMySchedule</title>
+    <link rel="stylesheet" href="./css/manager_header.css" />
+    <link rel="stylesheet" href="./css/manager.css" />
+
+    <?php
+        session_start();
+        
+        include 'db_connection.php';
+        include '../Session/session_check_user_Manager.php';
+
+        $userID = $_SESSION['UserID'];
+        $firstName = $_SESSION['FirstName'];
+        $companyID = $_SESSION['CompanyID'];
+
+        // Connect to the database
+        $conn = OpenCon();
+
+        // Fetch schedule for the user starting from today
+        $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                FROM schedule a
+                LEFT JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.WorkDate >= CURDATE()
+                ORDER BY a.WorkDate ASC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $schedule = $result->fetch_all(MYSQLI_ASSOC);
+        
+    ?>
+</head>
+<body>
+    <!-- Top Section -->
+    <div class="topSection">
+        <img class="logo" src="./Images/tms.png">
+    </div>
+
+    <!-- Middle Section -->
+    <div class="contentNav">
+            
+        <!-- Left Section (Navigation) -->
+        <?php include_once('navigation.php');?>
+            
+        <!-- Right Section (Activity) -->
+        <div class="content">
+            <div class="task-header">
+                <h2>Part-Time Schedule</h2>
+
+            <div class="innerContent">
+                
+                <?php
+                    if (isset($_GET['message'])) {
+                        echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
+                    } elseif (isset($_GET['error'])) {
+                        echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
+                    }
+                ?>
+                <table class="tasks">
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Work Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+
+                    <?php
+                    if (count($schedule) > 0) {
+                        foreach ($schedule as $shift) {
+
+                            echo "<tr><td>".$shift['fullName']."</td>";
+                            echo "<td>".date('F j, Y',strtotime($shift['WorkDate']))."</td>";
+                            echo "<td>".date('h:ia',strtotime($shift['StartWork']))."</td>";
+                            echo "<td>".date('h:ia',strtotime($shift['EndWork']))."</td></tr>";
+
+                        }
+                    } else {
+                        echo "<tr><td colspan='4'>No upcoming schedules found.</td></tr>";
+                    }?>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

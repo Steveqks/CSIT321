@@ -1,9 +1,7 @@
 <?php
 	session_start();
 	include 'db_connection.php';
-
-	// Check if user is logged in
-	include '../Session/session_check_user_FT.php';
+	include '../Session/session_check_user_PT.php';
 
 	$user_id = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
@@ -12,16 +10,40 @@
 	// Connect to the database
 	$conn = OpenCon();
 
-	$sql = "SELECT * FROM reviews WHERE UserID = $user_id";
+	if(isset($_POST['submit']))
+	{
+		//store form variables
+		$user_id = $_SESSION['UserID'];
+		$reviewTitle = $_POST['reviewtitle'];
+		$reviewrating = $_POST['rating'];
+		$reviewcomments = $_POST['reviewcomments'];
+		$dateposted = date('Y-m-d');
+		
+		$sql = "INSERT INTO reviews(UserID,ReviewTitle,Rating,Comments,DatePosted) VALUES ('$user_id','$reviewTitle','$reviewrating','$reviewcomments','$dateposted')";
+		
+		//Ensure user can only submit 1 review
+		$dupechecksql = "SELECT * FROM reviews WHERE USERID = $user_id";
+		$dupecheckQuery = mysqli_query($conn, $dupechecksql);
+		
+		if(mysqli_num_rows($dupecheckQuery) >= 1)
+		{
+			echo "<div class='message'>
+				<p>1 Review already submitted, please edit your existing review!</p>
+			</div> <br>";
+		}
+		
+		else
+		{
+			mysqli_query($conn,$sql)or die("Error Occured");
+		
+			echo "<div class='message'>
+				<p>Review Successfully submitted!</p>
+			</div> <br>";
+		}
+	}
 	
-	$stmt = $conn->prepare($sql);
-	//$stmt->bind_param("i", $user_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$review = $result->fetch_assoc();
-	// Close the database connection
-	$stmt->close();
 	CloseCon($conn);
+
 
 ?>
 
@@ -31,7 +53,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Account Details (PT)</title>
+    <title>Submit Review (PT)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
 		body {
@@ -122,6 +144,7 @@
 		{
 			font-weight: bold;
 		}
+		
 		.star {
 			width: 32px;
 			font-size: 32px;
@@ -156,13 +179,6 @@
             background-color: #218838;
             color: white;
         }
-		.error-message {
-            color: red;
-        }
-		
-		.success-message {
-			color: green;
-		}
 	</style>
 </head>
 <body>
@@ -174,55 +190,34 @@
     <!-- MIDDLE SECTION -->
     <div class="middle-section">
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
-				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navbar.php'; ?>
         
-        <!-- RIGHT SECTION (TASK TABLE) -->
+        <!-- RIGHT SECTION (REVIEW TABLE) -->
         <div class="review-section">
             <div class="review-header">
                 <i class="fas fa-user"></i>
-                <h2>Edit A Review</h2>
+                <h2>Submit A Review</h2>
 			</div>
 			<div class = "review-form">
-				<?php if($review): ?>
-					<form action = "FT_UpdateReview.php" method = "post">
-						<label for "reviewtitle">Title: </label><br>
-						<input id = "reviewtitle" name = "reviewtitle" type = "text" value="<?php echo htmlspecialchars($review['ReviewTitle']); ?>"><br><br>
-						
-						
-						<label for "rating">Rating: </label>
-						<div class="rating">
-							<span class="star" data-value="1">&#9733;</span>
-							<span class="star" data-value="2">&#9733;</span>
-							<span class="star" data-value="3">&#9733;</span>
-							<span class="star" data-value="4">&#9733;</span>
-							<span class="star" data-value="5">&#9733;</span>
-						</div>
-						
-						<input type="hidden" name="rating" id="rating" value = "<?php echo ($review['Rating']); ?>" required>
-						
-						<label for "reviewcomments">Comments: </label><br>
-						<input id = "reviewcomments" name = "reviewcomments" type = "textarea" value="<?php echo htmlspecialchars($review['Comments']); ?>"><br><br>
-						<button id = "submitBtn" name = "submit">Edit Review</button>
-						<?php
-						if (isset($_GET['message'])) {
-							echo '<div class="success-message">' . htmlspecialchars($_GET['message']) . '</div>';
-						} elseif (isset($_GET['error'])) {
-							echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
-						}
-					?>
-					</form>
-				<?php else: ?>
-					<p>You have yet to submit a review, please submit a review first!!</p>
-				<?php endif; ?>
+				<form action = "" method = "post">
+					<label for "reviewtitle">Title: </label><br>
+					<input id = "reviewtitle" name = "reviewtitle" type = "text"><br><br>
+					
+					<label for "rating">Rating: </label>
+					<div class="rating">
+						<span class="star" data-value="1">&#9733;</span>
+						<span class="star" data-value="2">&#9733;</span>
+						<span class="star" data-value="3">&#9733;</span>
+						<span class="star" data-value="4">&#9733;</span>
+						<span class="star" data-value="5">&#9733;</span>
+					</div>
+					
+					<input type="hidden" name="rating" id="rating" required>
+					
+					<label for "reviewcomments">Comments: </label><br>
+					<input id = "reviewcomments" name = "reviewcomments" type = "textarea"><br><br>
+					<button id = "submitBtn" name = "submit">Submit Review</button>
+				</form>
             </div>
         </div>
     </div>
@@ -230,14 +225,7 @@
 		document.addEventListener('DOMContentLoaded', () => {
 			const stars = document.querySelectorAll('.star');
 			const ratingInput = document.getElementById('rating');
-			
-			// Set initial rating if any
-			const initialRating = parseInt(ratingInput.value);
-			if (initialRating > 0) {
-				for (let i = 0; i < initialRating; i++) {
-					stars[i].classList.add('selected');
-				}
-			}
+
 			stars.forEach(star => {
 				star.addEventListener('click', () => {
 					const value = star.getAttribute('data-value');

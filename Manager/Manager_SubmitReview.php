@@ -1,13 +1,11 @@
 <?php
 	session_start();
 	include 'db_connection.php';
+	include '../Session/session_check_user_Manager.php';
 
-	// Check if user is logged in
-	include '../Session/session_check_user_FT.php';
-
-	$user_id = $_SESSION['UserID'];
+	$userID = $_SESSION['UserID'];
 	$Email = $_SESSION['Email'];
-	$FirstName = $_SESSION['FirstName'];
+	$firstName = $_SESSION['FirstName'];
 			
 	// Connect to the database
 	$conn = OpenCon();
@@ -15,28 +13,29 @@
 	if(isset($_POST['submit']))
 	{
 		//store form variables
-		$user_id = $_SESSION['UserID'];
+		$userID = $_SESSION['UserID'];
 		$reviewTitle = $_POST['reviewtitle'];
 		$reviewrating = $_POST['rating'];
 		$reviewcomments = $_POST['reviewcomments'];
 		$dateposted = date('Y-m-d');
 		
-		$sql = "INSERT INTO reviews(UserID,ReviewTitle,Rating,Comments,DatePosted) VALUES ('$user_id','$reviewTitle','$reviewrating','$reviewcomments','$dateposted')";
+		$sql = "INSERT INTO reviews(UserID,ReviewTitle,Rating,Comments,DatePosted) VALUES ('$userID','$reviewTitle','$reviewrating','$reviewcomments','$dateposted')";
 		
 		//Ensure user can only submit 1 review
-		$dupechecksql = "SELECT * FROM reviews WHERE USERID = $user_id";
+		$dupechecksql = "SELECT * FROM reviews WHERE USERID = $userID";
 		$dupecheckQuery = mysqli_query($conn, $dupechecksql);
 		
 		if(mysqli_num_rows($dupecheckQuery) >= 1)
 		{
-			 header("Location: FT_SubmitReview.php?error=1 Review has already been submitted, please edit your existing review!.");
-			 exit();
+			header("Location: Manager_SubmitReview.php?error=1 Review has already been submitted, please edit your existing review!.");
+			exit();
 		}
+		
 		else
 		{
 			mysqli_query($conn,$sql)or die("Error Occured");
 		
-			header("Location: FT_SubmitReview.php?message=Successfully updated your review!.");
+			header("Location: Manager_SubmitReview.php?message=Successfully updated your review!.");
 			exit();
 		}
 	}
@@ -52,70 +51,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Account Details (PT)</title>
+    <title>TrackMySchedule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./css/manager_header.css" />
+    <link rel="stylesheet" href="./css/manager.css" />
 	<style>
-		body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-		}
-
-		.top-section {
-					border: 1px solid black;
-					height: 20vh;
-					overflow: hidden;
-					text-align: left;
-					padding: 10px;
-		}
-
-		.top-section img {
-			height: 100%;
-			width: auto;
-		}
-
-		.middle-section {
-			display: flex;
-			border: 1px solid black;
-			height: 80vh;
-		}
-
-		.navbar {
-			border: 1px solid black;
-			width: 200px;
-			padding: 0;
-			background-color: #f8f8f8;
-			box-sizing: border-box;
-		}
-
-		.navbar ul {
-			list-style-type: none;
-			padding: 0;
-			margin: 0;
-			width: 200px;
-		}
-
-		.navbar li {
-			margin: 0;
-		}
-
-		.navbar a {
-			text-decoration: none;
-			color: #333;
-			display: block;
-			width: calc(100% - 1px);
-			padding: 10px;
-			border: 0.5px solid black;
-			transition: background-color 0.3s, color 0.3s;
-			box-sizing: border-box;
-			border-width: 1px 0px 0px 0px;
-		}
-
-		.navbar a:hover {
-			background-color: #ddd;
-			color: #000;
-			border: 0.5px solid black;
-		}
-
 		.review-section {
 			padding: 20px;
 			flex-grow: 1;
@@ -173,12 +113,12 @@
 			border: none;
 			background-color: #28a745;
             color: white;
+			margin-bottom: 20px;
 		}
         #submitBtn:hover {
             background-color: #218838;
             color: white;
         }
-		
 		.error-message {
             color: red;
         }
@@ -190,25 +130,17 @@
 </head>
 <body>
     <!-- TOP SECTION -->
-    <div class="top-section">
-        <img src="Images/tms.png" alt="TrackMySchedule Logo">
+    <div class="topSection">
+        <img class="logo" src="./Images/tms.png" alt="TrackMySchedule Logo">
     </div>
     
     <!-- MIDDLE SECTION -->
-    <div class="middle-section">
+    <div class="contentNav">
+
         <!-- LEFT SECTION (NAVIGATION BAR) -->
-        <div class="navbar">
-            <ul>
-                <li><a href="FT_HomePage.php"><?php echo "$FirstName, Staff(FT)"?></a></li>
-                <li><a href="FT_AccountDetails.php">Manage Account</a></li>
-                <li><a href="FT_LeaveManagement.php">Leave Management</a></li>
-                <li><a href="FT_ViewNewsFeed.php">View News Feed</a></li>
-				<li><a href="FT_ReviewManagement.php">Leave a Review!</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+        <?php include 'navigation.php'; ?>
         
-        <!-- RIGHT SECTION (TASK TABLE) -->
+        <!-- RIGHT SECTION (REVIEW TABLE) -->
         <div class="review-section">
             <div class="review-header">
                 <i class="fas fa-user"></i>
