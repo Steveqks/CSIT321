@@ -203,7 +203,7 @@ session_start();
 			<script>
 				function confirmDiag(event, form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Company Admin?");
+					let result = confirm("Delete Company Admin? Account will not be recoverable after deletion.");
 					if (result)
 					{
 						form.submit();
@@ -214,7 +214,7 @@ session_start();
 				
 				function confirmDiag2(event, form){
 					console.log('confirmDiag2() executing');
-					let result = confirm("Confirm Reset Password?");
+					let result = confirm("Confirm Reset Password? New password will be sent to the account email address via email.");
 					if (result)
 					{
 						form.submit();

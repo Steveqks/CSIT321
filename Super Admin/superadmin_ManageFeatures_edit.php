@@ -101,9 +101,9 @@ session_start();
 								<table >
 									<tr>
 										<td>
-											FeatureID: <input type='text' name='newFeatureID' value='" . $Row['FeatureID'] . "' ><br>
+											S/N: <input type='text' name='newFeatureID' value='" . $Row['FeatureID'] . "' ><br>
 											Name: <input type='text' name='name' value='" . $Row['Name'] . "' > <br>
-											Description <input type='text' name='description' value='" . $Row['Description'] . "' > 
+											Description:  <input type='text' name='description' value='" . $Row['Description'] . "' > 
 										</td>
 											<td>
 											Icon: <input type='text' name='icon' value='" . $Row['Icon'] . "' > <br>

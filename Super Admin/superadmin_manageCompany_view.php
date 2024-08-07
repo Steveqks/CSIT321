@@ -134,7 +134,7 @@ session_start();
 			<script>
 				function confirmDiag(event, form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Company?");
+					let result = confirm("Delete Company? All Accounts and activity related to this company will be deleted permanently.");
 					if (result)
 					{
 						form.submit();

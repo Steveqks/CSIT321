@@ -88,7 +88,7 @@ session_start();
 								<table >
 									<tr>
 										<td>
-											FeatureID: <input type='text' name='newFeatureID' value='' ><br>
+											S/N: <input type='text' name='newFeatureID' value='' ><br>
 											Name: <input type='text' name='name' value='' > <br>
 											Description <input type='text' name='description' value='' > 
 										</td>

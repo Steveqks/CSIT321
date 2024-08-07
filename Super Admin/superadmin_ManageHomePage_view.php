@@ -39,7 +39,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 						
-			<h2>View Subscription Plans</h2>
+			<h2>Manage Home Page</h2>
 
   
 			<?php     

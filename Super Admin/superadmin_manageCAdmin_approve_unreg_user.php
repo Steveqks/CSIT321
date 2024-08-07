@@ -130,7 +130,7 @@ session_start();
 				<?php   
 						echo $_SESSION['message'];
 
-						$view = new userAccount();
+						$view = new userAccount($servername, $username, $password, $dbname);
 						$qres = $view->viewAccount();
 						
 						if($qres){
@@ -195,7 +195,7 @@ session_start();
 			<script>
 				function confirmDiag(event, form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Company Entry?");
+					let result = confirm("Delete Company Entry? You will not be able recover this application afterwards.");
 					if (result)
 					{
 						form.submit();
@@ -206,7 +206,7 @@ session_start();
 				
 				function confirmDiag2(event, form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Approve Company?");
+					let result = confirm("Approve Company? A email will be sent to the company email address registered after approval.");
 					if (result)
 					{
 						form.submit();

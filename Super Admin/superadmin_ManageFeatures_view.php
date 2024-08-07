@@ -64,11 +64,11 @@ session_start();
 					if($qres){
 						$accountsTable = "<table border = 1 class='center'>";
 						$accountsTable .= "	<tr>
-												<th>No.</th>
-												<th>Feature</th>
-												<th>Description</th>
-												<th>Icon</th>
-												<th>Image</th>
+												<th style='width:3%;'>S/N</th>
+												<th style='width:12%;'>Feature</th>
+												<th style='width:55%;'>Description</th>
+												<th style='width:15%;'>Icon</th>
+												<th style='width:15%;'>Image</th>
 											</tr>\n";
 						$accountsTable .= "<br/>";
 						}
@@ -108,7 +108,7 @@ session_start();
 				<script>
 					function confirmDiag(event, form){
 						console.log('confirmDiag() executing');
-						let result = confirm("Delete Feature?");
+						let result = confirm("Delete Feature? Feature will not be recoverable afterwards.");
 						if (result)
 						{
 							form.submit();

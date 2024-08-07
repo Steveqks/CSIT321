@@ -6,7 +6,7 @@ include 'db_connection.php';
 
 class userAccount{
 	public $conn;
-	function __construct(){
+	function __construct($servername, $username, $password, $dbname){
 		$this->conn=mysqli_connect($servername,$username,$password);
 		if(mysqli_connect_errno()){
 			echo "failed to connect";
