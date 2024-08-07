@@ -151,7 +151,7 @@ session_start();
 			<script>
 				function confirmDiag(form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Specialisation Group?");
+					let result = confirm("Delete Specialisation Group? ");
 					if (result)
 					{
 						form.submit();

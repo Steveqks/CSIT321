@@ -217,7 +217,7 @@ session_start();
 			<script>
 				function confirmDiag(event, form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete User?");
+					let result = confirm("Delete User? User & all activity related will be deleted permanently, And it will not be recoverable.");
 					if (result)
 					{
 						form.submit();
@@ -228,7 +228,7 @@ session_start();
 				
 				function confirmDiag2(event, form){
 					console.log('confirmDiag2() executing');
-					let result = confirm("Confirm Reset Password?");
+					let result = confirm("Confirm Reset Password? Email will be sent to the user's email address.");
 					if (result)
 					{
 						form.submit();

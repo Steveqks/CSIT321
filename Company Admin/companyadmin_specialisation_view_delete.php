@@ -120,7 +120,7 @@ session_start();
 			<script>
 				function confirmDiag(form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Delete Specialisation?");
+					let result = confirm("Delete Specialisation? All user related to specialisation will be deleted, you will not be able to undo this action.");
 					if (result)
 					{
 						form.submit();
