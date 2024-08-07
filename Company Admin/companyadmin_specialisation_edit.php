@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 	
+	include 'db_connection.php';
+
+	
 	$_SESSION['message'] = '';
 
 	if(isset($_POST['specialisationID'])){

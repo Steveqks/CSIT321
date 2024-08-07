@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message1'] = "";
 	$_SESSION['message2'] = "";
 
@@ -11,13 +14,9 @@ session_start();
 			$newGroupName = $_POST['newGroupName'];
 			$groupID= $_SESSION['groupID'];
 
-
-
-			
+		
 			// if group name changed
 			if(@$_POST['oldGroupName'] != $_POST['newGroupName']){
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-
 				//check if team name exists
 				$result = mysqli_query($db,	"SELECT * FROM specialisationgroupinfo WHERE GroupName = '$newGroupName' AND CompanyID = '$companyID' ") or die("Select Error");
 	
@@ -71,7 +70,6 @@ session_start();
 				$groupName = '';
 				
 				//get selected team data
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	"
 										SELECT GroupName
 										FROM 
