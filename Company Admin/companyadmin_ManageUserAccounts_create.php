@@ -18,7 +18,6 @@ session_start();
 		
 		$role = $_POST['role'];
 		$specialisation = $_POST['specialisationID'];
-		$status = $_POST['status'];
 		
 		//check if email exists in existinguser
 		if(isUserEmailExists($emailadd, $db)){
@@ -55,7 +54,7 @@ session_start();
 			{
 				$result = mysqli_query($db,"INSERT INTO existinguser 
 											(UserID, CompanyID, SpecialisationID, Role, FirstName, LastName, Gender, Email, Password, Status) 
-									VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '$status')") or die("Insert Error");
+									VALUES 	(NULL, '$companyID', '$specialisation', '$role', '$fname', '$lname', '$gender', '$emailadd', '$password', '1')") or die("Insert Error");
 				$_SESSION['message1'] = "<p>User Account for \"".$fname." ".$lname."\" created.</p>";
 			}
 			else $_SESSION['message1'] = "<p>Company has reached maximum allowed user accounts. Delete unnecessary accounts or upgrade subscription plan.</p>";
@@ -104,20 +103,44 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "" id='create' method = "post">
+            <form action = "" id='create' method = "post" style='
+																				flex: 0 0 48%;
+																				display: inline-flex;
+																				justify-content: space-between;
+																				padding: 8px;
+																				border: 1px solid #ddd;
+																				border-radius: 4px;
+																				box-sizing: border-box;
+																				width: 80%;
+																				margin-bottom: 15px;
+																				margin-bottom: 5px;
+																				display: flex;
+																				flex-direction: column;
+																				margin-bottom: 15px;
+																				background-color: #f0f0f0;
+																				padding: 20px;
+																				border-radius: 5px;
+																				max-width: 600px;
+																				display: flex;
+																				flex-direction: column;
+																					'>
 				<h2>Create User Account</h2>
 
-					<h4>First Name: <input name = "fname" type = "text" placeholder = "first name" maxlength='16' required>
-					</h4>
-					<h4>Last Name: <input name = "lname" type = "text" placeholder = "last name" maxlength='16'  required>
-					</h4>
-					<h4>Email address: <input name = "emailadd" type = "text" placeholder = "email address" maxlength='32'  required>
-					</h4>
-					<h4>Gender: <input name = "gender" type = "text" placeholder = "gender" maxlength='5'  required>
-					</h4>
-					<h4>Password: <input name = "password" type = "password" placeholder = "password" maxlength='16'  required>
-					</h4>
-					<h4>  <label for="Role">Role:</label>
+					<table>
+						<tr>
+							<td>
+								First Name: <br><input name = "fname" type = "text" placeholder = "first name" maxlength='16' required> <br>
+								Last Name: <br><input name = "lname" type = "text" placeholder = "last name" maxlength='16'  required> <br>
+								Email address: <br><input name = "emailadd" type = "text" placeholder = "email address" maxlength='32'  required> <br>
+								<br>
+													<input type='button' value='Create' onclick='confirmDiag()'>
+
+							</td> <td>				
+								Gender: <br><input name = "gender" type = "text" placeholder = "gender" maxlength='5'  required> <br>
+							
+								Password: <br><input name = "password" type = "password" placeholder = "password" maxlength='16'  required> <br>
+					
+					  <label for="Role">Role: <br></label>
 					  <select name="role" id="RoleSelect" onchange='isManager()'>
 						  <option value="Manager">Manager</option>
 						  <option value="FT">FT</option>
@@ -126,7 +149,7 @@ session_start();
 
 					  </select>						  
 
-					</h4>
+					
 					
 						<?php
 							
@@ -142,14 +165,14 @@ session_start();
 							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
 							$qres = mysqli_query($db, $sql); 
 							
-							$select = 	"<label for='Specialisation'><h4>Specialisation:</label>
+							$select = 	"<br><label for='Specialisation'>Specialisation:<br></label>
 										<select name='specialisationID' id='SelectSpecialisation'>";		
 							while ($Row = $qres->fetch_assoc()) 
 							{
 								$select .= "<option value ='" . $Row['SpecialisationID'] . "'> " 
 										. $Row['SpecialisationName'] . " </option>";
 							}
-							$select .= "</select> </h4>";
+							$select .= "</select> <br>";
 							
 							$encodedselect= json_encode($select);
 							
@@ -162,9 +185,9 @@ session_start();
 							}
 	
 						?><span id="span tag"> </span>
-					<h4>Status: <input name = "status" type = "text" placeholder = "status"  maxlength='1' required>
-					</h4>
-					<input type='button' value='Create' onclick='confirmDiag()'>
+
+					<br><br>
+					</td> 
 			</form>
 			
 			<?php   
