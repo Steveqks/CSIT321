@@ -7,23 +7,82 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
 
+    if (isset($_POST['search'])) {
+        
+        if ($_POST['searchDate'] === "" && $_POST['searchInput'] === "") {
 
-    $sql = "SELECT * FROM projectinfo
-            WHERE ProjectManagerID = ".$userID."
-            AND EndDate > CURRENT_TIMESTAMP
-            ORDER BY EndDate ASC;";
+            header('Location: Manager_viewProjectList.php?searcherror=Please key in date or name to search.');
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $projects = $result->fetch_all(MYSQLI_ASSOC);
+        } else {
 
-    $stmt->close();
+            if (isset($_POST['searchDate'])) {
+                $searchDate = $_POST['searchDate'];
+            }
+
+            if (isset($_POST['searchInput'])) {
+                $searchInput = $_POST['searchInput'];
+            }
+
+            if ($_POST['searchDate'] != "" && $_POST['searchInput'] != "") {
+
+                $sql = "SELECT * FROM projectinfo
+                        WHERE ProjectManagerID = ".$userID."
+                        AND EndDate > CURRENT_TIMESTAMP
+                        AND (StartDate = ".$searchDate." OR EndDate = ".$searchDate.")
+                        AND ProjectName LIKE '%".$searchInput."%'
+                        ORDER BY ProjectName ASC;";
+    
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchDate'] != "") {
+
+                $sql = "SELECT * FROM projectinfo
+                        WHERE ProjectManagerID = ".$userID."
+                        AND EndDate > CURRENT_TIMESTAMP
+                        AND (StartDate = '".$searchDate."' OR EndDate = '".$searchDate."')
+                        ORDER BY ProjectName ASC;";
+    
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchInput'] != "") {
+
+                $sql = "SELECT * FROM projectinfo
+                        WHERE ProjectManagerID = ".$userID."
+                        AND EndDate > CURRENT_TIMESTAMP
+                        AND ProjectName LIKE '%".$searchInput."%'
+                        ORDER BY ProjectName ASC;";
+    
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+            }
+
+        }
+    } else {
+
+        $sql = "SELECT * FROM projectinfo
+                WHERE ProjectManagerID = ".$userID."
+                AND EndDate > CURRENT_TIMESTAMP
+                ORDER BY EndDate ASC;";
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+    }
     
 ?>
 
@@ -52,6 +111,21 @@
         <div class="content">
             <div class="task-header">
                 <h2>View Projects List</h2>
+            </div>
+            
+            <div class="search">
+                <form action="Manager_viewProjectList.php" method="POST">
+                    <label for="search">Search
+                    <span>Date: <input type="date" name="searchDate"></span>
+                    <span>Project Name: <input type="text" name="searchInput" placeholder="Enter name"></span>
+                    <input type="submit" class="searchBtn" name="search" value="Search"></label>
+                </form>
+                                
+                <?php
+                    if (isset($_GET['searcherror'])) {
+                        echo '<div class="searcherror-message">' . htmlspecialchars($_GET['searcherror']) . '</div>';
+                    }
+                ?>
             </div>
 
             <div class="innerContent">
