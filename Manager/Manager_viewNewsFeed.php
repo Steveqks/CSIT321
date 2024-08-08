@@ -108,15 +108,13 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>View News Feed</h2>
-                <a href="Manager_addNewsFeed.php"><h4>Add News Feed</h4></a>
-                <div class="categories">
-                    <label for="categories">View By:
-                        <a href='Manager_viewNewsFeed?viewCompany=true'><button>Company</button></a>
-                        <a href='Manager_viewNewsFeed?viewProject=true'><button>Project</button></a>
-                    </label>
-                </div>
+            <h2>View News Feed</h2>
+            <a href="Manager_addNewsFeed.php"><h4>Add News Feed</h4></a>
+            <div class="categories">
+                <label for="categories">View By:
+                    <a href='Manager_viewNewsFeed?viewCompany=true'><button>Company</button></a>
+                    <a href='Manager_viewNewsFeed?viewProject=true'><button>Project</button></a>
+                </label>
             </div>
 
             <div class="innerContentNewsFeed">

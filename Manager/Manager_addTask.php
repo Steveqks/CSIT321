@@ -56,9 +56,7 @@
         
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Allocate / Schedule Task</h2>
-            </div>
+            <h2>Allocate / Schedule Task</h2>
 
             <div class="innerContent">
 

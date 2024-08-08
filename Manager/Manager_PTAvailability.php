@@ -204,9 +204,7 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Part-Time Availability</h2>
-            </div>
+            <h2>Part-Time Availability</h2>
             
             <div class="search">
                 <form action="Manager_PTAvailability.php" method="POST">

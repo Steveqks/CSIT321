@@ -109,9 +109,7 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>View Projects List</h2>
-            </div>
+            <h2>View Projects List</h2>
             
             <div class="search">
                 <form action="Manager_viewProjectList.php" method="POST">
