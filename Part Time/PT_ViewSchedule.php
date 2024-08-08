@@ -44,6 +44,16 @@ $total_pages = ceil($total_records / $limit);
 
 $stmt->close();
 $stmt_total->close();
+
+// Fetch non-working days for the company
+$sql_non_working_days = "SELECT DateName, Date FROM calendar WHERE CompanyID = ?";
+$stmt_non_working_days = $conn->prepare($sql_non_working_days);
+$stmt_non_working_days->bind_param("i", $companyID);
+$stmt_non_working_days->execute();
+$result_non_working_days = $stmt_non_working_days->get_result();
+$non_working_days = $result_non_working_days->fetch_all(MYSQLI_ASSOC);
+
+$stmt_non_working_days->close();
 CloseCon($conn);
 
 // Function to calculate pagination range
@@ -148,8 +158,8 @@ $pagination_range = getPaginationRange($page, $total_pages);
             margin: 0;
             display: inline-block;
         }
-		
-		.header i {
+
+        .header i {
             margin-right: 10px;
         }
 
@@ -231,6 +241,24 @@ $pagination_range = getPaginationRange($page, $total_pages);
             pointer-events: none;
             cursor: default;
         }
+
+        .non-working-header {
+			display: inline-flex;
+            align-items: center;
+            border-bottom: 1px solid black;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+		
+		.non-working-header h3 {
+            margin: 0;
+            display: inline-block;
+        }
+
+        .non-working-header i {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -302,6 +330,33 @@ $pagination_range = getPaginationRange($page, $total_pages);
                 <?php endif; ?>
             </ul>
             <?php endif; ?>
+
+            <div class="non-working-header">
+                <i class="fas fa-calendar-times"></i>
+                <h3>Company Non-Working Days</h3>
+            </div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Non-Working Day</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (count($non_working_days) > 0): ?>
+                        <?php foreach ($non_working_days as $day): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($day['DateName']); ?></td>
+                                <td><?php echo htmlspecialchars($day['Date']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="2">No non-working days found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
