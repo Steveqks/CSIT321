@@ -70,7 +70,9 @@ session_start();
 											FROM 
 												calendar
 											WHERE 
-												CompanyID = '$companyID';
+												CompanyID = '$companyID'
+											ORDER BY
+												Date;
 											") or die("Select Error");
 				
 				if($result){
