@@ -89,12 +89,10 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Edit Project</h2>
-            </div>
+            <h2>Edit Project</h2>
 
             <div class="innerContent">
-            <div class="row">
+                <div class="row">
                     <div class="col-75">
                         <div class="container">
                             <form name="editProject" action="Manager_editProjectGroup.php" method="POST">

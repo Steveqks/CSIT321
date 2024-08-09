@@ -138,9 +138,7 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>View Project Details</h2>
-            </div>
+            <h2>View Project Details</h2>
 
             <div class="innerContent">
 

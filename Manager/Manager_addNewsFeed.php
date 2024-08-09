@@ -55,12 +55,10 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Post News Feed</h2>
-            </div>
+            <h2>Post News Feed</h2>
 
             <div class="innerContent">
-            <div class="row">
+                <div class="row">
                     <div class="col-75">
                         <div class="container">
                             <form name="addNewsFeed" action="Manager_addNewsFeed.php" method="POST">

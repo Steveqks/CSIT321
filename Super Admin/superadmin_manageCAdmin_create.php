@@ -134,7 +134,7 @@ session_start();
 											<label for='Company'>Company:</label>
 											<select name='companyID' id=''>";		
 					while ($Row = $qres->fetch_assoc()) {
-							$select .= "<option value ='".$Row['CompanyID']."'> ID:". $Row['CompanyID']. ", " . $Row['CompanyName']. " </option>";
+							$select .= "<option value ='".$Row['CompanyID']. "'>  " . $Row['CompanyName']. " </option>";
 						}
 						$select .= "</select> <br>";
 						echo $select;

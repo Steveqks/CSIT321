@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	$_SESSION['message1'] = '';
+
 	include '../Session/session_check_companyadmin.php';
 
 	if(isset($_POST['delete'])=='yes')
@@ -68,7 +70,9 @@ session_start();
 											FROM 
 												calendar
 											WHERE 
-												CompanyID = '$companyID';
+												CompanyID = '$companyID'
+											ORDER BY
+												Date;
 											") or die("Select Error");
 				
 				if($result){

@@ -71,12 +71,10 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Edit News Feed</h2>
-            </div>
+            <h2>Edit News Feed</h2>
 
             <div class="innerContent">
-            <div class="row">
+                <div class="row">
                     <div class="col-75">
                         <div class="container">
                             <form name="editNewsFeed" action="Manager_editNewsFeed.php" method="POST">

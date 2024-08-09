@@ -12,13 +12,21 @@
 							</div>
 						</div>";
 					
-	$navigation .= "<a href='superadmin_manageCAdmin_view_delete.php'> Manage Company Admins</a>";
-					
 	// second group link
-	$navigation .= "<a id='myButton2' class='myButton2' onClick='showLinks2()'> Manage Web Pages ➕</a>
+	$navigation .=	"<a id='myButton2' class='myButton2' onClick='showLinks2()' > Manage Company Admin ➕ </a>
 						<div id='linkContainer2'>
 							<div class='show'>
-								<a href='superadmin_ManageHomePage_view.php'> - Edit Home Page </a>
+								<a href='superadmin_manageCAdmin_create.php'> - Create Company Admin </a>
+								<a href='superadmin_manageCAdmin_view_delete.php'> - View Company Admins</a>
+							</div>
+						</div> ";
+					
+			
+					
+	// third group link
+	$navigation .= "<a id='myButton3' class='myButton2' onClick='showLinks3()'> Manage Web Pages ➕</a>
+						<div id='linkContainer3'>
+							<div class='show'>
 								<a href='superadmin_ManageFeatures_view.php'> - View Features Page </a>
 								<a href='superadmin_SubscriptionPlans_View.php'> - View Subscription Plans </a>
 							</div>
@@ -50,10 +58,27 @@
 		show1 = !show1;
 	}
 	
-	function showLinks2() {
+		function showLinks2() {
 		
 		let myButton = document.getElementById("myButton2");
 		let linkContainer = document.getElementById("linkContainer2");
+
+		if (show2 == false) {
+			myButton.classList.add('expanded');
+			myButton.innerHTML = 'Manage Company Admin ➖';
+			linkContainer.style.display = 'block';
+		} else {
+			myButton.classList.remove('expanded');
+			myButton.innerHTML = 'Manage Company Admin ➕';
+			linkContainer.style.display = 'none';
+		}
+		show2 = !show2;
+	}
+	
+	function showLinks3() {
+		
+		let myButton = document.getElementById("myButton3");
+		let linkContainer = document.getElementById("linkContainer3");
 
 		if (show2 == false) {
 			myButton.classList.add('expanded');

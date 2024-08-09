@@ -83,24 +83,38 @@ session_start();
 				
 				$companyID = $_SESSION['companyID'];
 			
-				$form = "<form action'' id='ModifyEntry' method='POST'>
+				$form = "<form action'' id='ModifyEntry' method='POST'style='
+																				flex: 0 0 48%;
+																				display: inline-flex;
+																				justify-content: space-between;
+																				padding: 8px;
+																				border: 1px solid #ddd;
+																				border-radius: 4px;
+																				box-sizing: border-box;
+																				width: 80%;
+																				margin-bottom: 15px;
+																				margin-bottom: 5px;
+																				display: flex;
+																				flex-direction: column;
+																				margin-bottom: 15px;
+																				background-color: #f0f0f0;
+																				padding: 20px;
+																				border-radius: 5px;
+																				max-width: 600px;
+																				display: flex;
+																				flex-direction: column;
+																					'>
 						<br>
 						<table >
 						<tr>
-							<td style='border: 2px solid black; border-collapse: collapse;'>
-						<b>FROM: </b>
-						<br>
-							Date Name: <input type='text' name='oldDateName' value='" . $_SESSION['dateName']. "' readonly><br>
-							Date: <input type='date' name='oldDate' value=" . $_SESSION['date'] . " readonly> <br>
-						<br>
+							 <input type='hidden' name='oldDateName' value='" . $_SESSION['dateName']. "' readonly><br>
+							<input type='hidden' name='oldDate' value=" . $_SESSION['date'] . " readonly> <br>
 							</td>
-							<td style='border: 2px solid black; border-collapse: collapse;'> 
+							<td> 
 							
 							
-						<b>TO:</b>
-						<br>
-							Date Name: <input type='text' name='newDateName' maxlength='32' value='" . $_SESSION['dateName'] . "' ><br>
-							Date: <input type='date' name='newDate' value=" . $_SESSION['date'] . " > <br>
+							Date Name: <input type='text' name='newDateName' maxlength='32' value='" . $_SESSION['dateName'] . "' ><br> <br>
+							Date: <input type='date' name='newDate' value=" . $_SESSION['date'] . " > <br> <br>
 						<input type='button' value='Update' onclick='confirmDiag()'>
 						</form>
 							</td>

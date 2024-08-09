@@ -60,7 +60,7 @@ session_start();
 				while ($Row = $result->fetch_assoc()) {
 					$specialisationID = $Row['SpecialisationID'];}
 				
-				echo "<h2>Add Users to Pool: ". $groupName . " </h2>";
+				echo "<h2>Add Users to Group: ". $groupName . " </h2>";
 				
 				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db, "

@@ -15,25 +15,158 @@
     $userStatusID = 1;
     $taskStatusID = 1;
 
-    $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
-            (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
-            pi.ProjectName, ti.Status
-            FROM projectinfo pi
-            JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
-            JOIN task t ON t.MainTaskID = ti.MainTaskID
-            JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
-            JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
-            WHERE pi.ProjectManagerID = ".$userID."
-            GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
-            ORDER BY ti.Status DESC, ti.DueDate ASC;";
 
-            //echo $sql;
+    // SEARCH
+    if (isset($_POST['search'])) {
+        
+        if ($_POST['searchDate'] === "" && $_POST['searchInput'] === "") {
 
-    $stmt = $conn->prepare($sql);
+            header('Location: Manager_viewTasksList.php?searcherror=Please key in date or name to search.');
+
+        } else {
+
+            if (isset($_POST['searchDate'])) {
+                $searchDate = $_POST['searchDate'];
+            }
+
+            if (isset($_POST['searchInput'])) {
+                $searchInput = $_POST['searchInput'];
+            }
+
+            if ($_POST['searchDate'] != "" && $_POST['searchInput'] != "") {
+
+                $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                        (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                        pi.ProjectName, ti.Status
+                        FROM projectinfo pi
+                        JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                        JOIN task t ON t.MainTaskID = ti.MainTaskID
+                        JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                        JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                        WHERE pi.ProjectManagerID = ".$userID."
+                        AND (ti.StartDate = '".$searchDate."' OR a.DueDate = '".$searchDate."')
+                        AND pi.ProjectName LIKE '%".$searchInput."%'
+                        GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                        ORDER BY ti.Status DESC;";
     
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $tasks = $result->fetch_all(MYSQLI_ASSOC);
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchDate'] != "") {
+
+                $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                        (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                        pi.ProjectName, ti.Status
+                        FROM projectinfo pi
+                        JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                        JOIN task t ON t.MainTaskID = ti.MainTaskID
+                        JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                        JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                        WHERE pi.ProjectManagerID = ".$userID."
+                        AND (ti.StartDate = '".$searchDate."' OR a.DueDate = '".$searchDate."')
+                        GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                        ORDER BY ti.Status DESC, pi.ProjectName ASC;";
+    
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchInput'] != "") {
+
+                $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                        (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                        pi.ProjectName, ti.Status
+                        FROM projectinfo pi
+                        JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                        JOIN task t ON t.MainTaskID = ti.MainTaskID
+                        JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                        JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                        WHERE pi.ProjectManagerID = ".$userID."
+                        AND pi.ProjectName LIKE '%".$searchInput."%'
+                        GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                        ORDER BY ti.Status DESC, ti.DueDate, pi.ProjectName ASC;";
+    
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+            }
+
+        }
+    } else if (isset($_GET['viewOngoingTasks'])) {
+
+        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                pi.ProjectName, ti.Status
+                FROM projectinfo pi
+                JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                JOIN task t ON t.MainTaskID = ti.MainTaskID
+                JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                WHERE pi.ProjectManagerID = ".$userID."
+                AND ti.Status = 1
+                GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                ORDER BY pi.ProjectName, ti.DueDate ASC;";
+
+                //echo $sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else if (isset($_GET['viewCompletedTasks'])) {
+
+        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                pi.ProjectName, ti.Status
+                FROM projectinfo pi
+                JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                JOIN task t ON t.MainTaskID = ti.MainTaskID
+                JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                WHERE pi.ProjectManagerID = ".$userID."
+                AND ti.Status = 0
+                GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                ORDER BY pi.ProjectName, ti.DueDate ASC;";
+
+                //echo $sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else {
+
+        $sql = "SELECT ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff,
+                (SELECT COUNT(*) FROM task WHERE MainTaskID = ti.MainTaskID) AS totalNumStaff,
+                pi.ProjectName, ti.Status
+                FROM projectinfo pi
+                JOIN taskinfo ti ON pi.MainProjectID = ti.MainProjectID
+                JOIN task t ON t.MainTaskID = ti.MainTaskID
+                JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
+                JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
+                WHERE pi.ProjectManagerID = ".$userID."
+                GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
+                ORDER BY ti.Status DESC, pi.ProjectName, ti.DueDate ASC;";
+
+                //echo $sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+    }
+
 
     // Close the statement and connection
     $stmt->close();
@@ -65,6 +198,28 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <h2 class="contentHeader">View Tasks List</h2>
+
+            <div class="categories">
+                <label for="categories">View By:
+                    <a href='Manager_viewTasksList?viewOngoingTasks=true'><button>Ongoing Tasks</button></a>
+                    <a href='Manager_viewTasksList?viewCompletedTasks=true'><button>Completed Tasks</button></a>
+                </label>
+            </div>
+            
+            <div class="search">
+                <form action="Manager_viewTasksList.php" method="POST">
+                    <label for="search">Search
+                    <span>Date: <input type="date" name="searchDate"></span>
+                    <span>Project Name: <input type="text" name="searchInput" placeholder="Enter name"></span>
+                    <input type="submit" class="searchBtn" name="search" value="Search"></label>
+                </form>
+                                
+                <?php
+                    if (isset($_GET['searcherror'])) {
+                        echo '<div class="searcherror-message">' . htmlspecialchars($_GET['searcherror']) . '</div>';
+                    }
+                ?>
+            </div>
 
             <div class="innerContent">
                 

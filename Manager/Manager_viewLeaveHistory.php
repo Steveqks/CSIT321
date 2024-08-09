@@ -7,24 +7,92 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
 
     $userStatusID = 1;
 
-    if (isset($_GET['search'])) {
+    if (isset($_POST['search'])) {
 
-        $searchInput = $_GET['searchInput'];
+        if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
+
+            $searchInput = explode(" ", $_POST['searchInput']);
+
+            $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
+
+            for ($i = 0; $i < count($searchInput); $i++) {
+                $name[$i] = $searchInput[$i];
+            }
+        }
 
         $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
                 FROM leaves a
                 INNER JOIN existinguser b ON a.UserID = b.UserID
                 WHERE b.Status = ".$userStatusID."
-                AND (b.FirstName LIKE '%".$searchInput."%' OR b.LastName LIKE '%".$searchInput."%')
+                AND b.CompanyID = ".$companyID;
+
+        for ($i = 0; $i < count($searchInput); $i++) {
+            $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
+        }
+        
+        $sql .= " AND a.Status IS NOT NULL
                 GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
                 ORDER BY a.Status ASC, a.EndDate ASC;";
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else if (isset($_GET['viewPendingLeaves'])) {
+
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE b.Status = ".$userStatusID."
+                AND b.CompanyID = ".$companyID."
+                AND a.Status IS NULL
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                ORDER BY a.EndDate ASC;";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else if (isset($_GET['viewApproveLeaves'])) {
+
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE b.Status = ".$userStatusID."
+                AND b.CompanyID = ".$companyID."
+                AND a.Status = 1
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                ORDER BY a.EndDate ASC;";
+
+
+        //echo $sql;
+
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $leaves = $result->fetch_all(MYSQLI_ASSOC);
+
+    } else if (isset($_GET['viewDeclineLeaves'])) {
+
+        $sql = "SELECT a.LeaveID, b.UserID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                FROM leaves a
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE b.Status = ".$userStatusID."
+                AND b.CompanyID = ".$companyID."
+                AND a.Status = 0
+                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+                ORDER BY a.EndDate ASC;";
 
 
         //echo $sql;
@@ -41,8 +109,9 @@
                 FROM leaves a
                 INNER JOIN existinguser b ON a.UserID = b.UserID
                 WHERE b.Status = ".$userStatusID."
+                AND b.CompanyID = ".$companyID."
                 GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
-                ORDER BY a.Status ASC, a.EndDate ASC;";
+                ORDER BY a.Status DESC, a.EndDate ASC;";
 
 
         //echo $sql;
@@ -77,11 +146,6 @@
             header('Location: Manager_viewLeaveHistory.php');
         }
     }
-    
-
-    // Close the statement and connection
-    $stmt->close();
-    CloseCon($conn);
 ?>
 
 <!DOCTYPE html>
@@ -109,10 +173,18 @@
         <!-- Right Section (Activity) -->
         <div class="content">
             <h2 class="contentHeader">View Leave History</h2>
+
+            <div class="categories">
+                <label for="categories">View By:
+                    <a href='Manager_viewLeaveHistory?viewPendingLeaves=true'><button>Pending Leaves</button></a>
+                    <a href='Manager_viewLeaveHistory?viewApproveLeaves=true'><button>Approved Leaves</button></a>
+                    <a href='Manager_viewLeaveHistory?viewDeclineLeaves=true'><button>Declined Leaves</button></a>
+                </label>
+            </div>
             
             <div class="search">
                 <form action="Manager_viewLeaveHistory.php" method="POST">
-                    <input type="text" name="searchInput" placeholder="Enter name" required>
+                    <span>Search: <input type="text" name="searchInput" placeholder="Enter name" required></span>
                     <input type="submit" class="searchBtn" name="search" value="Search">
                 </form>
             </div>

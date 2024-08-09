@@ -89,7 +89,9 @@ session_start();
 								WHERE 
 									spi.CompanyID = '$companyID'
 								GROUP BY 
-									spi.MainGroupID, spi.GroupName, s.SpecialisationName;
+									spi.MainGroupID, spi.GroupName, s.SpecialisationName
+								ORDER BY
+									GroupName;
 								") 
 							or die("Select Error");
 				

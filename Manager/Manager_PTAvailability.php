@@ -48,28 +48,86 @@
 
         $formatted_monday = $nextMonday->format('Y-m-d');
 
-        $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                FROM availability a
-                LEFT JOIN existinguser b ON a.UserID = b.UserID
-                WHERE a.IsAvailable = 1
-                AND a.WeekStartDate >= '".$formatted_monday."'
-                AND a.Status IS NULL
-                GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
-                ORDER BY a.WeekStartDate,
-                    CASE
-                        WHEN a.DayOfWeek = 'Monday' THEN 1
-                        WHEN a.DayOfWeek = 'Tuesday' THEN 2
-                        WHEN a.DayOfWeek = 'Wednesday' THEN 3
-                        WHEN a.DayOfWeek = 'Thursday' THEN 4
-                        WHEN a.DayOfWeek = 'Friday' THEN 5
-                        WHEN a.DayOfWeek = 'Saturday' THEN 6
-                        WHEN a.DayOfWeek = 'Sunday' THEN 7
-                    END;";
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $availability = $result->fetch_all(MYSQLI_ASSOC);
+
+        if (isset($_POST['search'])) {
+        
+            if ($_POST['searchInput'] === "") {
+    
+                header('Location: Manager_PTAvailability.php?searcherror=Please key in date or name to search.');
+    
+            } else {
+    
+                if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
+
+                    $searchInput = explode(" ", $_POST['searchInput']);
+
+                    $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
+
+                    for ($i = 0; $i < count($searchInput); $i++) {
+                        $name[$i] = $searchInput[$i];
+                    }
+                }
+                
+                if ($_POST['searchInput'] != "") {
+    
+                    $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                            FROM availability a
+                            LEFT JOIN existinguser b ON a.UserID = b.UserID
+                            WHERE a.IsAvailable = 1
+                            AND a.WeekStartDate >= '".$formatted_monday."'
+                            AND a.Status IS NULL";
+
+                    for ($i = 0; $i < count($searchInput); $i++) {
+                        $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
+                    }
+
+                    $sql .= "GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
+                            ORDER BY a.WeekStartDate,
+                                CASE
+                                    WHEN a.DayOfWeek = 'Monday' THEN 1
+                                    WHEN a.DayOfWeek = 'Tuesday' THEN 2
+                                    WHEN a.DayOfWeek = 'Wednesday' THEN 3
+                                    WHEN a.DayOfWeek = 'Thursday' THEN 4
+                                    WHEN a.DayOfWeek = 'Friday' THEN 5
+                                    WHEN a.DayOfWeek = 'Saturday' THEN 6
+                                    WHEN a.DayOfWeek = 'Sunday' THEN 7
+                                END;";
+
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $availability = $result->fetch_all(MYSQLI_ASSOC);
+    
+                }
+    
+            }
+        } else {
+    
+            $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                    FROM availability a
+                    LEFT JOIN existinguser b ON a.UserID = b.UserID
+                    WHERE a.IsAvailable = 1
+                    AND a.WeekStartDate >= '".$formatted_monday."'
+                    AND a.Status IS NULL
+                    GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
+                    ORDER BY a.WeekStartDate,
+                        CASE
+                            WHEN a.DayOfWeek = 'Monday' THEN 1
+                            WHEN a.DayOfWeek = 'Tuesday' THEN 2
+                            WHEN a.DayOfWeek = 'Wednesday' THEN 3
+                            WHEN a.DayOfWeek = 'Thursday' THEN 4
+                            WHEN a.DayOfWeek = 'Friday' THEN 5
+                            WHEN a.DayOfWeek = 'Saturday' THEN 6
+                            WHEN a.DayOfWeek = 'Sunday' THEN 7
+                        END;";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $availability = $result->fetch_all(MYSQLI_ASSOC);
+
+        }
 
 
 
@@ -146,8 +204,21 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Part-Time Availability</h2>
+            <h2>Part-Time Availability</h2>
+            
+            <div class="search">
+                <form action="Manager_PTAvailability.php" method="POST">
+                    <label for="search">Search
+                    <span>Name: <input type="text" name="searchInput" placeholder="Enter name"></span>
+                    <input type="submit" class="searchBtn" name="search" value="Search"></label>
+                </form>
+                                
+                <?php
+                    if (isset($_GET['searcherror'])) {
+                        echo '<div class="searcherror-message">' . htmlspecialchars($_GET['searcherror']) . '</div>';
+                    }
+                ?>
+            </div>
 
             <div class="innerContent">
 

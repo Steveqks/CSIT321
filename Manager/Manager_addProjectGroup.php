@@ -177,9 +177,7 @@
             
         <!-- Right Section (Activity) -->
         <div class="content">
-            <div class="task-header">
-                <h2>Add Project</h2>
-            </div>
+            <h2>Add Project</h2>
 
             <div class="innerContent">
                 <div class="row">
