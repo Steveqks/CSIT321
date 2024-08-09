@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -127,13 +126,11 @@
 
                     <div class="nameDateNewsFeed">
 
-                        <div class="teamNameNewsFeed">
-                            <?php echo $project['fullName']; ?>
-                            <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $project['NewsFeedID']; ?>">Edit Post</a>
-                        </div>
+                        <span><?php echo $project['fullName']; ?></span>
+                        <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $project['NewsFeedID']; ?>">Edit Post</a>
 
-                        <div class="teamDateNewsFeed">
-                            <?php echo date('F j, Y',strtotime($project['DatePosted'])); ?>
+                        <div class="dateNewsFeed">
+                            <span><?php echo date('F j, Y',strtotime($project['DatePosted'])); ?></span>
                             <a href="#" onclick="return confirmDelete(<?php echo $project['NewsFeedID']; ?>)">Delete Post</a>
                         </div>
 
@@ -152,25 +149,29 @@
                     foreach ($companyNewsFeed as $company):?>
 
                         <div class="nameDateNewsFeed">
-                            
-                            <div class="companyNameNewsFeed">
-                                <label for="fullname"><?php echo $company['fullName']; ?></label>
 
-                                <?php if($company['ManagerID'] == $userID) { ?>
-                                    <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $company['NewsFeedID']; ?>">Edit Post</a>
-                                <?php } ?>
-                            </div>
-
-                            
                             <?php if($company['ManagerID'] == $userID) { ?>
-                                <div class="teamDateNewsFeed">
-                                    <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
+
+                                <span><?php echo $company['fullName']; ?></span>
+                                <a href="Manager_editNewsFeed.php?editnewsfeedid=<?php echo $company['NewsFeedID']; ?>">Edit Post</a>
+
+                                <div class="dateNewsFeed">
+
+                                    <span><?php echo date('F j, Y',strtotime($company['DatePosted'])); ?></span>
                                     <a href="Manager_viewNewsFeed.php?deletenewsfeedid=<?php echo $company['NewsFeedID']; ?>">Delete Post</a>
+                                
                                 </div>
+
                             <?php } else { ?>
-                                <div class="companyDateNewsFeed">
-                                    <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
+
+                                <span><?php echo $company['fullName']; ?></span>
+
+                                <div class="dateNewsFeed">
+
+                                    <span><?php echo date('F j, Y',strtotime($company['DatePosted'])); ?></span>
+                                
                                 </div>
+
                             <?php } ?>
 
                         </div>
