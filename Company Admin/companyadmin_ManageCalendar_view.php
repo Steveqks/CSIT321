@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	$_SESSION['message1'] = '';
+
 	include '../Session/session_check_companyadmin.php';
 
 	if(isset($_POST['delete'])=='yes')
