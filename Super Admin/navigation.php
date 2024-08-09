@@ -27,7 +27,6 @@
 	$navigation .= "<a id='myButton3' class='myButton2' onClick='showLinks3()'> Manage Web Pages ➕</a>
 						<div id='linkContainer3'>
 							<div class='show'>
-								<a href='superadmin_ManageHomePage_view.php'> - Edit Home Page </a>
 								<a href='superadmin_ManageFeatures_view.php'> - View Features Page </a>
 								<a href='superadmin_SubscriptionPlans_View.php'> - View Subscription Plans </a>
 							</div>
