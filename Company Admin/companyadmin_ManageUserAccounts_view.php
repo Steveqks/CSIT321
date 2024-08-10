@@ -143,7 +143,9 @@ session_start();
 											JOIN 
 												specialisation s ON eu.SpecialisationID = s.SpecialisationID
 											WHERE 
-												eu.CompanyID = '$companyID';
+												eu.CompanyID = '$companyID'
+											ORDER BY
+												FirstName;
 											") or die("Select Error");
 				
 				if($result){

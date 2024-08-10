@@ -29,7 +29,7 @@ session_start();
 				$_SESSION['FeatureID'] = $newFeatureID;
 			}
 			else{
-				$_SESSION['message1'] = "FeatureID already exists";
+				$_SESSION['message1'] = "S/N already exists";
 			}
 		}
 		else 
