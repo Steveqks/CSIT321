@@ -12,8 +12,8 @@
 
         // Connect to the database
         $conn = OpenCon();
- $viewCompany = FALSE;
-    $viewProject = TRUE;
+		$viewCompany = FALSE;
+		$viewProject = TRUE;
 
     if(isset($_GET['viewCompany'])) {
 
@@ -142,7 +142,6 @@
 			width: 80%;
 			padding: 10px 20px 10px 20px;
 		}
-		
 		.categories button {
 			margin-left: 30px;
 			background-color: white;
@@ -153,35 +152,17 @@
 			background-color: rgb(229, 229, 229);
 		}
 		.nameDateNewsFeed {
-			width: 100%;
-			display: flex;
-			align-items: baseline;
-			padding-top: 30px;
+			overflow: hidden;
+			padding: 30px 0 30px 0;
 		}
-		.teamNameNewsFeed, .teamDateNewsFeed {
-			display: flex;
-			align-items: baseline;
-			padding-bottom: 15px;
+		.nameDateNewsFeed a, .nameDateNewsFeed span {
+			float: left;
 		}
-		.companyNameNewsFeed a {
-			padding-left: 20px;
+		.nameDateNewsFeed a {
+			margin-left: 20px;
 		}
-		.teamDateNewsFeed a {
-			padding-left: 20px;
-		}
-		.teamDateNewsFeed {
-			padding-left: 61%;
-		}
-		.teamNameNewsFeed a {
-			padding-left: 20px;
-		}
-		.companyNameNewsFeed, .companyDateNewsFeed {
-			display: flex;
-			align-items: baseline;
-			padding-bottom: 15px;
-		}
-		.companyDateNewsFeed {
-			padding-left: 80%;
+		.dateNewsFeed {
+			float: right;
 		}
 		.newsFeedContents {
 			background-color:#f2f2f2;
@@ -224,7 +205,7 @@
                 </div>
             </div>
 
-            <div class="innerContentNewsFeed">
+             <div class="innerContentNewsFeed">
                 
                 <?php
                 
@@ -234,12 +215,10 @@
 
                     <div class="nameDateNewsFeed">
 
-                        <div class="teamNameNewsFeed">
-                            <?php echo $project['fullName']; ?>
-                        </div>
+                        <span><?php echo $project['fullName']; ?></span>
 
-                        <div class="teamDateNewsFeed">
-                            <?php echo date('F j, Y',strtotime($project['DatePosted'])); ?>
+                        <div class="dateNewsFeed">
+                            <span><?php echo date('F j, Y',strtotime($project['DatePosted'])); ?></span>
                         </div>
 
                     </div>
@@ -257,20 +236,25 @@
                     foreach ($companyNewsFeed as $company):?>
 
                         <div class="nameDateNewsFeed">
-                            
-                            <div class="companyNameNewsFeed">
-                                <label for="fullname"><?php echo $company['fullName']; ?></label>
-                            </div>
 
-                            
                             <?php if($company['ManagerID'] == $userID) { ?>
-                                <div class="teamDateNewsFeed">
-                                    <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
+
+                                <span><?php echo $company['fullName']; ?></span>
+
+                                <div class="dateNewsFeed">
+                                    <span><?php echo date('F j, Y',strtotime($company['DatePosted'])); ?></span>
                                 </div>
+
                             <?php } else { ?>
-                                <div class="companyDateNewsFeed">
-                                    <?php echo date('F j, Y',strtotime($company['DatePosted'])); ?>
+
+                                <span><?php echo $company['fullName']; ?></span>
+
+                                <div class="dateNewsFeed">
+
+                                    <span><?php echo date('F j, Y',strtotime($company['DatePosted'])); ?></span>
+                                
                                 </div>
+
                             <?php } ?>
 
                         </div>
