@@ -98,7 +98,7 @@ session_start();
 											</td>
 									</tr>
 								</table>
-								<input type='button' value='Create Feature' onclick='confirmDiag();' style='horizontal-align: right; width: 20%;'>
+								<input type='button' value='Create Feature' onclick='confirmDiag();' style='horizontal-align: right; width: 30%;'>
 							</form>
 								";
 								
