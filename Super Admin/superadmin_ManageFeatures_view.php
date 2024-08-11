@@ -57,7 +57,7 @@ session_start();
 			<?php     
 					echo $_SESSION['message'];
 					
-					echo "<a href='superadmin_ManageFeatures_create' target='_self'>Add New Features</a>";
+					echo "<a href='superadmin_ManageFeatures_create.php' target='_self'>Add New Features</a>";
 		
 					$qres = mysqli_query($db,	"SELECT * FROM features ") or die("Select Error");
 						

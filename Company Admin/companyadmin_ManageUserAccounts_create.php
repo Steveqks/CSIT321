@@ -165,7 +165,7 @@ session_start();
 							}
 														
 							//find all specialisation and omit manager
-							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
+							@$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
 							$qres = mysqli_query($db, $sql); 
 							
 							$select = 	"<br><label for='Specialisation'>Specialisation:<br></label>

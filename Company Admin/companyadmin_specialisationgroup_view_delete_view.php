@@ -2,6 +2,9 @@
 session_start();
 
 	include '../Session/session_check_companyadmin.php';
+	
+	include 'db_connection.php';
+
 
 	$_SESSION['message'] = '';
 
@@ -17,7 +20,6 @@ session_start();
 		$userID = $_POST['userID'];
 		$fullname = $_POST['fullname'];
 		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = 	mysqli_query($db, "
 									DELETE FROM specialisationgroup
 									WHERE UserID = '$userID' AND MainGroupID = $groupID;
@@ -67,7 +69,6 @@ session_start();
 
 				echo $_SESSION['message'];
 
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = mysqli_query($db,	
 					"
 					SELECT 

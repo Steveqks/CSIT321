@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+	include 'db_connection.php';
+
 	include '../Session/session_check_companyadmin.php';
 
 	$_SESSION['message1'] = '';
@@ -11,8 +13,6 @@ session_start();
 		$groupID = $_SESSION['groupID'];
 		$fullname = $_POST['fullname'];
 
-		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = 	mysqli_query($db, "
 			INSERT INTO specialisationgroup(GroupID, MainGroupID, UserID)
 			VALUES (Null, '$groupID', '$userID');
@@ -54,7 +54,6 @@ session_start();
 				$groupID = $_SESSION['groupID'];
 				$groupName = $_SESSION['groupName'];
 				
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db, "	SELECT SpecialisationID FROM `specialisationgroupinfo` WHERE `MainGroupID` = '$groupID' ") or die("Select Error");
 				
 				while ($Row = $result->fetch_assoc()) {
@@ -62,7 +61,6 @@ session_start();
 				
 				echo "<h2>Add Users to Group: ". $groupName . " </h2>";
 				
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db, "
 					SELECT 
 						eu.UserID,
