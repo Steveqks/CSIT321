@@ -32,7 +32,7 @@
                 $sql = "SELECT * FROM projectinfo
                         WHERE ProjectManagerID = ".$userID."
                         AND EndDate > CURRENT_TIMESTAMP
-                        AND (StartDate = ".$searchDate." OR EndDate = ".$searchDate.")
+                        AND (StartDate = '".$searchDate."' OR EndDate = '".$searchDate."')
                         AND ProjectName LIKE '%".$searchInput."%'
                         ORDER BY ProjectName ASC;";
     

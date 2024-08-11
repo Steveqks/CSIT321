@@ -189,7 +189,7 @@
 <script type="text/javascript">
     function confirmDelete() {
 
-        let text = "All tasks related to this project will be deleted.\nConfirm to delete?";
+        let text = "Confirm to delete task?";
         
         if (confirm(text) == true) {
             window.location = "Manager_viewTask.php?deletemaintaskid=<?php echo $taskDetails['MainTaskID']; ?>";

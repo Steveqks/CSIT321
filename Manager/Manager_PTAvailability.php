@@ -206,6 +206,10 @@
         <div class="content">
             <h2>Part-Time Availability</h2>
             
+            <?php
+                if (!$showConfirmForm) {
+            ?>
+
             <div class="search">
                 <form action="Manager_PTAvailability.php" method="POST">
                     <label for="search">Search
@@ -219,6 +223,10 @@
                     }
                 ?>
             </div>
+
+            <?php
+                }
+            ?>
 
             <div class="innerContent">
 
