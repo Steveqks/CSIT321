@@ -33,7 +33,7 @@ session_start();
 									WHERE MainGroupID = '$groupID';
 									") or die("Select Error");
 		
-		$_SESSION['message1'] =  "Specialisation Pool \"". $groupName ."\" deleted.";
+		$_SESSION['message1'] =  "Specialisation Group \"". $groupName ."\" deleted.";
 	}
 
 

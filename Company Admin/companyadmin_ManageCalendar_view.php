@@ -12,8 +12,6 @@ session_start();
 		$result = mysqli_query($db,	"DELETE FROM calendar WHERE CalendarID = '$calendarID' ") or die("Select Error");
 		
 		$_SESSION['message1'] = "Calendar entry for " .$_POST['date']. ", ". $_POST['dateName'] ." deleted successfully";
-		header('Location: companyadmin_ManageCalendar_view.php');
-		exit;
 	}
 
 	if (isset($_POST['editAccount'])) 

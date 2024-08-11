@@ -62,7 +62,7 @@ session_start();
 				$groupName = $_SESSION['groupName'];
 				$specialisationName = $_SESSION['specialisationName'];
 				
-				echo "<h2>View Group: ". $groupName . " </h2>";
+				echo "<h2>View Specialisation Group: ". $groupName . " </h2>";
 				echo "<p> Specialisation : " . $specialisationName."</p>"; 
 
 				echo $_SESSION['message'];

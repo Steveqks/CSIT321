@@ -27,7 +27,7 @@ include 'db_connection.php';
 		//email has changes
 		if($newEmail != $oldEmail)
 		{
-			$sql = "SELECT * FROM companyadmin WHERE Email = '$oldEmail'";
+			$sql = "SELECT * FROM companyadmin WHERE Email = '$newEmail'";
 			$qres = mysqli_query($db, $sql); 
 			$num_rows=mysqli_num_rows($qres);
 
@@ -147,7 +147,7 @@ include 'db_connection.php';
 										</td>
 								</tr>
 							</table>
-							<input type='button' value='Save Changes' onclick='confirmDiag();' style='horizontal-align: right; width: 20%;'>
+							<input type='button' value='Save Changes' onclick='confirmDiag();' style='horizontal-align: right; width: 25%;'>
 						</form>
 							";
 				}
