@@ -133,7 +133,7 @@ session_start();
 			<script>
 				function confirmDiag(form){
 					console.log('confirmDiag() executing');
-					let result = confirm("Remove User from Pool?");
+					let result = confirm("Remove User from Group?");
 					if (result)
 					{
 						form.submit();
