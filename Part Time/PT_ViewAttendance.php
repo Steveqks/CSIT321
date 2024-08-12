@@ -237,22 +237,22 @@ $pagination_range = getPaginationRange($page, $total_pages);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($attendance) > 0): ?>
-                        <?php foreach ($attendance as $record): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($record['Date']); ?></td>
-                                <td><?php echo htmlspecialchars($record['StartTime']); ?></td>
-                                <td><?php echo htmlspecialchars($record['EndTime']); ?></td>
-                                <td><?php echo htmlspecialchars($record['NumOfOverTimeHours']); ?></td>
-                                <td class="status">Present</td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5">No attendance records found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
+					<?php if (count($attendance) > 0): ?>
+						<?php foreach ($attendance as $record): ?>
+							<tr>
+								<td><?php echo htmlspecialchars($record['Date']); ?></td>
+								<td><?php echo htmlspecialchars($record['StartTime']); ?></td>
+								<td><?php echo htmlspecialchars($record['EndTime']); ?></td>
+								<td><?php echo htmlspecialchars($record['NumOfOverTimeHours'] ?? 'N.A.'); ?></td>
+								<td class="status">Present</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php else: ?>
+						<tr>
+							<td colspan="5">No attendance records found.</td>
+						</tr>
+					<?php endif; ?>
+				</tbody>
             </table>
 
             <!-- Pagination -->
