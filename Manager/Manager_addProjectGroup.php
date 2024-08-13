@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -32,6 +31,10 @@
 
             // Project exist
             if ($result->num_rows > 0) {
+
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
 
                 header("Location: Manager_addProject.php?error=Project Name with ".$projectName." already exist.");
                 exit();
@@ -72,6 +75,10 @@
 
                 if ($noOfSpExist > 0) {
 
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
+
                     header("Location: Manager_addProject.php?error=No specialisation group with".$spExistName.". Please contact your Company Admin.");
                     exit();
 
@@ -97,8 +104,6 @@
                     $result = $stmt->get_result();
                     $spGroups = $result->fetch_all(MYSQLI_ASSOC);
 
-                    $stmt->close();
-
                     $noOfspGroupsExist = 0;
                     $spNotExistName = "";
 
@@ -111,6 +116,10 @@
                     }
 
                     if ($noOfspGroupsExist > 0) {
+
+                        // Close the database connection
+                        $stmt->close();
+                        CloseCon($conn);
 
                         header("Location: Manager_addProject.php?error=No staff in the specialisation group with".$spNotExistName.". Please contact your Company Admin.");
                         exit();

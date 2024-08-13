@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -25,6 +24,10 @@
         $result = $stmt->get_result();
         $editNewsFeed = $result->fetch_all(MYSQLI_ASSOC);
 
+        // Close the statement and connection
+        $stmt->close();
+        CloseCon($conn);
+
     }
 
 
@@ -39,9 +42,20 @@
         $stmt->bind_param("ssi",$title,$desc,$newsFeedID);
 
         if ($stmt->execute()) {
+
+            // Close the statement and connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_editNewsFeed.php?editnewsfeedid=".$newsFeedID."&message=News Feed has been updated.");
             exit();
+
         } else {
+
+            // Close the statement and connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_editNewsFeed.php?editnewsfeedid=".$newsFeedID."&error=Error updating news feed details.");
             exit();
         }

@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -20,7 +19,9 @@
     $result = $stmt->get_result();
     $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
+    // Close the database connection
     $stmt->close();
+    CloseCon($conn);
 
     
 ?>

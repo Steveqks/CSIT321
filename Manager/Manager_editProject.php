@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -40,8 +39,6 @@
         $result = $stmt->get_result();
         $groupProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
 
-        $stmt->close();
-
     
         // get Specialisation for the select option
         $sql = "SELECT * FROM specialisation WHERE CompanyID = ".$companyID
@@ -60,7 +57,9 @@
         $result = $stmt->get_result();
         $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
+        // Close the statement and connection
         $stmt->close();
+        CloseCon($conn);
     }
 
     

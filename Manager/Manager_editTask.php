@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -43,6 +42,10 @@
         $stmt->execute();
         $result = $stmt->get_result();
         $projects = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Close the database connection
+        $stmt->close();
+        CloseCon($conn);
     }
 
 
@@ -58,7 +61,12 @@
 
         if ($stmt->execute()) {
 
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_viewTask.php?message=Task status has been updated successfully.&maintaskid=".$mainTaskID);
+            exit();
         }
 
     }

@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -23,9 +22,20 @@
         $stmt->bind_param("iss",$userID,$title,$desc);
 
         if ($stmt->execute()) {
+            
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_addNewsFeed.php?message=News Feed has been posted.");
             exit();
+
         } else {
+
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_addNewsFeed.php?error=Error updating account details.");
             exit();
         }

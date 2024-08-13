@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -43,16 +42,23 @@
         $stmt->bind_param("ssssi",$fName,$lName,$email,$password,$userID);
 
         if ($stmt->execute()) {
+
+            // Close the statement and connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_editAccount.php?message=Account details updated successfully.");
             exit();
+
         } else {
+
+            // Close the statement and connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_editAccount.php?error=Error updating account details.");
             exit();
         }
-
-        // Close the statement and connection
-        $stmt->close();
-        CloseCon($conn);
     }
 ?>
 

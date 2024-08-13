@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -283,9 +282,20 @@
 
                         $stmt->execute();
                     }
-                }
 
-                header("Location: Manager_addTask.php?message=Task is successfully allocated.");
+                    $newTaskID = $stmt->insert_id;
+
+                    if ($newTaskID > 0) {
+
+                        // Close the database connection
+                        $stmt->close();
+                        CloseCon($conn);
+
+                        header("Location: Manager_addTask.php?message=Task is successfully allocated.");
+                        exit();
+
+                    }
+                }
             }
 
             
@@ -338,15 +348,19 @@
 
                     // Get the number of staff in the Specialisation Group
                     $sql = "SELECT a.GroupName FROM specialisationgroupinfo a
-                    INNER JOIN project b ON a.MainGroupID = b.MainGroupID
-                    WHERE b.MainProjectID = ".$mainProjectID."
-                    AND a.MainGroupID = ".$mainGroupID;
+                            INNER JOIN project b ON a.MainGroupID = b.MainGroupID
+                            WHERE b.MainProjectID = ".$mainProjectID."
+                            AND a.MainGroupID = ".$mainGroupID;
     
                     $stmt = $conn->prepare($sql);
                             
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $groupName = $result->fetch_assoc();
+    
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
 
                     header("Location: Manager_addUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
                     exit();
@@ -386,7 +400,18 @@
                             $stmt->execute();
                         }
 
-                        header("Location: Manager_addTask.php?message=Task is successfully auto allocated.");
+                        $newTaskID = $stmt->insert_id;
+
+                        if ($newTaskID > 0) {
+    
+                            // Close the database connection
+                            $stmt->close();
+                            CloseCon($conn);
+
+                            header("Location: Manager_addTask.php?message=Task is successfully auto allocated.");
+                            exit();
+
+                        }
                     }
 
                 }
@@ -404,6 +429,10 @@
                 $stmt->execute();
                 $result = $stmt->get_result();
                 $groupName = $result->fetch_assoc();
+                
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
 
                 header("Location: Manager_addUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are ".$totalNoStaff." staff in ".$groupName['GroupName'].". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.");
                 exit();

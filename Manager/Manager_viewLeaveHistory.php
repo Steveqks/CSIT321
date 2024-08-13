@@ -143,9 +143,19 @@
         $stmt->bind_param("ii",$leaveStatus,$leaveID);
 
         if ($stmt->execute()) {
+
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
             header('Location: Manager_viewLeaveHistory.php');
+            exit();
         }
     }
+    
+    // Close the database connection
+    $stmt->close();
+    CloseCon($conn);
 ?>
 
 <!DOCTYPE html>
@@ -176,9 +186,9 @@
 
             <div class="categories">
                 <label for="categories">View By:
-                    <a href='Manager_viewLeaveHistory?viewPendingLeaves=true'><button>Pending Leaves</button></a>
-                    <a href='Manager_viewLeaveHistory?viewApproveLeaves=true'><button>Approved Leaves</button></a>
-                    <a href='Manager_viewLeaveHistory?viewDeclineLeaves=true'><button>Declined Leaves</button></a>
+                    <a href='Manager_viewLeaveHistory.php?viewPendingLeaves=true'><button>Pending Leaves</button></a>
+                    <a href='Manager_viewLeaveHistory.php?viewApproveLeaves=true'><button>Approved Leaves</button></a>
+                    <a href='Manager_viewLeaveHistory.php?viewDeclineLeaves=true'><button>Declined Leaves</button></a>
                 </label>
             </div>
             

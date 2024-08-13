@@ -1,3 +1,117 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+
+    // Connect to the database
+    $conn = OpenCon();
+
+
+    if (isset($_POST['search'])) {
+    
+        if ($_POST['searchDate'] === "" && $_POST['searchInput'] === "") {
+
+            header('Location: Manager_PTSchedule.php?searcherror=Please key in date or name to search.');
+
+        } else {
+
+            if (isset($_POST['searchDate']) && $_POST['searchDate'] != "") {
+                $searchDate = $_POST['searchDate'];
+            }
+
+            if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
+
+                $searchInput = explode(" ", $_POST['searchInput']);
+
+                $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
+
+                for ($i = 0; $i < count($searchInput); $i++) {
+                    $name[$i] = $searchInput[$i];
+                }
+            }
+
+            if ($_POST['searchDate'] != "" && $_POST['searchInput'] != "") {
+
+                // Fetch schedule for the user starting from today
+                $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                        FROM schedule a
+                        LEFT JOIN existinguser b ON a.UserID = b.UserID
+                        WHERE (a.WorkDate = '".$searchDate."')";
+
+                for ($i = 0; $i < count($searchInput); $i++) {
+                    $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
+                }
+                        
+                $sql .= "ORDER BY fullName ASC;";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $schedule = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchDate'] != "") {
+
+                // Fetch schedule for the user starting from today
+                $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                        FROM schedule a
+                        LEFT JOIN existinguser b ON a.UserID = b.UserID
+                        WHERE (a.WorkDate = '".$searchDate."')
+                        ORDER BY a.WorkDate ASC;";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $schedule = $result->fetch_all(MYSQLI_ASSOC);
+
+            } else if ($_POST['searchInput'] != "") {
+
+                // Fetch schedule for the user starting from today
+                $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                        FROM schedule a
+                        LEFT JOIN existinguser b ON a.UserID = b.UserID
+                        WHERE a.WorkDate >= CURDATE()";
+
+                for ($i = 0; $i < count($searchInput); $i++) {
+                    $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
+                }
+                
+                $sql .= "ORDER BY a.WorkDate ASC;";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $schedule = $result->fetch_all(MYSQLI_ASSOC);
+
+            }
+
+        }
+    } else {
+
+        // Fetch schedule for the user starting from today
+        $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                FROM schedule a
+                LEFT JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.WorkDate >= CURDATE()
+                ORDER BY a.WorkDate ASC;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $schedule = $result->fetch_all(MYSQLI_ASSOC);
+
+    }
+    
+    // Close the database connection
+    $stmt->close();
+    CloseCon($conn);
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,116 +120,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        
-        include 'db_connection.php';
-        include '../Session/session_check_user_Manager.php';
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-
-        // Connect to the database
-        $conn = OpenCon();
-
-
-        if (isset($_POST['search'])) {
-        
-            if ($_POST['searchDate'] === "" && $_POST['searchInput'] === "") {
-    
-                header('Location: Manager_PTSchedule.php?searcherror=Please key in date or name to search.');
-    
-            } else {
-    
-                if (isset($_POST['searchDate']) && $_POST['searchDate'] != "") {
-                    $searchDate = $_POST['searchDate'];
-                }
-    
-                if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
-
-                    $searchInput = explode(" ", $_POST['searchInput']);
-
-                    $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
-
-                    for ($i = 0; $i < count($searchInput); $i++) {
-                        $name[$i] = $searchInput[$i];
-                    }
-                }
-    
-                if ($_POST['searchDate'] != "" && $_POST['searchInput'] != "") {
-    
-                    // Fetch schedule for the user starting from today
-                    $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                            FROM schedule a
-                            LEFT JOIN existinguser b ON a.UserID = b.UserID
-                            WHERE (a.WorkDate = '".$searchDate."')";
-
-                    for ($i = 0; $i < count($searchInput); $i++) {
-                        $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
-                    }
-                            
-                    $sql .= "ORDER BY fullName ASC;";
-
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $schedule = $result->fetch_all(MYSQLI_ASSOC);
-    
-                } else if ($_POST['searchDate'] != "") {
-    
-                    // Fetch schedule for the user starting from today
-                    $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                            FROM schedule a
-                            LEFT JOIN existinguser b ON a.UserID = b.UserID
-                            WHERE (a.WorkDate = '".$searchDate."')
-                            ORDER BY a.WorkDate ASC;";
-
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $schedule = $result->fetch_all(MYSQLI_ASSOC);
-    
-                } else if ($_POST['searchInput'] != "") {
-    
-                    // Fetch schedule for the user starting from today
-                    $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                            FROM schedule a
-                            LEFT JOIN existinguser b ON a.UserID = b.UserID
-                            WHERE a.WorkDate >= CURDATE()";
-
-                    for ($i = 0; $i < count($searchInput); $i++) {
-                        $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
-                    }
-                    
-                    $sql .= "ORDER BY a.WorkDate ASC;";
-
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $schedule = $result->fetch_all(MYSQLI_ASSOC);
-    
-                }
-    
-            }
-        } else {
-    
-            // Fetch schedule for the user starting from today
-            $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                    FROM schedule a
-                    LEFT JOIN existinguser b ON a.UserID = b.UserID
-                    WHERE a.WorkDate >= CURDATE()
-                    ORDER BY a.WorkDate ASC;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $schedule = $result->fetch_all(MYSQLI_ASSOC);
-
-        }
-        
-    ?>
 </head>
 <body>
     <!-- Top Section -->

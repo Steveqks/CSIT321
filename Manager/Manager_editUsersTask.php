@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -125,6 +124,10 @@
             $projectDate = $result->fetch_assoc();
 
             if ($startDate <= $projectDate['StartDate'] && $endDate >= $projectDate['EndDate']) {
+                
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
 
                 header("Location: Manager_editTask.php?error=Invalid date. Start Date or End Date is not within the Project's timeline.");
                 exit();
@@ -279,6 +282,10 @@
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $groupName = $result->fetch_assoc();
+
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
     
                     header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&statusid=".$taskStatus."&maintaskid=".$mainTaskID."&allocatetype=".$allocateType."&maingroupid=".$mainGroupID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
                     exit();
@@ -362,8 +369,19 @@
     
                                     $stmt->execute();
                                 }
+
+                                $newTaskID = $stmt->insert_id;
+
+                                if ($newTaskID > 0) {
+
+                                    // Close the database connection
+                                    $stmt->close();
+                                    CloseCon($conn);
     
-                                header("Location: Manager_viewTask.php?&maintaskid=".$mainTaskID);
+                                    header("Location: Manager_viewTask.php?&maintaskid=".$mainTaskID);
+                                    exit();
+
+                                }
                             }
                         }
                     }
@@ -430,6 +448,10 @@
                 $result = $stmt->get_result();
                 $groupName = $result->fetch_assoc();
 
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
+
                 header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&statusid=".$taskStatus."&maintaskid=".$mainTaskID."&allocatetype=".$allocateType."&maingroupid=".$mainGroupID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
                 exit();
             }
@@ -457,6 +479,10 @@
                 $stmt->execute();
                 $result = $stmt->get_result();
                 $groupName = $result->fetch_assoc();
+
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
 
                 header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&statusid=".$taskStatus."&maintaskid=".$mainTaskID."&maingroupid=".$mainGroupID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
                 exit();
@@ -491,7 +517,18 @@
                                     $stmt->execute();
                                 }
 
-                                header("Location: Manager_viewTask.php?&maintaskid=".$mainTaskID);
+                                $newTaskID = $stmt->insert_id;
+
+                                if ($newTaskID > 0) {
+
+                                    // Close the database connection
+                                    $stmt->close();
+                                    CloseCon($conn);
+    
+                                    header("Location: Manager_viewTask.php?&maintaskid=".$mainTaskID);
+                                    exit();
+
+                                }
                             }
                         }
 
@@ -510,6 +547,10 @@
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $groupName = $result->fetch_assoc();
+                    
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
 
                     header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are ".$totalNoStaff." staff in ".$groupName['GroupName'].". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.");
                     exit();

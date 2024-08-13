@@ -7,7 +7,6 @@
     $userID = $_SESSION['UserID'];
     $firstName = $_SESSION['FirstName'];
     $companyID = $_SESSION['CompanyID'];
-    $employeeType = $_SESSION['Role'];
 
     // Connect to the database
     $conn = OpenCon();
@@ -45,6 +44,10 @@
             }
 
             if ($noOfProjectExist > 0) {
+
+                // Close the statement and connection
+                $stmt->close();
+                CloseCon($conn);
 
                 header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&error=Project Name with ".$projectName." already exist.");
                 exit();
@@ -86,6 +89,10 @@
 
                 if ($noOfSpExist > 0) {
 
+                    // Close the statement and connection
+                    $stmt->close();
+                    CloseCon($conn);
+
                     header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&error=No specialisation group with".$spExistName.". Please contact your Company Admin.");
                     exit();
 
@@ -111,8 +118,6 @@
                     $result = $stmt->get_result();
                     $spGroupsExists = $result->fetch_all(MYSQLI_ASSOC);
 
-                    $stmt->close();
-
                     $noOfspGroupsExist = 0;
                     $spNotExistName = "";
 
@@ -125,6 +130,10 @@
                     }
 
                     if ($noOfspGroupsExist > 0) {
+
+                        // Close the statement and connection
+                        $stmt->close();
+                        CloseCon($conn);
 
                         header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&error=No staff in the specialisation group with".$spNotExistName.". Please contact your Company Admin.");
                         exit();
@@ -151,8 +160,6 @@
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $spGroupsProject = $result->fetch_all(MYSQLI_ASSOC);
-
-                        $stmt->close();
 
 
                         // get SpecialisationGroup that does not belong to the existing Project for the select option
@@ -186,9 +193,12 @@
                         $result = $stmt->get_result();
                         $spGroups = $result->fetch_all(MYSQLI_ASSOC);
 
-                        $stmt->close();
-
                         if (count($spGroups) < 0) {
+
+                            // Close the statement and connection
+                            $stmt->close();
+                            CloseCon($conn);
+
                             header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&error=No staff in the specialisation group with".$spExistName.". Please contact your Company Admin.");
                             exit();
                         }
@@ -197,6 +207,7 @@
                 
             }
         } else {
+
             header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&error=Invalid date. Please make sure the Start Date is not more than the End Date.");
             exit();
         }
@@ -230,8 +241,18 @@
                     $stmt->bind_param("ii",$mainProjectID,$spGroupID);
 
                     $stmt->execute();
+                }
+
+                $newProjectID = $stmt->insert_id;
+
+                if ($newProjectID > 0) {
+
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
 
                     header("Location: Manager_editProject.php?mainprojectid=".$mainProjectID."&message=Project has been updated successfully.");
+                    exit();
 
                 }
                 

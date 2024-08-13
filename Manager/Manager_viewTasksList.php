@@ -201,8 +201,8 @@
 
             <div class="categories">
                 <label for="categories">View By:
-                    <a href='Manager_viewTasksList?viewOngoingTasks=true'><button>Ongoing Tasks</button></a>
-                    <a href='Manager_viewTasksList?viewCompletedTasks=true'><button>Completed Tasks</button></a>
+                    <a href='Manager_viewTasksList.php?viewOngoingTasks=true'><button>Ongoing Tasks</button></a>
+                    <a href='Manager_viewTasksList.php?viewCompletedTasks=true'><button>Completed Tasks</button></a>
                 </label>
             </div>
             

@@ -21,7 +21,6 @@
     $result = $stmt->get_result();
     $specialisations = $result->fetch_all(MYSQLI_ASSOC);
 
-    $stmt->close();
 
     if (isset($_POST['createAccount'])) {
 
@@ -48,6 +47,11 @@
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
+            
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
             header("Location: Manager_createUserAccount.php?error=User exist.");
             exit();
         } else {
@@ -56,17 +60,21 @@
             $stmt->bind_param("iissssssi",$companyID,$specialisationID,$role,$firstName,$lastName,$gender,$email,$password,$userStatus);
 
             if ($stmt->execute()) {
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
+            
                 header("Location: Manager_createUserAccount.php?message=Account has been created successfully.");
                 exit();
             } else {
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
+                
                 header("Location: Manager_createUserAccount.php?error=Error updating account details.");
                 exit();
             }
         }
-
-        // Close the statement and connection
-        $stmt->close();
-        CloseCon($conn);
     }
 ?>
 <!DOCTYPE html>

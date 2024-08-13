@@ -83,6 +83,10 @@
         $projects = $result->fetch_all(MYSQLI_ASSOC);
 
     }
+
+    // Close the database connection
+    $stmt->close();
+    CloseCon($conn);
     
 ?>
 

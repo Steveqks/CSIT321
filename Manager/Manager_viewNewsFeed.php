@@ -111,8 +111,8 @@
             <a href="Manager_addNewsFeed.php"><h4>Add News Feed</h4></a>
             <div class="categories">
                 <label for="categories">View By:
-                    <a href='Manager_viewNewsFeed?viewCompany=true'><button>Company</button></a>
-                    <a href='Manager_viewNewsFeed?viewProject=true'><button>Project</button></a>
+                    <a href='Manager_viewNewsFeed.php?viewCompany=true'><button>Company</button></a>
+                    <a href='Manager_viewNewsFeed.php?viewProject=true'><button>Project</button></a>
                 </label>
             </div>
 

@@ -1,3 +1,210 @@
+<?php
+    session_start();
+    
+    include 'db_connection.php';
+    include '../Session/session_check_user_Manager.php';
+
+    $userID = $_SESSION['UserID'];
+    $firstName = $_SESSION['FirstName'];
+    $companyID = $_SESSION['CompanyID'];
+
+    $showConfirmForm = FALSE;
+
+
+    // Connect to the database
+    $conn = OpenCon();
+
+    // Function to get the date of a specific day from next Monday
+    function getDateFromMonday($weekStartDate1, $day) {
+        $weekStartDate2 = new DateTime($weekStartDate1);
+        $date = clone $weekStartDate2;
+        $dayOffset = ['Monday' => 0, 'Tuesday' => 1, 'Wednesday' => 2, 'Thursday' => 3, 'Friday' => 4, 'Saturday' => 5, 'Sunday' => 6];
+        return $date->modify("+{$dayOffset[$day]} days")->format('Y-m-d');
+    }
+
+
+
+
+    // Create a new DateTime object for today
+    $today = new DateTime();
+
+    // Modify the DateTime object to get the next Monday
+    $nextMonday = clone $today;
+    if ($today->format('N') != 1) {
+        $nextMonday->modify('next monday');
+    } else {
+        // If today is Monday, we need to get the next Monday, not today
+        $nextMonday->modify('+1 week');
+    }
+
+    $formatted_monday = $nextMonday->format('Y-m-d');
+
+
+
+    if (isset($_POST['search'])) {
+    
+        if ($_POST['searchInput'] === "") {
+
+            header('Location: Manager_PTAvailability.php?searcherror=Please key in date or name to search.');
+
+        } else {
+
+            if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
+
+                $searchInput = explode(" ", $_POST['searchInput']);
+
+                $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
+
+                for ($i = 0; $i < count($searchInput); $i++) {
+                    $name[$i] = $searchInput[$i];
+                }
+            }
+            
+            if ($_POST['searchInput'] != "") {
+
+                $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                        FROM availability a
+                        LEFT JOIN existinguser b ON a.UserID = b.UserID
+                        WHERE a.IsAvailable = 1
+                        AND a.WeekStartDate >= '".$formatted_monday."'
+                        AND a.Status IS NULL";
+
+                for ($i = 0; $i < count($searchInput); $i++) {
+                    $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
+                }
+
+                $sql .= "GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
+                        ORDER BY a.WeekStartDate,
+                            CASE
+                                WHEN a.DayOfWeek = 'Monday' THEN 1
+                                WHEN a.DayOfWeek = 'Tuesday' THEN 2
+                                WHEN a.DayOfWeek = 'Wednesday' THEN 3
+                                WHEN a.DayOfWeek = 'Thursday' THEN 4
+                                WHEN a.DayOfWeek = 'Friday' THEN 5
+                                WHEN a.DayOfWeek = 'Saturday' THEN 6
+                                WHEN a.DayOfWeek = 'Sunday' THEN 7
+                            END;";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $availability = $result->fetch_all(MYSQLI_ASSOC);
+
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
+
+            }
+
+        }
+    } else {
+
+        $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                FROM availability a
+                LEFT JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.IsAvailable = 1
+                AND a.WeekStartDate >= '".$formatted_monday."'
+                AND a.Status IS NULL
+                GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
+                ORDER BY a.WeekStartDate,
+                    CASE
+                        WHEN a.DayOfWeek = 'Monday' THEN 1
+                        WHEN a.DayOfWeek = 'Tuesday' THEN 2
+                        WHEN a.DayOfWeek = 'Wednesday' THEN 3
+                        WHEN a.DayOfWeek = 'Thursday' THEN 4
+                        WHEN a.DayOfWeek = 'Friday' THEN 5
+                        WHEN a.DayOfWeek = 'Saturday' THEN 6
+                        WHEN a.DayOfWeek = 'Sunday' THEN 7
+                    END;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $availability = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Close the database connection
+        $stmt->close();
+        CloseCon($conn);
+
+    }
+
+
+
+    if (isset($_GET['approve']) && $_GET['approve'] == "yes") {
+
+        $availabilityID = $_GET['availabilityid'];
+
+        $showConfirmForm = TRUE;
+
+        $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
+                FROM availability a
+                LEFT JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.AvailabilityID = ".$availabilityID."
+                GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, fullName;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $confirmAvail = $result->fetch_assoc();
+
+        // Close the database connection
+        $stmt->close();
+        CloseCon($conn);
+        
+    } else if (isset($_GET['approve']) && $_GET['approve'] == "no") {
+
+        $availabilityID = $_GET['availabilityid'];
+        
+        $stmt = $conn->prepare("UPDATE availability SET Status=0 WHERE AvailabilityID=?");
+
+        $stmt->bind_param("i",$availabilityID);
+
+        if ($stmt->execute()) {
+
+            // Close the database connection
+            $stmt->close();
+            CloseCon($conn);
+
+            header("Location: Manager_PTAvailability.php");
+            exit();
+        }
+    }
+
+
+    if (isset($_POST['schedulePT'])) {
+
+        $availabilityID = $_POST['availabilityid'];
+        $availUserID = $_POST['availuserid'];
+        $availDate = $_POST['availdate'];
+
+        $startWork = $availDate." ".$_POST['startwork'];
+        $endWork = $availDate." ".$_POST['endwork'];
+
+        $stmt = $conn->prepare("UPDATE availability SET Status=1 WHERE AvailabilityID=?");
+
+        $stmt->bind_param("i",$availabilityID);
+
+        if ($stmt->execute()) {
+        
+            $stmt = $conn->prepare("INSERT INTO schedule (UserID,WorkDate,StartWork,EndWork) VALUES (?,?,?,?)");
+
+            $stmt->bind_param("isss",$availUserID,$availDate,$startWork,$endWork);
+
+            if ($stmt->execute()) {
+
+                // Close the database connection
+                $stmt->close();
+                CloseCon($conn);
+
+                header("Location: Manager_PTSchedule.php?message=Part-Time availability has been confirmed.");
+                exit();
+            }
+        }
+
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,189 +213,6 @@
     <title>TrackMySchedule</title>
     <link rel="stylesheet" href="./css/manager_header.css" />
     <link rel="stylesheet" href="./css/manager.css" />
-
-    <?php
-        session_start();
-        
-        include 'db_connection.php';
-        include '../Session/session_check_user_Manager.php';
-
-        $userID = $_SESSION['UserID'];
-        $firstName = $_SESSION['FirstName'];
-        $companyID = $_SESSION['CompanyID'];
-
-        $showConfirmForm = FALSE;
-
-
-        // Connect to the database
-        $conn = OpenCon();
-
-        // Function to get the date of a specific day from next Monday
-        function getDateFromMonday($weekStartDate1, $day) {
-            $weekStartDate2 = new DateTime($weekStartDate1);
-            $date = clone $weekStartDate2;
-            $dayOffset = ['Monday' => 0, 'Tuesday' => 1, 'Wednesday' => 2, 'Thursday' => 3, 'Friday' => 4, 'Saturday' => 5, 'Sunday' => 6];
-            return $date->modify("+{$dayOffset[$day]} days")->format('Y-m-d');
-        }
-
-
-
-
-        // Create a new DateTime object for today
-        $today = new DateTime();
-
-        // Modify the DateTime object to get the next Monday
-        $nextMonday = clone $today;
-        if ($today->format('N') != 1) {
-            $nextMonday->modify('next monday');
-        } else {
-            // If today is Monday, we need to get the next Monday, not today
-            $nextMonday->modify('+1 week');
-        }
-
-        $formatted_monday = $nextMonday->format('Y-m-d');
-
-
-
-        if (isset($_POST['search'])) {
-        
-            if ($_POST['searchInput'] === "") {
-    
-                header('Location: Manager_PTAvailability.php?searcherror=Please key in date or name to search.');
-    
-            } else {
-    
-                if (isset($_POST['searchInput']) && $_POST['searchInput'] != "") {
-
-                    $searchInput = explode(" ", $_POST['searchInput']);
-
-                    $name1=""; $name2=""; $name3=""; $name4=""; $name5="";
-
-                    for ($i = 0; $i < count($searchInput); $i++) {
-                        $name[$i] = $searchInput[$i];
-                    }
-                }
-                
-                if ($_POST['searchInput'] != "") {
-    
-                    $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                            FROM availability a
-                            LEFT JOIN existinguser b ON a.UserID = b.UserID
-                            WHERE a.IsAvailable = 1
-                            AND a.WeekStartDate >= '".$formatted_monday."'
-                            AND a.Status IS NULL";
-
-                    for ($i = 0; $i < count($searchInput); $i++) {
-                        $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
-                    }
-
-                    $sql .= "GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
-                            ORDER BY a.WeekStartDate,
-                                CASE
-                                    WHEN a.DayOfWeek = 'Monday' THEN 1
-                                    WHEN a.DayOfWeek = 'Tuesday' THEN 2
-                                    WHEN a.DayOfWeek = 'Wednesday' THEN 3
-                                    WHEN a.DayOfWeek = 'Thursday' THEN 4
-                                    WHEN a.DayOfWeek = 'Friday' THEN 5
-                                    WHEN a.DayOfWeek = 'Saturday' THEN 6
-                                    WHEN a.DayOfWeek = 'Sunday' THEN 7
-                                END;";
-
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $availability = $result->fetch_all(MYSQLI_ASSOC);
-    
-                }
-    
-            }
-        } else {
-    
-            $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                    FROM availability a
-                    LEFT JOIN existinguser b ON a.UserID = b.UserID
-                    WHERE a.IsAvailable = 1
-                    AND a.WeekStartDate >= '".$formatted_monday."'
-                    AND a.Status IS NULL
-                    GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
-                    ORDER BY a.WeekStartDate,
-                        CASE
-                            WHEN a.DayOfWeek = 'Monday' THEN 1
-                            WHEN a.DayOfWeek = 'Tuesday' THEN 2
-                            WHEN a.DayOfWeek = 'Wednesday' THEN 3
-                            WHEN a.DayOfWeek = 'Thursday' THEN 4
-                            WHEN a.DayOfWeek = 'Friday' THEN 5
-                            WHEN a.DayOfWeek = 'Saturday' THEN 6
-                            WHEN a.DayOfWeek = 'Sunday' THEN 7
-                        END;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $availability = $result->fetch_all(MYSQLI_ASSOC);
-
-        }
-
-
-
-        if (isset($_GET['approve']) && $_GET['approve'] == "yes") {
-
-            $availabilityID = $_GET['availabilityid'];
-
-            $showConfirmForm = TRUE;
-
-            $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
-                    FROM availability a
-                    LEFT JOIN existinguser b ON a.UserID = b.UserID
-                    WHERE a.AvailabilityID = ".$availabilityID."
-                    GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, fullName;";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $confirmAvail = $result->fetch_assoc();
-            
-        } else if (isset($_GET['approve']) && $_GET['approve'] == "no") {
-
-            $availabilityID = $_GET['availabilityid'];
-            
-            $stmt = $conn->prepare("UPDATE availability SET Status=0 WHERE AvailabilityID=?");
-    
-            $stmt->bind_param("i",$availabilityID);
-
-            if ($stmt->execute()) {
-                header("Location: Manager_PTAvailability.php");
-            }
-        }
-
-
-        if (isset($_POST['schedulePT'])) {
-
-            $availabilityID = $_POST['availabilityid'];
-            $availUserID = $_POST['availuserid'];
-            $availDate = $_POST['availdate'];
-
-            $startWork = $availDate." ".$_POST['startwork'];
-            $endWork = $availDate." ".$_POST['endwork'];
-
-            $stmt = $conn->prepare("UPDATE availability SET Status=1 WHERE AvailabilityID=?");
-
-            $stmt->bind_param("i",$availabilityID);
-
-            if ($stmt->execute()) {
-            
-                $stmt = $conn->prepare("INSERT INTO schedule (UserID,WorkDate,StartWork,EndWork) VALUES (?,?,?,?)");
-
-                $stmt->bind_param("isss",$availUserID,$availDate,$startWork,$endWork);
-
-                if ($stmt->execute()) {
-                    header("Location: Manager_PTSchedule.php?message=Part-Time availability has been confirmed.");
-                }
-            }
-
-        }
-
-    ?>
 </head>
 <body>
     <!-- Top Section -->
