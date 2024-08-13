@@ -3,11 +3,13 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message'] = '';
 	
 	//create company
 	if(isset($_POST['groupname'])){
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 
 		$groupname = $_POST['groupname'];
 		$specialisationID = $_POST['specialisationID'];
@@ -82,9 +84,7 @@ session_start();
 					<h4>
 					<?php
 					$companyID = $_SESSION['companyID'];
-					
-						$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-						
+											
 						//find manager specialisation id
 						$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
 						$qres = mysqli_query($db, $sql); 

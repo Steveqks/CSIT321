@@ -8,8 +8,11 @@ session_start();
 	$companyID = $_SESSION['companyID'];
 	$_SESSION['message1'] = "";
 
+
+
 	//create user
 	if(isset($_POST['fname'])){
+		
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
 		$emailadd = $_POST['emailadd'];
@@ -39,7 +42,7 @@ session_start();
 										WHERE 
 											eu.CompanyID = '$companyID'
 										GROUP BY 
-											p.UserAccess") or die("Select Error"); 
+											p.UserAccess") or die("Reached Max Capacity"); 
 						
 			while ($Row = $result->fetch_assoc()) 
 			{
@@ -103,7 +106,7 @@ session_start();
         <!-- Right Section (Activity) -->
         <div style="width: 80%; padding: 10px;">
 		
-            <form action = "" id='create' method = "post" style='
+            <form action = "" id='create' method = "post" onload='isManager()' style='
 																				flex: 0 0 48%;
 																				display: inline-flex;
 																				justify-content: space-between;
@@ -140,13 +143,12 @@ session_start();
 							
 								Password: <br><input name = "password" type = "password" placeholder = "password" maxlength='16'  required> <br>
 					
-					  <label for="Role">Role: <br></label>
-					  <select name="role" id="RoleSelect" onchange='isManager()'>
-						  <option value="Manager">Manager</option>
-						  <option value="FT">FT</option>
-						  <option value="PT">PT</option>
-  						  
-
+								<label for="Role">Role: <br></label>
+								<select name="role" id="RoleSelect" onchange='isManager()' required>
+  <option disabled selected value> -- select a role -- </option>									<option value="Manager">Manager</option>
+									<option value="FT">FT</option>
+									<option value="PT">PT</option>
+						  
 					  </select>						  
 
 					
@@ -159,10 +161,11 @@ session_start();
 							while ($Row = $qres->fetch_assoc()) 
 							{
 								$mid = $Row['SpecialisationID'];			
+								$_POST['specialisationID'] = $Row['SpecialisationID'];			
 							}
-							
+														
 							//find all specialisation and omit manager
-							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
+							@$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationID != '$mid'";
 							$qres = mysqli_query($db, $sql); 
 							
 							$select = 	"<br><label for='Specialisation'>Specialisation:<br></label>
@@ -175,14 +178,6 @@ session_start();
 							$select .= "</select> <br>";
 							
 							$encodedselect= json_encode($select);
-							
-							
-							$sql = "SELECT * FROM specialisation WHERE CompanyID = '$companyID' AND SpecialisationName = 'Manager'";
-							$qres = mysqli_query($db, $sql); 
-							while ($Row = $qres->fetch_assoc()) 
-							{
-								$mid = json_encode($Row['SpecialisationID']);
-							}
 	
 						?><span id="span tag"> </span>
 

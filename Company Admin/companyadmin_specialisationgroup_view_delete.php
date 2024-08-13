@@ -3,6 +3,9 @@ session_start();
 
 	include '../Session/session_check_companyadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message1'] = '';
 
 	if (isset($_POST['viewGroup'])) {
@@ -23,17 +26,14 @@ session_start();
 	if(isset($_POST['delete']) == 'yes')
 	{
 		$groupID = $_POST['groupID'];
-		$groupName = $_POST['groupName'];
-		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
-		
+		$groupName = $_POST['groupName'];		
 									
 		$result2 = 	mysqli_query($db, "
 									DELETE FROM specialisationgroupinfo
 									WHERE MainGroupID = '$groupID';
 									") or die("Select Error");
 		
-		$_SESSION['message1'] =  "Specialisation Pool \"". $groupName ."\" deleted.";
+		$_SESSION['message1'] =  "Specialisation Group \"". $groupName ."\" deleted.";
 	}
 
 
@@ -72,7 +72,6 @@ session_start();
 				
 				$companyID = $_SESSION['companyID'];;
 
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				$result = 	mysqli_query($db,	
 								"SELECT 
 									spi.GroupName,

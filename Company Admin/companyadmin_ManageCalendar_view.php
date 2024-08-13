@@ -3,17 +3,16 @@ session_start();
 
 	$_SESSION['message1'] = '';
 
+	include 'db_connection.php';
+
 	include '../Session/session_check_companyadmin.php';
 
 	if(isset($_POST['delete'])=='yes')
 	{
 		$calendarID = $_POST['calendarID'];
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		$result = mysqli_query($db,	"DELETE FROM calendar WHERE CalendarID = '$calendarID' ") or die("Select Error");
 		
 		$_SESSION['message1'] = "Calendar entry for " .$_POST['date']. ", ". $_POST['dateName'] ." deleted successfully";
-		header('Location: companyadmin_ManageCalendar_view.php');
-		exit;
 	}
 
 	if (isset($_POST['editAccount'])) 
@@ -59,8 +58,6 @@ session_start();
 
 			
 				$companyID = $_SESSION['companyID'];;
-
-				$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 				
 				mysqli_query($db, "SET @row_number = 0;") or die("Error setting row number");
 

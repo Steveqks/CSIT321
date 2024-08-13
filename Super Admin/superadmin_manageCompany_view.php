@@ -3,12 +3,14 @@ session_start();
 
 	include '../Session/session_check_superadmin.php';
 
+	include 'db_connection.php';
+
+
 	$_SESSION['message'] ='';
 
 	if(isset($_POST['delete']) == 'yes')
 	{
 		$companyID = $_POST['companyID'];
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		
 		$result = mysqli_query($db,	"DELETE FROM company WHERE CompanyID = '$companyID' ") or die("Select Error3");
 		
@@ -20,7 +22,6 @@ session_start();
 		$companyID = $_POST['companyID'];
 		$status = $_POST['Status'];
 		
-		$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 		
 		if($status == 1){
 			$result = mysqli_query($db,	"UPDATE company SET Status = 0 WHERE company.CompanyID = '$companyID'") or die("Select Error");
@@ -74,8 +75,6 @@ session_start();
 			<?php     
 					echo $_SESSION['message'];
 
-		
-					$db = mysqli_connect('localhost','root','','tms') or die("Couldnt Connect to database");
 					$qres = mysqli_query($db,	"SELECT * FROM company ORDER BY CompanyName") or die("Select Error");
 						
 					if($qres){

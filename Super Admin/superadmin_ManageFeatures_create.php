@@ -24,7 +24,7 @@ session_start();
 			$_SESSION['FeatureID'] = $newFeatureID;
 		}
 		else{
-			$_SESSION['message1'] = "FeatureID already exists";			
+			$_SESSION['message1'] = "S/N already exists";
 		}
 	}
 ?>
@@ -98,7 +98,7 @@ session_start();
 											</td>
 									</tr>
 								</table>
-								<input type='button' value='Create Feature' onclick='confirmDiag();' style='horizontal-align: right; width: 20%;'>
+								<input type='button' value='Create Feature' onclick='confirmDiag();' style='horizontal-align: right; width: 30%;'>
 							</form>
 								";
 								

@@ -28,7 +28,7 @@
 						<div id='linkContainer3'>
 							<div class='show'>
 								<a href='superadmin_ManageFeatures_view.php'> - View Features Page </a>
-								<a href='superadmin_SubscriptionPlans_View.php'> - View Subscription Plans </a>
+								<a href='superadmin_SubscriptionPlans_view.php'> - View Subscription Plans </a>
 							</div>
 						</div>
 						

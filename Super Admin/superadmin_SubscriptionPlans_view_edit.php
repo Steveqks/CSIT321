@@ -93,15 +93,14 @@
 																				display: flex;
 																				flex-direction: column;
 																					'>
-						<br>
 						<table>
 						<tr>
 
 						<input type='hidden' value='" . $PlanName . "' readonly><br>
-						<input type='hidden' name='oldPrice' value='" . $Price . "' readonly> <br>
-						<input type='hidden' name='oldUA' value='" . $UserAccess . "' readonly> <br>
-						<input type='hidden' name='oldCS' value='" . $CustomerSupport . "' readonly> <br>
-						<br>
+						<input type='hidden' name='oldPrice' value='" . $Price . "' readonly> 
+						<input type='hidden' name='oldUA' value='" . $UserAccess . "' readonly> 
+						<input type='hidden' name='oldCS' value='" . $CustomerSupport . "' readonly> 
+						
 							<td >
 				
 						Plan Name: <input type='text' value='" . $PlanName . "' readonly ><br>
