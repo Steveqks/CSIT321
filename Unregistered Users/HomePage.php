@@ -80,7 +80,7 @@
 	<div id = "AdvertisingContainer3">
 		<h2>Unsure how to Allocate Tasks to team members?</h2>
 		<h3>TrackMySchedule has you covered!</h3>
-		<img src = "Images/Placeholder.jpeg" width = "948px" height = "710px">
+		<img src = "Images/Task_Allocation.png">
 	</div>
 	
 		<!-- Display reviews section -->
