@@ -24,7 +24,7 @@ session_start();
 		$fname = $_POST['fname'];
 		$cname = $_POST['cname'];
 		
-		$aprrove = new userAccount();
+		$aprrove = new userAccount($servername, $username, $password, $dbname);
 
 		switch ($aprrove->approveAccount($_POST['fname'], $_POST['companyUEN'], $_POST['lname'], $_POST['email'], $_POST['password'], $_POST['cname'], $_POST['planID'])){
 			//company exists

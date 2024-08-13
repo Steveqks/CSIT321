@@ -44,11 +44,15 @@ class userAccount{
 				$companyID = $this->getCompanyID($cname);
 				$this->createCompanyAdmin($companyID,  $fname, $lname, $email, $password);
 				
-				//create manager specialisation		
-				$result = mysqli_query($db,"INSERT INTO specialisation (SpecialisationID, SpecialisationName, CompanyID) VALUES (NULL, 'Manager', '$companyID')") or die("Select Error");
+				//create manager specialisation				
+				$Sql = "INSERT INTO specialisation (SpecialisationID, SpecialisationName, CompanyID) VALUES (NULL, 'Manager', '$companyID')";
+				$qres = mysqli_query($this->conn, $Sql); 
 				
-				//remove company application from list
-				$result = mysqli_query($db,"DELETE FROM unregisteredusers  WHERE CompanyUEN = '$companyUEN' AND Email = '$email'") or die("Remove Applicant from list");
+				
+				//remove company application from list		
+				$Sql2 = "DELETE FROM unregisteredusers  WHERE CompanyUEN = '$companyUEN' AND Email = '$email'";
+				$qres2 = mysqli_query($this->conn, $Sql2); 
+
 				
 				return 3; // created company & company admin
 			}
