@@ -90,10 +90,6 @@
                 $result = $stmt->get_result();
                 $availability = $result->fetch_all(MYSQLI_ASSOC);
 
-                // Close the database connection
-                $stmt->close();
-                CloseCon($conn);
-
             }
 
         }
@@ -122,10 +118,6 @@
         $result = $stmt->get_result();
         $availability = $result->fetch_all(MYSQLI_ASSOC);
 
-        // Close the database connection
-        $stmt->close();
-        CloseCon($conn);
-
     }
 
 
@@ -146,10 +138,6 @@
         $stmt->execute();
         $result = $stmt->get_result();
         $confirmAvail = $result->fetch_assoc();
-
-        // Close the database connection
-        $stmt->close();
-        CloseCon($conn);
         
     } else if (isset($_GET['approve']) && $_GET['approve'] == "no") {
 

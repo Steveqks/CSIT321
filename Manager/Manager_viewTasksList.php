@@ -44,7 +44,7 @@
                         JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
                         JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
                         WHERE pi.ProjectManagerID = ".$userID."
-                        AND (ti.StartDate = '".$searchDate."' OR a.DueDate = '".$searchDate."')
+                        AND (ti.StartDate = '".$searchDate."' OR ti.DueDate = '".$searchDate."')
                         AND pi.ProjectName LIKE '%".$searchInput."%'
                         GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
                         ORDER BY ti.Status DESC;";
@@ -65,7 +65,7 @@
                         JOIN specialisationgroup sg ON sg.MainGroupID = t.MainGroupID
                         JOIN specialisationgroupinfo sgi ON sgi.MainGroupID = sg.MainGroupID
                         WHERE pi.ProjectManagerID = ".$userID."
-                        AND (ti.StartDate = '".$searchDate."' OR a.DueDate = '".$searchDate."')
+                        AND (ti.StartDate = '".$searchDate."' OR ti.DueDate = '".$searchDate."')
                         GROUP BY ti.MainTaskID, ti.TaskName, ti.StartDate, ti.DueDate, ti.NumStaff, ti.Status, sgi.GroupName
                         ORDER BY ti.Status DESC, pi.ProjectName ASC;";
     
