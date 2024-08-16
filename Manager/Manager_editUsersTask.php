@@ -552,7 +552,7 @@
                     $stmt->close();
                     CloseCon($conn);
 
-                    header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are ".$totalNoStaff." staff in ".$groupName['GroupName'].". The indicated number of staff with the specialisation needed for the task is more than what is available in the team.");
+                    header("Location: Manager_editUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are ".$totalNoStaff." staff in ".$groupName['GroupName'].". The indicated number of staff with the specialisation needed for the task is more than what is available in the specialisation group.");
                     exit();
                 }
 
