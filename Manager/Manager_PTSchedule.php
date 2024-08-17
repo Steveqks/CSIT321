@@ -41,7 +41,7 @@
                 $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                         FROM schedule a
                         LEFT JOIN existinguser b ON a.UserID = b.UserID
-                        WHERE (a.WorkDate = '".$searchDate."')";
+                        WHERE (a.WorkDate = '".$searchDate."') AND b.CompanyID = ".$companyID;
 
                 for ($i = 0; $i < count($searchInput); $i++) {
                     $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
@@ -60,7 +60,7 @@
                 $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                         FROM schedule a
                         LEFT JOIN existinguser b ON a.UserID = b.UserID
-                        WHERE (a.WorkDate = '".$searchDate."')
+                        WHERE (a.WorkDate = '".$searchDate."') AND b.CompanyID = ".$companyID."
                         ORDER BY a.WorkDate ASC;";
 
                 $stmt = $conn->prepare($sql);
@@ -74,7 +74,7 @@
                 $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                         FROM schedule a
                         LEFT JOIN existinguser b ON a.UserID = b.UserID
-                        WHERE a.WorkDate >= CURDATE()";
+                        WHERE a.WorkDate >= CURDATE() AND b.CompanyID = ".$companyID;
 
                 for ($i = 0; $i < count($searchInput); $i++) {
                     $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
@@ -96,7 +96,7 @@
         $sql = "SELECT a.WorkDate, a.StartWork, a.EndWork, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                 FROM schedule a
                 LEFT JOIN existinguser b ON a.UserID = b.UserID
-                WHERE a.WorkDate >= CURDATE()
+                WHERE a.WorkDate >= CURDATE() AND b.CompanyID = ".$companyID."
                 ORDER BY a.WorkDate ASC;";
 
         $stmt = $conn->prepare($sql);

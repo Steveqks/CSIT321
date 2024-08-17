@@ -64,8 +64,8 @@
 
                 $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                         FROM availability a
-                        LEFT JOIN existinguser b ON a.UserID = b.UserID
-                        WHERE a.IsAvailable = 1
+                        INNER JOIN existinguser b ON a.UserID = b.UserID
+                        WHERE a.IsAvailable = 1 AND b.CompanyID = ".$companyID."
                         AND a.WeekStartDate >= '".$formatted_monday."'
                         AND a.Status IS NULL";
 
@@ -98,7 +98,7 @@
         $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                 FROM availability a
                 LEFT JOIN existinguser b ON a.UserID = b.UserID
-                WHERE a.IsAvailable = 1
+                WHERE a.IsAvailable = 1 AND b.CompanyID = ".$companyID."
                 AND a.WeekStartDate >= '".$formatted_monday."'
                 AND a.Status IS NULL
                 GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, a.IsAvailable, fullName
@@ -130,8 +130,8 @@
 
         $sql = "SELECT a.AvailabilityID, a.UserID, a.WeekStartDate, a.DayOfWeek, CONCAT(b.FirstName, ' ', b.LastName) AS fullName
                 FROM availability a
-                LEFT JOIN existinguser b ON a.UserID = b.UserID
-                WHERE a.AvailabilityID = ".$availabilityID."
+                INNER JOIN existinguser b ON a.UserID = b.UserID
+                WHERE a.AvailabilityID = ".$availabilityID." AND b.CompanyID = ".$companyID."
                 GROUP BY a.UserID, a.WeekStartDate, a.DayOfWeek, fullName;";
 
         $stmt = $conn->prepare($sql);
