@@ -36,8 +36,7 @@
             $sql .= " AND (b.FirstName LIKE '%".$name[$i]."%' OR b.LastName LIKE '%".$name[$i]."%')";
         }
         
-        $sql .= " AND a.Status IS NOT NULL
-                GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
+        $sql .= " GROUP BY a.LeaveID, b.UserID, fullName, a.StartDate, a.EndDate, a.LeaveType, a.HalfDay, a.Status
                 ORDER BY a.Status ASC, a.EndDate ASC;";
 
         $stmt = $conn->prepare($sql);
