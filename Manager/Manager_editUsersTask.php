@@ -241,27 +241,6 @@
 
         //echo "<br><br>". $sql;
 
-
-        $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
-
-                (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
-                INNER JOIN task c ON b.MainTaskID = c.MainTaskID
-                WHERE b.Status = ".$taskStatus."
-                AND (b.StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR b.DueDate BETWEEN '".$startDate."' AND '".$endDate."')
-                AND b.MainTaskID != ".$mainTaskID."
-                AND c.UserID = a.UserID) AS totalTasks,
-
-                (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
-                INNER JOIN task c ON b.MainTaskID = c.MainTaskID
-                WHERE b.Status = ".$taskStatus."
-                AND b.MainTaskID = ".$mainTaskID."
-                AND c.UserID = a.UserID) AS currentTask
-
-                FROM existinguser a
-                INNER JOIN specialisationgroup d ON a.UserID = d.UserID
-                WHERE d.MainGroupID = ".$mainGroupID."
-                AND a.UserID IN (";
-
                 
         if ($allocateType == "manual") {
 
@@ -293,8 +272,27 @@
             } else {
 
                 if (count($FTUsers) > 0) {
-                    
-                    $sql .= $FTUsers[0]['UserID'];
+
+
+                    $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
+            
+                            (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                            INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                            WHERE b.Status = ".$taskStatus."
+                            AND (b.StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR b.DueDate BETWEEN '".$startDate."' AND '".$endDate."')
+                            AND b.MainTaskID != ".$mainTaskID."
+                            AND c.UserID = a.UserID) AS totalTasks,
+            
+                            (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                            INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                            WHERE b.Status = ".$taskStatus."
+                            AND b.MainTaskID = ".$mainTaskID."
+                            AND c.UserID = a.UserID) AS currentTask
+            
+                            FROM existinguser a
+                            INNER JOIN specialisationgroup d ON a.UserID = d.UserID
+                            WHERE d.MainGroupID = ".$mainGroupID."
+                            AND a.UserID IN (".$FTUsers[0]['UserID'];
     
                     if (count($FTUsers) > 1) {
                         for ($i = 1; $i < count($FTUsers); $i++) {
@@ -314,8 +312,26 @@
                 }
                 
                 if (count($PTUsers) > 0) {
-    
-                    $sql .= $PTUsers[0]['UserID'];
+
+                    $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
+            
+                            (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                            INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                            WHERE b.Status = ".$taskStatus."
+                            AND (b.StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR b.DueDate BETWEEN '".$startDate."' AND '".$endDate."')
+                            AND b.MainTaskID != ".$mainTaskID."
+                            AND c.UserID = a.UserID) AS totalTasks,
+            
+                            (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                            INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                            WHERE b.Status = ".$taskStatus."
+                            AND b.MainTaskID = ".$mainTaskID."
+                            AND c.UserID = a.UserID) AS currentTask
+            
+                            FROM existinguser a
+                            INNER JOIN specialisationgroup d ON a.UserID = d.UserID
+                            WHERE d.MainGroupID = ".$mainGroupID."
+                            AND a.UserID IN (".$PTUsers[0]['UserID'];
     
                     if (count($PTUsers) > 1) {
                         for ($i = 1; $i < count($PTUsers); $i++) {
@@ -336,7 +352,7 @@
     
                 }
     
-                if (count($FTTasksUsers) > 0 || count($PTTasksUsers)) {
+                if (count($FTTasksUsers) > 0 || count($PTTasksUsers) > 0) {
                     
                     $showManualForm = TRUE;
                     
@@ -391,6 +407,27 @@
 
 
         } else if ($allocateType == "auto") {
+
+
+            $sql = "SELECT a.UserID, concat(a.FirstName,' ',a.LastName) AS fullName, d.MainGroupID,
+    
+                    (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                    INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                    WHERE b.Status = ".$taskStatus."
+                    AND (b.StartDate BETWEEN '".$startDate."' AND '".$endDate."' OR b.DueDate BETWEEN '".$startDate."' AND '".$endDate."')
+                    AND b.MainTaskID != ".$mainTaskID."
+                    AND c.UserID = a.UserID) AS totalTasks,
+    
+                    (SELECT IFNULL(SUM(b.Status),0) AS totalTasks FROM taskinfo b
+                    INNER JOIN task c ON b.MainTaskID = c.MainTaskID
+                    WHERE b.Status = ".$taskStatus."
+                    AND b.MainTaskID = ".$mainTaskID."
+                    AND c.UserID = a.UserID) AS currentTask
+    
+                    FROM existinguser a
+                    INNER JOIN specialisationgroup d ON a.UserID = d.UserID
+                    WHERE d.MainGroupID = ".$mainGroupID."
+                    AND a.UserID IN (";
 
             if (count($FTUsers) > 0) {
                     
