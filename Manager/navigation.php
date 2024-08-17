@@ -98,7 +98,6 @@
     <a id='myButton1' class='myButton1' onClick='showLinks1()'>Manage Account ➕</a>
 	<div id='linkContainer1'>
 		<div class='show'>
-            <a href='Manager_createUserAccount.php'> - Create User Account </a>
             <a href='Manager_viewAccount.php'> - View Account Details </a>
         </div>
 	</div>
