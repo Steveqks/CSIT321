@@ -29,17 +29,29 @@
 
 
     
-        // get team project details
-        $sql = "SELECT a.GroupName, b.SpecialisationName FROM specialisationgroupinfo a
+        // get group name project
+        $sql = "SELECT a.GroupName FROM specialisationgroupinfo a
                 INNER JOIN project d ON d.MainGroupID = a.MainGroupID
-                LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
                 WHERE d.MainProjectID = ".$mainProjectID."
-                GROUP BY a.GroupName, b.SpecialisationName;";
+                GROUP BY a.GroupName";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-        $teamProjectDetails = $result->fetch_all(MYSQLI_ASSOC);
+        $groupProjectNames = $result->fetch_all(MYSQLI_ASSOC);
+
+
+        // get project specialisation names
+        $sql = "SELECT b.SpecialisationName FROM specialisationgroupinfo a
+                INNER JOIN project d ON d.MainGroupID = a.MainGroupID
+                LEFT JOIN specialisation b ON a.SpecialisationID = b.SpecialisationID
+                WHERE d.MainProjectID = ".$mainProjectID."
+                GROUP BY b.SpecialisationName;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projectSpecialisation = $result->fetch_all(MYSQLI_ASSOC);
 
         $stmt->close();
     }
@@ -163,15 +175,15 @@
 
                                     <span class="details">Specialisation(s)</span>
                                     <p><?php
-                                        for ($i = 0; $i < count($teamProjectDetails); $i++) {
-                                            echo "<p>".$i+1 .". ".$teamProjectDetails[$i]['SpecialisationName']."</p>";
+                                        for ($i = 0; $i < count($projectSpecialisation); $i++) {
+                                            echo "<p>".$i+1 .". ".$projectSpecialisation[$i]['SpecialisationName']."</p>";
                                         }
                                     ?></p>
                                         
                                     <span class="details">Specialisation Group(s)</span>
                                     <?php
-                                        for ($i = 0; $i < count($teamProjectDetails); $i++) {
-                                            echo "<p>".$i+1 .". ".$teamProjectDetails[$i]['GroupName']."</p>";
+                                        for ($i = 0; $i < count($groupProjectNames); $i++) {
+                                            echo "<p>".$i+1 .". ".$groupProjectNames[$i]['GroupName']."</p>";
                                         }
                                     ?>
 
