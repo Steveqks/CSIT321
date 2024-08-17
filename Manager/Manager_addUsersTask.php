@@ -208,97 +208,118 @@
                 
         if ($allocateType == "manual") {
 
-            $FTTasksUsers = array();
-            $PTTasksUsers = array();
+            if (count($FTUsers) == 0 && count($PTUsers) == 0) {
+                // Get the number of staff in the Specialisation Group
+                    $sql = "SELECT a.GroupName FROM specialisationgroupinfo a
+                            INNER JOIN project b ON a.MainGroupID = b.MainGroupID
+                            WHERE b.MainProjectID = ".$mainProjectID."
+                            AND a.MainGroupID = ".$mainGroupID;
+    
+                    $stmt = $conn->prepare($sql);
+                            
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $groupName = $result->fetch_assoc();
+    
+                    // Close the database connection
+                    $stmt->close();
+                    CloseCon($conn);
 
-            if (count($FTUsers) > 0) {
+                    header("Location: Manager_addUsersTask.php?allocatetype=".$allocateType."&taskname=".$taskName."&taskdesc=".$taskDesc."&enddate=".$endDate."&startdate=".$startDate."&priority=".$priority."&mainprojectid=".$mainProjectID."&error=There are no staff available in ".$groupName['GroupName'].". Please contact your Company Admin.");
+                    exit();
+            } else {
+
+                $FTTasksUsers = array();
+                $PTTasksUsers = array();
+
+                if (count($FTUsers) > 0) {
+                    
+                    $sql .= $FTUsers[0]['UserID'];
+
+                    if (count($FTUsers) > 1) {
+                        for ($i = 1; $i < count($FTUsers); $i++) {
+                            $sql .= ", ".$FTUsers[$i]['UserID'];
+                        }
+                    }
+
+                    $sql .= ") GROUP BY a.UserID, fullName
+                            ORDER BY totalTasks ASC;";
+
+                    $stmt = $conn->prepare($sql);
+                            
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $FTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
+
+                }
                 
-                $sql .= $FTUsers[0]['UserID'];
+                if (count($PTUsers) > 0) {
 
-                if (count($FTUsers) > 1) {
-                    for ($i = 1; $i < count($FTUsers); $i++) {
-                        $sql .= ", ".$FTUsers[$i]['UserID'];
+                    $sql .= $PTUsers[0]['UserID'];
+
+                    if (count($PTUsers) > 1) {
+                        for ($i = 1; $i < count($PTUsers); $i++) {
+                            $sql .= ", ".$PTUsers[$i]['UserID'];
+                        }
                     }
+
+                    $sql .= ") GROUP BY a.UserID, fullName
+                            ORDER BY totalTasks ASC;";
+
+                    $stmt = $conn->prepare($sql);
+                            
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $PTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
+
                 }
 
-                $sql .= ") GROUP BY a.UserID, fullName
-                        ORDER BY totalTasks ASC;";
-
-                $stmt = $conn->prepare($sql);
-                        
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $FTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
-
-            }
-            
-            if (count($PTUsers) > 0) {
-
-                $sql .= $PTUsers[0]['UserID'];
-
-                if (count($PTUsers) > 1) {
-                    for ($i = 1; $i < count($PTUsers); $i++) {
-                        $sql .= ", ".$PTUsers[$i]['UserID'];
-                    }
+                if (count($FTTasksUsers) > 0 || count($PTTasksUsers)) {
+                    $showManualForm = TRUE;
                 }
 
-                $sql .= ") GROUP BY a.UserID, fullName
-                        ORDER BY totalTasks ASC;";
 
-                $stmt = $conn->prepare($sql);
-                        
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $PTTasksUsers = $result->fetch_all(MYSQLI_ASSOC);
+                if (isset($_POST['selectStaff'])) {
 
-            }
+                    $selectStaff = $_POST['selectStaff'];
 
-            if (count($FTTasksUsers) > 0 || count($PTTasksUsers)) {
-                $showManualForm = TRUE;
-            }
-
-
-            if (isset($_POST['selectStaff'])) {
-
-                $selectStaff = $_POST['selectStaff'];
-
-                $numStaff = count($selectStaff);
-
-                // Insert into TaskInfo query
-                $stmt = $conn->prepare("INSERT INTO taskinfo (MainProjectID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
-
-                $stmt->bind_param("issssiii",$mainProjectID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
-
-                if ($stmt->execute()) {
-
-                    $newMainTaskID = $stmt->insert_id;
+                    $numStaff = count($selectStaff);
 
                     // Insert into TaskInfo query
-                    $stmt = $conn->prepare("INSERT INTO task (MainGroupID,MainTaskID,UserID) VALUES (?,?,?)");
+                    $stmt = $conn->prepare("INSERT INTO taskinfo (MainProjectID,TaskName,TaskDesc,StartDate,DueDate,NumStaff,Priority,Status) VALUES (?,?,?,?,?,?,?,?)");
 
-                    foreach ($selectStaff as $userIDs) {
+                    $stmt->bind_param("issssiii",$mainProjectID,$taskName,$taskDesc,$startDate,$endDate,$numStaff,$priority,$taskStatus);
 
-                        $stmt->bind_param("iii",$mainGroupID, $newMainTaskID, $userIDs);
+                    if ($stmt->execute()) {
 
-                        $stmt->execute();
-                    }
+                        $newMainTaskID = $stmt->insert_id;
 
-                    $newTaskID = $stmt->insert_id;
+                        // Insert into TaskInfo query
+                        $stmt = $conn->prepare("INSERT INTO task (MainGroupID,MainTaskID,UserID) VALUES (?,?,?)");
 
-                    if ($newTaskID > 0) {
+                        foreach ($selectStaff as $userIDs) {
 
-                        // Close the database connection
-                        $stmt->close();
-                        CloseCon($conn);
+                            $stmt->bind_param("iii",$mainGroupID, $newMainTaskID, $userIDs);
 
-                        header("Location: Manager_addTask.php?message=Task is successfully allocated.");
-                        exit();
+                            $stmt->execute();
+                        }
 
+                        $newTaskID = $stmt->insert_id;
+
+                        if ($newTaskID > 0) {
+
+                            // Close the database connection
+                            $stmt->close();
+                            CloseCon($conn);
+
+                            header("Location: Manager_addTask.php?message=Task is successfully allocated.");
+                            exit();
+
+                        }
                     }
                 }
-            }
 
-            
+            }
 
 
         } else if ($allocateType == "auto") {
