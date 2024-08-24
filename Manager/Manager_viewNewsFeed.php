@@ -19,6 +19,7 @@
         $sql = "SELECT a.ManagerID, CONCAT(b.FirstName, ' ', b.LastName) AS fullName, a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted FROM newsfeed a
                 INNER JOIN existinguser b ON a.ManagerID = b.UserID
                 WHERE b.CompanyID = ".$companyID."
+                GROUP BY a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted
                 ORDER BY a.DatePosted DESC;";
 
         $stmt = $conn->prepare($sql);
@@ -44,6 +45,7 @@
                 INNER JOIN existinguser b ON a.ManagerID = b.UserID
                 INNER JOIN projectinfo c ON a.ManagerID = c.ProjectManagerID
                 WHERE a.ManagerID = ".$userID."
+                GROUP BY a.NewsFeedID, a.NewsTitle, a.NewsDesc, a.DatePosted
                 ORDER BY a.DatePosted DESC;";
 
         $stmt = $conn->prepare($sql);
