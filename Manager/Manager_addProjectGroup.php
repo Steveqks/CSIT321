@@ -44,7 +44,7 @@
 
                 // Check if the selected Specialisation exist in Specialisation Group
                 $sql = "SELECT a.SpecialisationID, a.SpecialisationName, IFNULL(b.SpecialisationID,0) AS noOfSpecialisation FROM specialisation a
-                        LEFT JOIN specialisationGroupinfo b ON a.SpecialisationID = b.SpecialisationID
+                        LEFT JOIN specialisationgroupinfo b ON a.SpecialisationID = b.SpecialisationID
                         WHERE a.SpecialisationID IN (".$specialisation[0];
                 
                 if (count($specialisation) > 1) {
